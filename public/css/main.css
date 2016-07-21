@@ -1,0 +1,21 @@
+canvas {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#foreground {
+  z-index: 1;
+}
+#background {
+  z-index: 0;
+}
+#menu-toggle {
+  z-index: 2;
+}
+
+#signUpForm {
+	display: none;
+}
+
+

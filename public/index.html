@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--Basic Html framework borrowed from here: http://startbootstrap.com/template-overviews/freelancer/-->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Game of Thrones RTS</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+
+    <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navigation-->
+    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <nav id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+            <li class="sidebar-brand">
+                <a href="#top" onclick=$ ( "#menu-close").click();>Start Bootstrap</a>
+            </li>
+            <li>
+                <a href="" id = "zoomIn">Zoom In</a>
+            </li>
+            <li>
+                <a href="" id = "zoomOut">Zoom Out</a>
+            </li>
+           <!-- <li>
+                <a href="#services" onclick=$ ( "#menu-close").click();>Services</a>
+            </li>
+            <li>
+                <a href="#portfolio" onclick=$ ( "#menu-close").click();>Portfolio</a>
+            </li>
+            <li>
+                <a href="#contact" onclick=$ ( "#menu-close").click();>Contact</a>
+            </li>-->
+        </ul>
+    </nav>
+
+    <!-- Header -->
+ 
+    <div id="gameContainer" class="header">
+ 
+        
+        <div class="text-vertical-center">
+            <h1>Game of Thrones RTS</h1>
+           
+            <br>
+            <div class = "col-xs-4 col-xs-offset-4">
+            <h2 id = 'prompt' class="form-signin-heading">Login</h2>
+            <div class = 'btn-toolbar' id = "levelButtons"> 
+                <a id = "theNorth" class="btn btn-primary" onclick="startGame('theNorth')">The North</a>
+                <a id = "theNeck" class="btn btn-primary" onclick="startGame('theNeck')">The Neck</a>
+            </div>
+            <form id = "signInForm" class="form-horizontal"><!-- form framework from here http://jsfiddle.net/rtglenn/VwPaR/ -->
+                <div class="form-group has-feedback">
+                    <label class="control-label col-md-12"></label>
+                    <div class = 'col-md-12'>
+                        <input type="text" id="userName" class="form-control" placeholder="Username" />
+                        <span class="glyphicon form-control-feedback"></span>
+                   </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="control-label col-md-12"></label>
+                    <div class = 'col-md-12'>
+                        <input id = "oldPassword" type="password" class="form-control" placeholder="Password" />
+                        <span class="glyphicon form-control-feedback"></span>
+                    </div>
+                </div>  
+                <button id = 'signIn' type="submit" class="btn btn-primary">Sign In</button>
+                <button id = "signUp" type="button" class="btn btn-primary">Create a New Account</button>
+            </form>
+            <form id = "signUpForm" class="form-horizontal"><!-- form framework from here http://jsfiddle.net/rtglenn/VwPaR/ -->
+                <div class="form-group has-feedback">
+                    <labelclass="control-label col-md-12"></label>
+                    <div class = 'col-md-12'>
+                        <input id = "newUserName" type="text" class="form-control" placeholder="Username" />
+                        <span class="glyphicon form-control-feedback" ></span>
+                   </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <labelclass="control-label col-md-12"></label>
+                    <div class = 'col-md-12'>
+                        <input id = "newEmail" type="text"  class="form-control" placeholder="Email" />
+                        <span class="glyphicon form-control-feedback" ></span>
+                   </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="control-label col-md-12"></label>
+                    <div class = 'col-md-12'>
+                        <input id = "newPassword" type="password" class="form-control" placeholder="Password" />
+                        <span class="glyphicon form-control-feedback"></span>
+                    </div>
+                </div>  
+                <div class="form-group has-feedback">
+                    <label for="lname" class="control-label col-md-12"></label>
+                    <div class = 'col-md-12'>
+                        <input id='newPasswordAgain' type="password" class="form-control" placeholder="Password Again" />
+                        <span class="glyphicon form-control-feedback"></span>
+                    </div>
+                </div>  
+                <button id = "signUpSubmit" type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <br>
+            <button id = "skip" type="submit" class="btn btn-primary btn-warning">Skip Login</button>
+
+            </div>
+
+        </div>
+
+      <canvas id="background" ></canvas>
+      <canvas id="foreground"></canvas>
+      
+  </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+ 
+
+    </script>
+
+  <script src="js/cookie.js"></script> <!-- js.cookie from here https://github.com/js-cookie/js-cookie -->
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>
