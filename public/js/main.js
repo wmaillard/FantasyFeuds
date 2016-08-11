@@ -40,6 +40,25 @@ var levels = ['theNeck', 'theNorth'];
 
 var quarter = 0;
 
+var player1 = {};
+var player2 = {};
+
+var baseSHealth = 750;
+var baseNHealth = 250;
+
+function metaStartGame(overRide){
+	if(!overRide && Cookies.get('loggedIn') === "true"){
+		loadGame();
+	}
+	else{
+		entities = {};
+		clearBackground = true;
+		firstLoad = true;
+		startLevel();
+
+	} 
+}
+
 function drawEntities(entities, ctx, lock, clear) {
 
     var scratchCanvas = ctx.canvas.cloneNode();
@@ -77,8 +96,35 @@ function drawEntities(entities, ctx, lock, clear) {
       }
       		scratchCanvas.fillStyle = "green";
       		scratchCanvas.fillRect(entities[entity].x, entities[entity].y - size/ 4, size, size / 13);
+
+
+      		if(level === 'theNorth'){
+      			scratchCanvas.fillRect(460, 100, size*5, 2*size / 13);
+      			scratchCanvas.fillRect(675, 2150, size*5, 2*size / 13);
+      		}else if (level === 'theNeck'){
+      			scratchCanvas.fillRect(600, 90, size*5, 2*size / 13);
+      			scratchCanvas.fillRect(200, 2150, size*5, 2*size / 13);
+      		}else if (level === 'dorne'){
+      			scratchCanvas.fillRect(500, 90, size*5, 2*size / 13);
+      			scratchCanvas.fillRect(650, 2150, size*5, 2*size / 13);
+      		}
+            
+
             scratchCanvas.fillStyle = "red";
             var health = entities[entity].health;
+
+            if(level === 'theNorth'){
+            	scratchCanvas.fillRect(460 + (1 - baseNHealth/ 1000) * size * 5, 100, baseNHealth / 1000 * size*5, 2*size / 13);
+            	scratchCanvas.fillRect(675+ (1 - baseSHealth/ 1000) * size * 5, 2150, baseSHealth / 1000 *size*5, 2*size / 13);
+            }else if(level === 'theNeck'){
+            	scratchCanvas.fillRect(600 + (1 - baseNHealth/ 1000) * size * 5, 90, baseNHealth / 1000 * size*5, 2*size / 13);
+            	scratchCanvas.fillRect(200+ (1 - baseSHealth/ 1000) * size * 5, 2150, baseSHealth / 1000 *size*5, 2*size / 13);
+            }else if(level === 'dorne'){
+            	scratchCanvas.fillRect(500 + (1 - baseNHealth/ 1000) * size * 5, 90, baseNHealth / 1000 * size*5, 2*size / 13);
+            	scratchCanvas.fillRect(675+ (1 - baseSHealth/ 1000) * size * 5, 2150, baseSHealth / 1000 *size*5, 2*size / 13);
+            }
+        	
+
       		scratchCanvas.fillRect(entities[entity].x + (1 - health / 100) * size, entities[entity].y - size/ 4, (health / 100) * size, size / 13);
             scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         }
@@ -94,9 +140,15 @@ function drawEntities(entities, ctx, lock, clear) {
 }
 
 $(function() {
+	$('#saveAlertBad').hide();
+	$('#saveAlertGood').hide();
+    $('#menu-close').click(function(){
+    	$('#saveAlertBad').hide();
+    	$('#saveAlertGood').hide();
+    })
     $('#levelButtons').hide();
     $('#signedInNav').hide();
-    $('#signInNav').hide();
+    Cookies.get('loggedIn') === 'true' ? $('#signInNav').hide() : $('#signInNav').show();
     $('#menu-toggle').hide();
     $('#cancel').hide();
     // ********** Login Stuff ****************
@@ -111,6 +163,17 @@ $(function() {
         $('#signedInNav div').text('Signed in as ' + Cookies.get('userName'));
 
     }
+    $('#saveGame').click(function(){
+    	saveGame();
+    	return false;
+    });
+    $('#menu-toggle').click(function(){
+    	if(Cookies.get('loggedIn') !== 'true'){
+    		$('#saveGame').hide();
+    	}else{
+    		$('#saveGame').show();
+    	}
+    })
     $('#signIn').click(function() {
         if (checkForm($(this).closest('form'))) {
             var body = {}
@@ -126,23 +189,27 @@ $(function() {
                     //data = JSON.parse(data);
                     console.log('data: ');
                     console.log(data);
-                    var headers = res.getAllResponseHeaders();
-                    console.log(headers);
-                    // Cookies.set('token', auth);
-                    console.log(Cookies.get('token'));
+                    var auth = res.getResponseHeader('Authorization');
+                    console.log(auth);
+                    Cookies.set('token', auth);
+
                     Cookies.set('userName', data.uname);
                     Cookies.set('level', data.level);
                     Cookies.set('loggedIn', true);
                     $('#signInNav').hide();
                     $('#signedInNav').show();
+                    $('#saveGame').show();
 
                     $('#signedInNav div').text('Signed in as ' + data.uname);
                     startGame(levels[data.level]);
 
                 },
                 error: function(data, textStatus, res) {
+                	$('#warningBelow').append('<div id="problem" class="col-md-12">Sorry, incorrect user info </div>')
                     console.log("ERROR: ");
                     console.log(data);
+                    console.log(textStatus);
+                    console.log(res);
                 }
 
             })
@@ -150,7 +217,45 @@ $(function() {
         }
         return false;
     })
+    $('#levelSelect').click(function(){
+    	$('#prompt').show();
+    	$('#levelButtons').show();
+    	$('#signInForm').hide();
+    	$('#cancel').hide();
+    	$('#prompt').text('Choose a Level');
+    	$('#skip').hide();
 
+    	$('#theNorth').prop('onclick',null).off('click');
+    	$('#theNeck').prop('onclick',null).off('click');
+    	$('#dorne').prop('onclick',null).off('click');
+
+    	$('#theNorth').click(function(){
+    		startGame('theNorth', true);
+    	})
+    	$('#theNeck').click(function(){
+    		startGame('theNeck', true);
+    	})
+    	$('#dorne').click(function(){
+    		startGame('dorne', true);
+    	})
+
+
+
+
+    	$('#signInBox').show();
+    	$('#cancelLevel').show();
+    	return false;
+
+
+    })
+    $('#cancelLevel').hide();
+    $('#cancelLevel').click(function(){
+    	$('#prompt').hide();
+    	$('#levelButtons').hide();
+    	$('#signInBox').hide();
+
+    	return false;
+    })
     $('#signUp').click(function() {
         $('#signInForm').hide();
         $('#signUpForm').show();
@@ -189,7 +294,8 @@ $(function() {
                     $('#signedInNav div').text('Signed in as ' + data.uname);
                     $('#signInForm').show();
                     $('#signUpForm').hide();
-                    startGame(levels[data.level]);
+
+                    startGame(levels[data.level], true);
 
                 },
                 error: function(data, textStatus, request) {
@@ -198,6 +304,8 @@ $(function() {
                     console.log(request);
                     console.log("ERROR: ");
                     console.log(data);
+                    $('#inputWarningBelow').append('<div id="problemSignUp" class="col-md-12">Sorry, that login is taken</div>')
+
                 }
 
             })
@@ -271,14 +379,14 @@ function blank(field) {
 }
 // End Login functions
 
-function startGame(userLevel) {
-    level = userLevel;
+function startGame(userLevel, overRide) {
+	level = userLevel;
 
     $("#signInBox").hide();
 
     $("#background").fadeTo(100, 1, function() {
         $("#foreground").fadeTo(1, 1, function() {
-            startLevel();
+            metaStartGame(overRide);
         });
 
     });
@@ -543,8 +651,10 @@ function isBlocked(x, y) {
 //End loading tiled maps
 
 function startLevel() {
+	$('#problem').remove();
+	$('#problemSignUp').remove();
     $('#menu-toggle').show();
-    if (!Cookies.get('loggedIn')) {
+    if (Cookies.get('loggedIn') !== 'true') {
         $('#signInNav').show();
     }
 
@@ -769,6 +879,7 @@ function logOut() {
     Cookies.set('loggedIn', false);
     $('#signedInNav').hide();
     $('#signInNav').show();
+  //  $('#saveGame').remove();
 }
 
 function signInNav() {
@@ -782,6 +893,7 @@ function signInNav() {
 }
 
 $('#signOut').click(function() {
+	$('#saveGame').hide();
     logOut();
     return false;
 });
@@ -792,18 +904,20 @@ $('#signInNav').click(function() {
 })
 
 function saveGame() {
+	if(Cookies.loggedIn === 'false'){
+		$('$saveAlertBad').show();
+		return;
+	}
     var state = {};
-    for (var entity in entities) {
-        entities[entity].alreadyBeen = [];
-    }
+    state.entities = {};
 
-    state['entities'] = entities;
-    var player1 = {};
+    state.entities = entities;
+
     player1.gold = 300;
     player1.team = 'red';
     player1.ai = true;
     player1.name = "player1"
-    var player2 = {};
+
     player2.gold = 200;
     player2.team = 'blue';
     player2.ai = false;
@@ -811,6 +925,105 @@ function saveGame() {
     var players = [player1, player2];
     state['players'] = players;
     state['level'] = level;
-    return state;
+    var toSend = {};
+    toSend.Name = new Date($.now()).getTime();
+    console.log(toSend.Name);
+    toSend.Data = state;
+    console.log(toSend);
 
+    //Change this when you want to pick saves
+    toSend.Name = 'recent';
+
+    $.ajax({
+        url: APIURL + '/' + Cookies.get('userName') + '/save/' + toSend.Name,
+        method: 'PUT',
+        beforeSend: function(request){
+        	request.setRequestHeader("Authorization", Cookies.get('token'));
+        },//Authorization?
+        //  dataType: 'application/json',
+        // contentType:'application/json',
+        data: JSON.stringify(state),
+        success: function(data, textStatus, res) {
+            //data = JSON.parse(data);
+            console.log('Reponse: ');
+            console.log(data);
+
+            Cookies.set('saveName', toSend.Name);
+            $('#saveAlertGood').show();
+
+
+
+        },
+        error: function(data, textStatus, res) {
+            console.log("ERROR: ");
+            console.log(data);
+            $('#saveAlertBad').show();
+
+
+        }
+
+    })
+
+    return JSON.stringify(state);
+
+}
+
+function loadGame(state){
+
+	var theSave = Cookies.get('saveName');
+
+	theSave = 'recent';  //Change me for more functionality
+
+	    $.ajax({
+        url: APIURL + '/' + Cookies.get('userName') + '/save/' + theSave,
+        method: 'GET',
+        beforeSend: function(request){
+        	request.setRequestHeader("Authorization", Cookies.get('token'));
+        },//Authorization?
+        //  dataType: 'application/json',
+        // contentType:'application/json',
+        success: function(data, textStatus, res) {
+            //data = JSON.parse(data);
+            data = data.data;
+            console.log('Reponse: ');
+            console.log(data);
+		    player1 = data.players[0];
+			player2 = data.players[1];
+			level = data.level;
+
+			entities = data.entities;
+			for(var entity in entities){
+				entities[entity].image.loaded = false;
+				entities[entity].image = new Image();
+			    entities[entity].blank = new Image();
+			    entities[entity].blank.src = 'img/characters/blank.png'
+			    entities[entity].image.src = entities[entity].png;
+			    travelSouth(entities[entity]); //won't need this
+			}
+			firstLoad = true;
+
+
+
+
+			startLevel();
+
+
+        },
+        error: function(data, textStatus, res) {
+            console.log("ERROR: ");
+            console.log("text:", textStatus);
+            console.log('res', res);
+            console.log('data:')
+            console.log(data);  //server doesn't provid anything useful, grrr
+            startGame(level, true);
+
+           // alert('Error Loading Your Game! Sorry :(')
+        }
+
+    })
+
+
+}
+function kill(){ //Incase the program is out of control
+	entities = [];
 }

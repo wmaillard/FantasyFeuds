@@ -4,6 +4,8 @@
 ##Post Midterm Check
 --------------------------------------------------------------------------------------------------------------------------------
 ##U.I.
+- [ ] Things to get rid of once in production: travel south, travel south by load (made need to add kims stuff), the already been array
+
 - [x] *BUG -> Either drawing entites or placing entities is not relative to offest * zoom -- issue may be partially because the game is drawn on the right side when zoomed out.  **Offset of entity needs to be multiplied by zoom, offset is there , just not high enough.
 - [x] Went away on its own? ~~Critical BUG -> Logging in from the Map and hitting cancel causes map to freeze.  Probably something to do with 'pause' not being set correctly~~
 - [x] Turn down the framerate or give the option to.  Make walking speed relative to framerate! 
@@ -15,8 +17,7 @@
 - [x] Highlight entity when current.  
 - [x] Show healthbar for everybody always
 - [x] more entities
-- [ ] save state (just save the entities), easy peasy
-- [ ] still releveant?, depends on how AI is set up. change entity from attacking to defending somehow with UI (right click?, macs don't do that do they...ctrl-click or right click)
+- [x] save state (just save the entities), easy peasy lolz
 - [x] draw another map :)
 
 ##A.I.
@@ -87,3 +88,4 @@
 - [ ] UI for adding an entity - ~~Probably figure out how to add a <canvas> in the nav menu,~~ could use draggable jquery!!!
 - [ ] Colors for teams/team item in entity
 - [ ] Stagger walking, surprisingly will take a lot of work.  Think it out, should this be the draw entities job or the walking function?  Should each entity be on its own ctx?  Because if you clear all the entities at once, they have to walk at the same pace. oooh could you do giant.ctx = ctx, then just clear and draw that somewhere on the canvas like scratch canvas?
+- [ ] still releveant?, depends on how AI is set up. change entity from attacking to defending somehow with UI (right click?, macs don't do that do they...ctrl-click or right click)

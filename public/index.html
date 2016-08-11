@@ -40,13 +40,22 @@
                 <a id = 'signOut' href="">Sign Out</a>
             </li>
             <li id = 'signInNav'>
-                <a href="">Sign In</a>
+                <a href="">Sign In and Load Your Last Save</a>
             </li>
             <li>
                 <a href="" id = "zoomIn">Zoom In</a>
             </li>
             <li>
                 <a href="" id = "zoomOut">Zoom Out</a>
+            </li>
+            <li>
+                <a href="" id = "saveGame">Save Game</a>
+             
+                <div id="saveAlertBad" style="color:red" >Could not save your game ;(</div>
+                <div id="saveAlertGood" style="color:green" >Game Saved!</div>
+            </li>
+            <li>
+                <a href="" id = "levelSelect">Level Select</a>
             </li>
             <!--li>
                 <a href="#services" onclick=$ ( "#menu-close").click();>Services</a>
@@ -72,7 +81,8 @@
             <div class = 'btn-toolbar' id = "levelButtons"> 
                 <a id = "theNorth" class="btn btn-primary" onclick="startGame('theNorth')">The North</a>
                 <a id = "theNeck" class="btn btn-primary" onclick="startGame('theNeck')">The Neck</a>
-                <a id = "theNeck" class="btn btn-primary" onclick="startGame('dorne')">Dorne</a>
+                <a id = "dorne" class="btn btn-primary" onclick="startGame('dorne')">Dorne</a>
+                <a id = "cancelLevel" class="btn btn-danger">Cancel</a>
             </div>
             <form id = "signInForm" class="form-horizontal"><!-- form framework from here http://jsfiddle.net/rtglenn/VwPaR/ -->
                 <div class="form-group has-feedback">
@@ -84,7 +94,7 @@
                 </div>
                 <div class="form-group has-feedback">
                     <label class="control-label col-md-12"></label>
-                    <div class = 'col-md-12'>
+                    <div id = 'warningBelow' class = 'col-md-12'>
                         <input id = "oldPassword" type="password" class="form-control" placeholder="Password" />
                         <span class="glyphicon form-control-feedback"></span>
                     </div>
@@ -116,7 +126,7 @@
                 </div>  
                 <div class="form-group has-feedback">
                     <label for="lname" class="control-label col-md-12"></label>
-                    <div class = 'col-md-12'>
+                    <div id = 'inputWarningBelow' class = 'col-md-12'>
                         <input id='newPasswordAgain' type="password" class="form-control" placeholder="Password Again" />
                         <span class="glyphicon form-control-feedback"></span>
                     </div>
