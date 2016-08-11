@@ -33,7 +33,14 @@
         <ul class="sidebar-nav">
             <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
             <li class="sidebar-brand">
-                <a href="#top" onclick=$ ( "#menu-close").click();>Start Bootstrap</a>
+                <a href="#top" onclick=$ ( "#menu-close").click();>GOT RTS</a>
+            </li>
+            <li id = 'signedInNav'>
+                <div href="">Signed in as </div>
+                <a id = 'signOut' href="">Sign Out</a>
+            </li>
+            <li id = 'signInNav'>
+                <a href="">Sign In</a>
             </li>
             <li>
                 <a href="" id = "zoomIn">Zoom In</a>
@@ -41,12 +48,10 @@
             <li>
                 <a href="" id = "zoomOut">Zoom Out</a>
             </li>
-           <!-- <li>
+            <!--li>
                 <a href="#services" onclick=$ ( "#menu-close").click();>Services</a>
             </li>
-            <li>
-                <a href="#portfolio" onclick=$ ( "#menu-close").click();>Portfolio</a>
-            </li>
+
             <li>
                 <a href="#contact" onclick=$ ( "#menu-close").click();>Contact</a>
             </li>-->
@@ -58,7 +63,7 @@
     <div id="gameContainer" class="header">
  
         
-        <div class="text-vertical-center">
+        <div id = 'signInBox' class="text-vertical-center">
             <h1>Game of Thrones RTS</h1>
            
             <br>
@@ -67,6 +72,7 @@
             <div class = 'btn-toolbar' id = "levelButtons"> 
                 <a id = "theNorth" class="btn btn-primary" onclick="startGame('theNorth')">The North</a>
                 <a id = "theNeck" class="btn btn-primary" onclick="startGame('theNeck')">The Neck</a>
+                <a id = "theNeck" class="btn btn-primary" onclick="startGame('dorne')">Dorne</a>
             </div>
             <form id = "signInForm" class="form-horizontal"><!-- form framework from here http://jsfiddle.net/rtglenn/VwPaR/ -->
                 <div class="form-group has-feedback">
@@ -118,7 +124,8 @@
                 <button id = "signUpSubmit" type="submit" class="btn btn-primary">Submit</button>
             </form>
             <br>
-            <button id = "skip" type="submit" class="btn btn-primary btn-warning">Skip Login</button>
+            <button id = "skip" class="btn btn-primary btn-warning">Skip Login</button>
+            <button id = "cancel" class="btn btn-primary btn-danger">Cancel</button>
 
             </div>
 
@@ -130,7 +137,7 @@
   </div>
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+    <script src="js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
@@ -153,18 +160,6 @@
 
   <script src="js/cookie.js"></script> <!-- js.cookie from here https://github.com/js-cookie/js-cookie -->
   <script src="js/main.js"></script>
-
-  <!-- Try some analytics -->
-  <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-81205411-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
 
 </body>
 

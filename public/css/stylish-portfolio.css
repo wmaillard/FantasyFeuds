@@ -95,7 +95,8 @@ hr.small {
     line-height: 40px;
 }
 
-.sidebar-nav li a {
+.sidebar-nav li a, 
+.sidebar-nav li div {
     display: block;
     text-decoration: none;
     color: #999;
