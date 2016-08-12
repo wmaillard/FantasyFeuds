@@ -45,6 +45,8 @@ var player2 = {};
 
 var baseSHealth = 750;
 var baseNHealth = 250;
+var intervalSetMap = false;
+var intervalSetCharacters = false;
 
 function metaStartGame(overRide){
 	if(!overRide && Cookies.get('loggedIn') === "true"){
@@ -52,7 +54,6 @@ function metaStartGame(overRide){
 	}
 	else{
 		entities = {};
-		clearBackground = true;
 		firstLoad = true;
 		startLevel();
 
@@ -138,32 +139,37 @@ function drawEntities(entities, ctx, lock, clear) {
     }
 
 }
+function setUpEverything(){
+	$('#signOut').click(function() {
+		$('#saveGame').hide();
+	    logOut();
+	    return false;
+	});
 
-$(function() {
-	$('#saveAlertBad').hide();
-	$('#saveAlertGood').hide();
+	$('#signInNav').click(function() {
+	    signInNav();
+	    return false;
+	})
+
+	$("#zoomIn").click(function() {
+	    zoomIn();
+	    return false;
+	});
+
+	$("#zoomOut").click(function() {
+	    zoomOut();
+	    return false;
+	});
+
     $('#menu-close').click(function(){
     	$('#saveAlertBad').hide();
     	$('#saveAlertGood').hide();
     })
-    $('#levelButtons').hide();
-    $('#signedInNav').hide();
-    Cookies.get('loggedIn') === 'true' ? $('#signInNav').hide() : $('#signInNav').show();
-    $('#menu-toggle').hide();
-    $('#cancel').hide();
     // ********** Login Stuff ****************
     $('#cancel').click(function() {
         $('#signInBox').hide();
     })
-
-    if (Cookies.get('loggedIn') === "true") {
-        startGame(levels[Cookies.get('level')]);
-        $('#signInNav').hide();
-        $('#signedInNav').show();
-        $('#signedInNav div').text('Signed in as ' + Cookies.get('userName'));
-
-    }
-    $('#saveGame').click(function(){
+     $('#saveGame').click(function(){
     	saveGame();
     	return false;
     });
@@ -173,8 +179,8 @@ $(function() {
     	}else{
     		$('#saveGame').show();
     	}
-    })
-    $('#signIn').click(function() {
+    });
+       $('#signIn').click(function() {
         if (checkForm($(this).closest('form'))) {
             var body = {}
             body.uname = $('#userName').val();
@@ -215,7 +221,31 @@ $(function() {
             })
 
         }
+
         return false;
+    })
+    $('#gameContainer').click(function(e) {
+        if (click) {
+
+            var x = ~~(e.offsetX / zoom - backgroundOffset.x);
+            var y = ~~(e.offsetY / zoom - backgroundOffset.y);
+            var entity;
+            if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
+                entity = new Entity({
+                    'x': x,
+                    'y': y
+                }, "img/characters/giant.png", 75);
+            } else {
+                entity = new Entity({
+                    'x': x,
+                    'y': y
+                }, "img/characters/soldier.png", 25);
+            }
+            entities[entity.id] = entity;
+            travelSouth(entity);
+
+        } else click = false;
+
     })
     $('#levelSelect').click(function(){
     	$('#prompt').show();
@@ -248,7 +278,13 @@ $(function() {
 
 
     })
-    $('#cancelLevel').hide();
+      $('#signUp').click(function() {
+        $('#signInForm').hide();
+        $('#signUpForm').show();
+        return false;
+
+    })
+
     $('#cancelLevel').click(function(){
     	$('#prompt').hide();
     	$('#levelButtons').hide();
@@ -256,14 +292,7 @@ $(function() {
 
     	return false;
     })
-    $('#signUp').click(function() {
-        $('#signInForm').hide();
-        $('#signUpForm').show();
-        return false;
-
-    })
-
-    $('#signUpSubmit').click(function() {
+     $('#signUpSubmit').click(function() {
         if (doubleCheck($(this).closest('form'))) {
             var body = {}
             body.uname = $(newUserName).val();
@@ -277,16 +306,19 @@ $(function() {
                 data: JSON.stringify(body),
                 success: function(data, textStatus, request) {
                     //  data = JSON.parse(data);
-                    //var headers = request.getAllResponseHeaders();
+                    var auth = request.getResponseHeader('Authorization');
                     //console.log(headers);
                     //Cookies.set('token', headers.authorization);
                     console.log('data: ');
                     console.log(data);
+                    console.log('auth:')
+                    console.log(auth)
                     //console.log('token: ')
                     //console.log(Cookies.get('token'));
                     Cookies.set('userName', data.uname);
                     Cookies.set('level', data.level);
                     Cookies.set('loggedIn', true);
+                    Cookies.set('token', auth);
 
                     //  $('form').hide();
 
@@ -323,6 +355,40 @@ $(function() {
         $('#levelButtons').show();
         $('#prompt').text('Choose a level');
     })
+
+} //setUpEverything
+
+
+
+
+
+
+$(function() {
+	setUpEverything();
+	$('#saveAlertBad').hide();
+	$('#saveAlertGood').hide();
+    $('#levelButtons').hide();
+    $('#signedInNav').hide();
+    Cookies.get('loggedIn') === 'true' ? $('#signInNav').hide() : $('#signInNav').show();
+    $('#menu-toggle').hide();
+    $('#cancel').hide();
+
+
+    if (Cookies.get('loggedIn') === "true") {
+        startGame(levels[Cookies.get('level')]);
+        $('#signInNav').hide();
+        $('#signedInNav').show();
+        $('#signedInNav div').text('Signed in as ' + Cookies.get('userName'));
+
+    }
+   
+
+ 
+    $('#cancelLevel').hide();
+
+  
+
+   
 
     // ************End Login
 
@@ -627,15 +693,6 @@ function zoomOut() {
     clearBackground = true;
 }
 
-$("#zoomIn").click(function() {
-    zoomIn();
-    return false;
-});
-
-$("#zoomOut").click(function() {
-    zoomOut();
-    return false;
-});
 
 //IMPORTANT: if you want to convert a event.clientX or Y to work with isBlocked, do this:
 //** This is a little off when zoomed in, look into the math eventually if needs be, probably won't need to
@@ -667,29 +724,7 @@ function startLevel() {
     var ctxB = $("#background")[0].getContext("2d");
     var ctxF = $("#foreground")[0].getContext("2d");
 
-    $('#gameContainer').click(function(e) {
-        if (click) {
 
-            var x = ~~(e.offsetX / zoom - backgroundOffset.x);
-            var y = ~~(e.offsetY / zoom - backgroundOffset.y);
-            var entity;
-            if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
-                entity = new Entity({
-                    'x': x,
-                    'y': y
-                }, "img/characters/giant.png", 75);
-            } else {
-                entity = new Entity({
-                    'x': x,
-                    'y': y
-                }, "img/characters/soldier.png", 25);
-            }
-            entities[entity.id] = entity;
-            travelSouth(entity);
-
-        } else click = false;
-
-    })
 
     var i = 0;
     ctxB.imageSmoothingEnabled = false; //supposedly this should optimize graphics
@@ -700,38 +735,41 @@ function startLevel() {
     var entityTrack = 0;
     var entityOnBackground = false;
     var clearedF = false;
+    if(!intervalSetMap){
+    	intervalSetMap = true;
+    	setInterval(function() {
+	    	
+	        entityTrack++;
+	        // limitBackgroundOffset();
+	        if (fullOnPanning || zoomHappened) {
+	            if (fullOnPanning) {
+	                pause = true;
+	                if (!clearedF) {
+	                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
+	                    clearedF = true;
+	                }
+	                scene.load(level, ctxB, zoom)
+	                drawEntities(entities, ctxB, true, true);
+	            } else if (zoomHappened) {
+	                scene.load(level, ctxB, zoom);
+	                drawEntities(entities, ctxF, true);
+	                zoomHappened = false;
+	            }
 
-    setInterval(function() {
-        entityTrack++;
-        // limitBackgroundOffset();
-        if (fullOnPanning || zoomHappened) {
-            if (fullOnPanning) {
-                pause = true;
-                if (!clearedF) {
-                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
-                    clearedF = true;
-                }
-                scene.load(level, ctxB, zoom)
-                drawEntities(entities, ctxB, true, true);
-            } else if (zoomHappened) {
-                scene.load(level, ctxB, zoom);
-                drawEntities(entities, ctxF, true);
-                zoomHappened = false;
-            }
+	            // backgroundChange = false;
+	        } else if (entityTrack % entitySpeed === 0) { //simple way to animate entities, should be a better way (else if, entities are frozen when pan)
+	            drawEntities(entities, ctxF);
+	            /*drawEntities(entities.slice(quarter/ 4 * entities.length, (quarter + 1)/4 * entities.length - 1), ctxF);
+	            quarter++;  //Ugg this would work if enties was an array, need to convert to array then back to object or reconfigure project var myarray = Array.prototype.slice.call(myobject, 1) 
+	            quarter %= 4;*/
+	        } else {
 
-            // backgroundChange = false;
-        } else if (entityTrack % entitySpeed === 0) { //simple way to animate entities, should be a better way (else if, entities are frozen when pan)
-            drawEntities(entities, ctxF);
-            /*drawEntities(entities.slice(quarter/ 4 * entities.length, (quarter + 1)/4 * entities.length - 1), ctxF);
-            quarter++;  //Ugg this would work if enties was an array, need to convert to array then back to object or reconfigure project var myarray = Array.prototype.slice.call(myobject, 1) 
-            quarter %= 4;*/
-        } else {
+	            clearedF = false;
+	            pause = false
+	        }
 
-            clearedF = false;
-            pause = false
-        }
-
-    }, 1000 / fps);
+	    }, 1000 / fps);
+	}
 }
 
 /*function drawEntityOnBackground(ctxF, ctxB, topBackgroundctx){
@@ -832,29 +870,32 @@ entities[giant4.id] = giant4;*/
 function travelSouth(entity) {
 
     entity.heading.y = entity.y + 1000;
-    setInterval(function() {
-        if (!pause) {
-            if (shouldGoThere(entity.x, entity.y + 5, entity)) {
-                addAlreadyBeen(entity);
-                entity.y += 5;
-                entity.directionPointing = 'S';
+    if(!entity.intervalSet){
+    	entity.intervalSet = true;
+	    setInterval(function() {
+	        if (!pause) {
+	            if (shouldGoThere(entity.x, entity.y + 5, entity)) {
+	                addAlreadyBeen(entity);
+	                entity.y += 5;
+	                entity.directionPointing = 'S';
 
-            } else if (shouldGoThere(entity.x + 5, entity.y, entity)) {
-                addAlreadyBeen(entity);
-                entity.x += 5;
-                entity.directionPointing = 'E';
-            } else if (shouldGoThere(entity.x, entity.y - 5, entity)) {
-                addAlreadyBeen(entity);
-                entity.y -= 5;
-                entity.directionPointing = 'N';
-            } else if (shouldGoThere(entity.x - 5, entity.y, entity)) {
-                addAlreadyBeen(entity);
-                entity.x -= 5;
-                entity.directionPointing = 'W';
-            }
+	            } else if (shouldGoThere(entity.x + 5, entity.y, entity)) {
+	                addAlreadyBeen(entity);
+	                entity.x += 5;
+	                entity.directionPointing = 'E';
+	            } else if (shouldGoThere(entity.x, entity.y - 5, entity)) {
+	                addAlreadyBeen(entity);
+	                entity.y -= 5;
+	                entity.directionPointing = 'N';
+	            } else if (shouldGoThere(entity.x - 5, entity.y, entity)) {
+	                addAlreadyBeen(entity);
+	                entity.x -= 5;
+	                entity.directionPointing = 'W';
+	            }
 
-        }
-    }, 250)
+	        }
+	    }, 250)
+	}
 }
 
 function addAlreadyBeen(entity) {
@@ -892,16 +933,7 @@ function signInNav() {
     $('#cancel').show();
 }
 
-$('#signOut').click(function() {
-	$('#saveGame').hide();
-    logOut();
-    return false;
-});
 
-$('#signInNav').click(function() {
-    signInNav();
-    return false;
-})
 
 function saveGame() {
 	if(Cookies.loggedIn === 'false'){
@@ -998,6 +1030,7 @@ function loadGame(state){
 			    entities[entity].blank = new Image();
 			    entities[entity].blank.src = 'img/characters/blank.png'
 			    entities[entity].image.src = entities[entity].png;
+			    entities[entity].intervalSet = false;
 			    travelSouth(entities[entity]); //won't need this
 			}
 			firstLoad = true;

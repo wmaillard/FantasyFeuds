@@ -5,6 +5,7 @@
 --------------------------------------------------------------------------------------------------------------------------------
 ##U.I.
 - [ ] Things to get rid of once in production: travel south, travel south by load (made need to add kims stuff), the already been array
+- [ ] Add Kim's stuff to the save state and load it.  Including base health.
 
 - [x] *BUG -> Either drawing entites or placing entities is not relative to offest * zoom -- issue may be partially because the game is drawn on the right side when zoomed out.  **Offset of entity needs to be multiplied by zoom, offset is there , just not high enough.
 - [x] Went away on its own? ~~Critical BUG -> Logging in from the Map and hitting cancel causes map to freeze.  Probably something to do with 'pause' not being set correctly~~
@@ -19,6 +20,7 @@
 - [x] more entities
 - [x] save state (just save the entities), easy peasy lolz
 - [x] draw another map :)
+- [x] Add healthbars for bases
 
 ##A.I.
 - [ ] Click to select an entity and then click somewhere else for them to go there (also, drag to select multiple entities would be neat).
