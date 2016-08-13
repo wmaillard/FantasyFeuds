@@ -1089,3 +1089,79 @@ function kill(){ //Incase the program is out of control
 	entities = [];
 }
 
+   function displayLevels(title){
+        $('#prompt').show();
+        $('#levelButtons').show();
+        $('#signInForm').hide();
+        $('#cancel').hide();
+        $('#prompt').text(title);
+        $('#skip').hide();
+
+        $('#theNorth').prop('onclick',null).off('click');
+        $('#theNeck').prop('onclick',null).off('click');
+        $('#dorne').prop('onclick',null).off('click');
+
+        $('#theNorth').click(function(){
+            startGame('theNorth', true);
+        })
+        $('#theNeck').click(function(){
+            startGame('theNeck', true);
+        })
+        $('#dorne').click(function(){
+            startGame('dorne', true);
+        })
+        $('#signInBox').show();
+        $('#cancelLevel').show();
+
+    }
+
+function gameOver() { //need to work on this
+    if (baseNHealth <= 0){
+        //console.log("You Win!");
+        if(levelsWon.length < 3){
+            displayLevels('Congratulations! You Beat ' + levelTitles[level] + '.  Select your next level');
+        }else{
+            displayLevels('Congratulations! You Have Conquered the Seven Kingdoms! Care To Replay a Level?');
+        }
+        $('#cancelLevel').hide();
+        if(Cookies.get('loggedIn') === 'true'){
+            for(var lev in levels){
+                $('#' + levels[lev]).hide()
+            }
+
+            var levelNumber = $.inArray(level, levels);
+            //console.log(levelNumber);
+            levelNumber++;
+            levelNumber %= 3;
+            var nextLevel = levels[levelNumber]
+
+            if($.inArray(nextLevel, levelsWon) === -1){
+                levelsWon.push(nextLevel);
+            }
+
+            for(var lev in levelsWon){
+                $('#' + levelsWon[lev]).show()
+            }
+        }
+        // figure out how to end game
+    }
+    else if (baseSHealth <= 0){
+        //console.log("You Lose!");
+        displayLevels('Sorry You Failed While Trying to Conquer ' + levelTitles[level] + '.  Select your next level');
+        $('#cancelLevel').hide();
+       if(Cookies.get('loggedIn') === 'true'){
+            for(var lev in levels){
+                $('#' + levels[lev]).hide()
+            }
+
+            for(var lev in levelsWon){
+                $('#' + levelsWon[lev]).show()
+            }
+        }
+
+    }
+    else{
+        return false;
+    }
+
+}
