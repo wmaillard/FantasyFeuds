@@ -21,7 +21,7 @@ var clearBackground = false;
 var blockingTerrain = [];
 
 var firstLoad = true;
-var entities = {};
+var entities = []; //changed from {} to allow push
 var entitySpeed = fps * 2 / 5; // Walking speed of entities
 var directions = {
     'S': 0,
@@ -36,15 +36,32 @@ var size = 32; //Tile size is 32 x 32
 
 var pause = false;
 var click = false;
-var levels = ['theNeck', 'theNorth'];
+var levels = ['theNeck', 'theNorth', 'dorne'];
+var levelTitles = {
+    theNeck: 'The Neck',
+    theNorth: 'The North',
+    dorne: 'Dorne'
+}
+var levelsWon = ['theNeck'];
 
 var quarter = 0;
 
 var player1 = {};
 var player2 = {};
 
-var baseSHealth = 750;
-var baseNHealth = 250;
+var baseSHealth = 1000;
+var baseNHealth = 1000;
+var baseN = [];
+var baseS = [];
+var smallNX = 0;
+var bigNX = 0;
+var smallNY = 0;
+var bigNY = 0;
+
+var smallSX = 0;
+var bigSX = 0;
+var smallSY = 0;
+var bigSY = 0;
 var intervalSetMap = false;
 var intervalSetCharacters = false;
 
@@ -53,14 +70,16 @@ function metaStartGame(overRide){
 		loadGame();
 	}
 	else{
-		entities = {};
+		entities = [];
+        baseSHealth = 1000;
+        baseNHealth = 1000;
 		firstLoad = true;
 		startLevel();
 
 	} 
 }
 
-function drawEntities(entities, ctx, lock, clear) {
+function drawEntities(entities, ctx, lock, clear) { //changed heroes position
 
     var scratchCanvas = ctx.canvas.cloneNode();
     scratchCanvas = scratchCanvas.getContext("2d");
@@ -86,6 +105,7 @@ function drawEntities(entities, ctx, lock, clear) {
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
             scratchCanvas.drawImage(entities[entity].blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         } else {
+        	
           if(entities[entity].current === true){  
           	//void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
 	          scratchCanvas.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
@@ -95,38 +115,51 @@ function drawEntities(entities, ctx, lock, clear) {
 	          scratchCanvas.stroke();
 	          scratchCanvas.restore();
       }
-      		scratchCanvas.fillStyle = "green";
+
+      		            
+    	    if(entities[entity].isHero === true){
+	    	 scratchCanvas.fillStyle = "green";
+	    }else{
+	    	scratchCanvas.fillStyle = "yellow";
+	    }
+
       		scratchCanvas.fillRect(entities[entity].x, entities[entity].y - size/ 4, size, size / 13);
 
 
       		if(level === 'theNorth'){
-      			scratchCanvas.fillRect(460, 100, size*5, 2*size / 13);
+      			scratchCanvas.fillStyle = "green";
       			scratchCanvas.fillRect(675, 2150, size*5, 2*size / 13);
+      			scratchCanvas.fillStyle = "yellow";
+      			scratchCanvas.fillRect(460, 100, size*5, 2*size / 13);
       		}else if (level === 'theNeck'){
-      			scratchCanvas.fillRect(600, 90, size*5, 2*size / 13);
+      			scratchCanvas.fillStyle = "green";
       			scratchCanvas.fillRect(200, 2150, size*5, 2*size / 13);
+      			scratchCanvas.fillStyle = "yellow";
+      			scratchCanvas.fillRect(600, 90, size*5, 2*size / 13);
       		}else if (level === 'dorne'){
-      			scratchCanvas.fillRect(500, 90, size*5, 2*size / 13);
+      			scratchCanvas.fillStyle = "green";
       			scratchCanvas.fillRect(650, 2150, size*5, 2*size / 13);
+      			scratchCanvas.fillStyle = "yellow";
+      			scratchCanvas.fillRect(500, 90, size*5, 2*size / 13);
       		}
-            
+	   scratchCanvas.fillStyle = "red";
 
-            scratchCanvas.fillStyle = "red";
-            var health = entities[entity].health;
-
+            var health = 100 - entities[entity].health; //Hacky fix for healthbar issue
+	    var bnh = 1000 - baseNHealth;
+	    var bsh = 1000 - baseSHealth;
             if(level === 'theNorth'){
-            	scratchCanvas.fillRect(460 + (1 - baseNHealth/ 1000) * size * 5, 100, baseNHealth / 1000 * size*5, 2*size / 13);
-            	scratchCanvas.fillRect(675+ (1 - baseSHealth/ 1000) * size * 5, 2150, baseSHealth / 1000 *size*5, 2*size / 13);
+            	scratchCanvas.fillRect(460 + (1 - bnh/ 1000) * size * 5, 100, bnh / 1000 * size*5, 2*size / 13);
+            	scratchCanvas.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
             }else if(level === 'theNeck'){
-            	scratchCanvas.fillRect(600 + (1 - baseNHealth/ 1000) * size * 5, 90, baseNHealth / 1000 * size*5, 2*size / 13);
-            	scratchCanvas.fillRect(200+ (1 - baseSHealth/ 1000) * size * 5, 2150, baseSHealth / 1000 *size*5, 2*size / 13);
+            	scratchCanvas.fillRect(600 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
+            	scratchCanvas.fillRect(200+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
             }else if(level === 'dorne'){
-            	scratchCanvas.fillRect(500 + (1 - baseNHealth/ 1000) * size * 5, 90, baseNHealth / 1000 * size*5, 2*size / 13);
-            	scratchCanvas.fillRect(675+ (1 - baseSHealth/ 1000) * size * 5, 2150, baseSHealth / 1000 *size*5, 2*size / 13);
+            	scratchCanvas.fillRect(500 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
+            	scratchCanvas.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
             }
         	
 
-      		scratchCanvas.fillRect(entities[entity].x + (1 - health / 100) * size, entities[entity].y - size/ 4, (health / 100) * size, size / 13);
+      	    scratchCanvas.fillRect(entities[entity].x + (1 - health / 100) * size, entities[entity].y - size/ 4, (health / 100) * size, size / 13);
             scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         }
 
@@ -137,8 +170,10 @@ function drawEntities(entities, ctx, lock, clear) {
         ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
     }
+    
 
 }
+
 function setUpEverything(){
 	$('#signOut').click(function() {
 		$('#saveGame').hide();
@@ -162,6 +197,7 @@ function setUpEverything(){
 	});
 
     $('#menu-close').click(function(){
+    	$('#menu-toggle').show()
     	$('#saveAlertBad').hide();
     	$('#saveAlertGood').hide();
     })
@@ -174,6 +210,7 @@ function setUpEverything(){
     	return false;
     });
     $('#menu-toggle').click(function(){
+    	$('#menu-toggle').hide();
     	if(Cookies.get('loggedIn') !== 'true'){
     		$('#saveGame').hide();
     	}else{
@@ -193,10 +230,10 @@ function setUpEverything(){
                 data: JSON.stringify(body),
                 success: function(data, textStatus, res) {
                     //data = JSON.parse(data);
-                    console.log('data: ');
-                    console.log(data);
+                    //console.log('data: ');
+                    //console.log(data);
                     var auth = res.getResponseHeader('Authorization');
-                    console.log(auth);
+                    //console.log(auth);
                     Cookies.set('token', auth);
 
                     Cookies.set('userName', data.uname);
@@ -212,10 +249,10 @@ function setUpEverything(){
                 },
                 error: function(data, textStatus, res) {
                 	$('#warningBelow').append('<div id="problem" class="col-md-12">Sorry, incorrect user info </div>')
-                    console.log("ERROR: ");
-                    console.log(data);
-                    console.log(textStatus);
-                    console.log(res);
+                    //console.log("ERROR: ");
+                    //console.log(data);
+                    //console.log(textStatus);
+                    //console.log(res);
                 }
 
             })
@@ -224,7 +261,11 @@ function setUpEverything(){
 
         return false;
     })
-    $('#gameContainer').click(function(e) {
+
+
+
+    
+ $('#gameContainer').click(function(e) {
         if (click) {
 
             var x = ~~(e.offsetX / zoom - backgroundOffset.x);
@@ -247,33 +288,9 @@ function setUpEverything(){
         } else click = false;
 
     })
+
     $('#levelSelect').click(function(){
-    	$('#prompt').show();
-    	$('#levelButtons').show();
-    	$('#signInForm').hide();
-    	$('#cancel').hide();
-    	$('#prompt').text('Choose a Level');
-    	$('#skip').hide();
-
-    	$('#theNorth').prop('onclick',null).off('click');
-    	$('#theNeck').prop('onclick',null).off('click');
-    	$('#dorne').prop('onclick',null).off('click');
-
-    	$('#theNorth').click(function(){
-    		startGame('theNorth', true);
-    	})
-    	$('#theNeck').click(function(){
-    		startGame('theNeck', true);
-    	})
-    	$('#dorne').click(function(){
-    		startGame('dorne', true);
-    	})
-
-
-
-
-    	$('#signInBox').show();
-    	$('#cancelLevel').show();
+        displayLevels("Choose a Level")
     	return false;
 
 
@@ -307,14 +324,14 @@ function setUpEverything(){
                 success: function(data, textStatus, request) {
                     //  data = JSON.parse(data);
                     var auth = request.getResponseHeader('Authorization');
-                    //console.log(headers);
+                    ////console.log(headers);
                     //Cookies.set('token', headers.authorization);
-                    console.log('data: ');
-                    console.log(data);
-                    console.log('auth:')
-                    console.log(auth)
-                    //console.log('token: ')
-                    //console.log(Cookies.get('token'));
+                    //console.log('data: ');
+                    //console.log(data);
+                    //console.log('auth:')
+                    //console.log(auth)
+                    ////console.log('token: ')
+                    ////console.log(Cookies.get('token'));
                     Cookies.set('userName', data.uname);
                     Cookies.set('level', data.level);
                     Cookies.set('loggedIn', true);
@@ -326,16 +343,18 @@ function setUpEverything(){
                     $('#signedInNav div').text('Signed in as ' + data.uname);
                     $('#signInForm').show();
                     $('#signUpForm').hide();
+                    $('#saveGame').show();
+                    $('#signInNav').hide();
 
-                    startGame(levels[data.level], true);
+                    startGame('theNeck', true);
 
                 },
                 error: function(data, textStatus, request) {
-                    console.log('testStatus: ' + textStatus);
-                    console.log('request:');
-                    console.log(request);
-                    console.log("ERROR: ");
-                    console.log(data);
+                    //console.log('testStatus: ' + textStatus);
+                    //console.log('request:');
+                    //console.log(request);
+                    //console.log("ERROR: ");
+                    //console.log(data);
                     $('#inputWarningBelow').append('<div id="problemSignUp" class="col-md-12">Sorry, that login is taken</div>')
 
                 }
@@ -343,7 +362,7 @@ function setUpEverything(){
             })
 
         } else {
-            console.log('form problem');
+            //console.log('form problem');
         }
 
         return false;
@@ -449,6 +468,7 @@ function startGame(userLevel, overRide) {
 	level = userLevel;
 
     $("#signInBox").hide();
+    $("#initialDescription").hide();
 
     $("#background").fadeTo(100, 1, function() {
         $("#foreground").fadeTo(1, 1, function() {
@@ -469,20 +489,21 @@ var scene = {
     renderLayer: function(layer) {
 
         if (layer.type !== 'tilelayer' || !layer.opacity) {
-            console.log("Error Loading: Not a visible tile layer");
+            //console.log("Error Loading: Not a visible tile layer");
         }
         var scratchCanvas = scene.context.canvas.cloneNode();
         var size = scene.data.tilewidth;
         scratchCanvas = scratchCanvas.getContext("2d");
-        //console.log(scratchCanvas.canvas);
+        ////console.log(scratchCanvas.canvas);
         scratchCanvas.canvas.height = layer.height * size;
         scratchCanvas.canvas.width = layer.width * size;
-        //console.log(scratchCanvas.canvas.height);
-        //   console.log(scratchCanvas.canvas);
+        ////console.log(scratchCanvas.canvas.height);
+        //   //console.log(scratchCanvas.canvas);
 
         if (layer.name === 'BaseS' && firstLoad) {
             levelWidth = layer.width;
             levelHeight = layer.height;
+            backgroundOffset.y = -levelHeight*size + $(window).height();
             if (levelWidth * size < window.innerWidth) {
                 backgroundOffset.x = window.innerWidth - levelWidth * size
             }; //fixes window too wide bug
@@ -528,9 +549,9 @@ var scene = {
                 if (layer.name !== 'Bottom' && layer.name !== 'Bridges' && firstLoad) {
                     if (layer.name === 'Top') {
                         blockingTerrain[(i % layer.width)][~~(i / layer.width)] = 'wall';
-                    } else if (layer.name === 'BaseS') {
+                    } else if (false && layer.name === 'BaseS') {
                         blockingTerrain[(i % layer.width)][~~(i / layer.width)] = 'BaseS';
-                    } else if (layer.name === 'BaseN') {
+                    } else if (false  && layer.name === 'BaseN') {
                         blockingTerrain[(i % layer.width)][~~(i / layer.width)] = 'BaseN';
                     } else {
                         if (blockingTerrain[(i % layer.width)][~~(i / layer.width)] === false) {
@@ -557,7 +578,7 @@ var scene = {
                 (layer.width + backgroundOffset.x) / scene.zoom < $('#background').width() ? backgroundOffset.x = $('#background').width() * scene.zoom - layer.width : backgroundOffset.x;
                 (layer.height + backgroundOffset.y) / scene.zoom < $('#background').height() ? backgroundOffset.y = $('#background').height() * scene.zoom - layer.height : backgroundOffset.y;
                 //var i = $("<img />", {src: src})[0];
-                // console.log(layer);
+                // //console.log(layer);
                 scene.context.drawImage(layer, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() * scene.zoom, $('#background').height() * scene.zoom, 0, 0, $('#background').width(), $('#background').height()); //draw image from scratch canvas for better performance
             });
         }
@@ -676,7 +697,7 @@ function pressMap(e, mobile) {
     }
     currentCoords.x = e.clientX;
     currentCoords.y = e.clientY;
-    //console.log(isBlocked(~~((currentCoords.x - backgroundOffset.x) / zoom),
+    ////console.log(isBlocked(~~((currentCoords.x - backgroundOffset.x) / zoom),
     //~~((currentCoords.y - backgroundOffset.y) / zoom)));
     panning = true;
 }
@@ -708,13 +729,32 @@ function isBlocked(x, y) {
 //End loading tiled maps
 
 function startLevel() {
+
+
+    if(Cookies.get('loggedIn') === 'true'){  //Only let the user see so many level buttons
+        for(var lev in levels){
+            $('#' + levels[lev]).hide()
+        }
+
+        for(var lev in levelsWon){
+            $('#' + levelsWon[lev]).show()
+        }
+    }
+
+    entity = new Entity({
+                    'x': 0,
+                    'y': 0
+    }, "img/characters/blank.png", 75);
+    entities.push(entity);
+
+
 	$('#problem').remove();
 	$('#problemSignUp').remove();
     $('#menu-toggle').show();
     if (Cookies.get('loggedIn') !== 'true') {
         $('#signInNav').show();
     }
-
+ 
     var mapHeight, mapWidth, canvasHeight, canvasWidth, mapYOffset, mapXOffset;
 
     $("#background").attr("height", $("#gameContainer").height());
@@ -723,6 +763,7 @@ function startLevel() {
     $("#foreground").attr("width", $("#gameContainer").width());
     var ctxB = $("#background")[0].getContext("2d");
     var ctxF = $("#foreground")[0].getContext("2d");
+
 
 
 
@@ -772,23 +813,7 @@ function startLevel() {
 	}
 }
 
-/*function drawEntityOnBackground(ctxF, ctxB, topBackgroundctx){
-  console.log('topBW: ' + topBackgroundctx.width);
-  var scratch = topBackgroundctx.cloneNode();
-  scratch = scratch.getContext("2d");
-  console.log('scratchW: ' + scratch.canvas.width);
-  
-  scratch.canvas.width = topBackgroundctx.width;
-  scratch.canvas.height = topBackgroundctx.height;
-  
-  scratch.drawImage(topBackgroundctx, 0, 0);
 
-  drawEntities(entities, scratch);
-  scene.layers[scene.layers.length - 1] = scratch.canvas;
-  
-  ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
-  return topBackgroundctx;
-}*/
 function eraseEntityOnBackground(oldTop) {
     scene.layers[scene.layers.length - 1] = oldTop;
 }
@@ -827,7 +852,20 @@ function Entity(xyStart, png, health) {
     this.loaded = false;
     this.team = 'red'; // red or blue
     this.ai = false;
-
+    // kim add
+    this.current = false;
+    this.fighting = false;
+    this.pathStart = {};
+    this.pathStart.x = 0;
+    this.pathStart.y = 0;
+    this.dest = [];
+    this.dest.x = 0;
+    this.dest.y = 0;
+    this.dest.distance = 0;
+    this.pathDist = 0;
+    this.path = [];
+    this.dijkstraGrid = []; 
+    
     this.image.onload = function() {
         this.loaded = true;
     }
@@ -840,32 +878,7 @@ function Entity(xyStart, png, health) {
 
 };
 
-/*
-var giant = new Entity({'x': 150, 'y':0}, "img/characters/giant.png", 100);
-var giant2 = new Entity({'x': 0, 'y':0}, "img/characters/giant.png", 100);
-var giant3 = new Entity({'x': 0, 'y':100}, "img/characters/giant.png", 100);
-var giant4 = new Entity({'x': 100, 'y':800}, "img/characters/giant.png", 100);
 
-entities[giant.id] = giant;  //Why am I storing these in an object and not an array, probably should fix that, how else .push, maybe give
-        //each entity a unique id?
-entities[giant2.id] = giant2;
-entities[giant3.id] = giant3;
-entities[giant4.id] = giant4;*/
-
-/*function walkAbout(entity){
-  var spin = 0;
-  setInterval(function(){
-    spin++;
-    entity.x += 5;
-    entity.y += 5;
-    while(isBlocked(entity.x, entity.y) || isBlocked(entity.x + 32, entity.y) || isBlocked(entity.x, entity.y + 32) || isBlocked(entity.x + 32, entity.y + 32)){
-      entity.y+=5;
-    }
-    if(spin % 20 === 0){
-      entity.directionPointing === 'E' ? entity.directionPointing = 'S' : entity.directionPointing = 'E';
-    }
-  }, 1000)
-}*/
 
 function travelSouth(entity) {
 
@@ -897,6 +910,10 @@ function travelSouth(entity) {
 	    }, 250)
 	}
 }
+    
+    
+
+
 
 function addAlreadyBeen(entity) {
     if (!entity.alreadyBeen[entity.x]) {
@@ -906,7 +923,7 @@ function addAlreadyBeen(entity) {
 }
 
 function entityIsBlocked(x, y) {
-    if (isBlocked(x, y) === true || isBlocked(x + 16, y) === true || isBlocked(x, y + 16) === true || isBlocked(x + 16, y + 16) === true) {
+    if (isBlocked(x, y) === true || isBlocked(x + 30, y) === true || isBlocked(x, y + 30) === true || isBlocked(x + 30, y + 30) === true) {
         return true;
     }
     return false;
@@ -955,13 +972,18 @@ function saveGame() {
     player2.ai = false;
     player2.name = 'player2';
     var players = [player1, player2];
+    state.baseN = baseN;
+    state.baseS = baseS;
+    state['baseNHealth'] = baseNHealth;
+    state['baseSHealth'] = baseSHealth;
     state['players'] = players;
     state['level'] = level;
+    state['levelsWon'] = levelsWon;
     var toSend = {};
     toSend.Name = new Date($.now()).getTime();
-    console.log(toSend.Name);
+    //console.log(toSend.Name);
     toSend.Data = state;
-    console.log(toSend);
+    //console.log(toSend);
 
     //Change this when you want to pick saves
     toSend.Name = 'recent';
@@ -977,8 +999,8 @@ function saveGame() {
         data: JSON.stringify(state),
         success: function(data, textStatus, res) {
             //data = JSON.parse(data);
-            console.log('Reponse: ');
-            console.log(data);
+            //console.log('Reponse: ');
+            //console.log(data);
 
             Cookies.set('saveName', toSend.Name);
             $('#saveAlertGood').show();
@@ -987,8 +1009,8 @@ function saveGame() {
 
         },
         error: function(data, textStatus, res) {
-            console.log("ERROR: ");
-            console.log(data);
+            //console.log("ERROR: ");
+            //console.log(data);
             $('#saveAlertBad').show();
 
 
@@ -1017,13 +1039,17 @@ function loadGame(state){
         success: function(data, textStatus, res) {
             //data = JSON.parse(data);
             data = data.data;
-            console.log('Reponse: ');
-            console.log(data);
+            //console.log('Reponse: ');
+            //console.log(data);
 		    player1 = data.players[0];
 			player2 = data.players[1];
 			level = data.level;
-
+			baseNHealth = data.baseNHealth;
+			baseSHealth = data.baseSHealth;
+			baseS = data.baseS;
+			baseN = data.baseN;
 			entities = data.entities;
+            levelsWon = data.levelsWon;
 			for(var entity in entities){
 				entities[entity].image.loaded = false;
 				entities[entity].image = new Image();
@@ -1031,23 +1057,23 @@ function loadGame(state){
 			    entities[entity].blank.src = 'img/characters/blank.png'
 			    entities[entity].image.src = entities[entity].png;
 			    entities[entity].intervalSet = false;
-			    travelSouth(entities[entity]); //won't need this
+			    //travelSouth(entities[entity]); //won't need this
 			}
 			firstLoad = true;
 
 
 
 
-			startLevel();
+			startLevel(true);
 
 
         },
         error: function(data, textStatus, res) {
-            console.log("ERROR: ");
-            console.log("text:", textStatus);
-            console.log('res', res);
-            console.log('data:')
-            console.log(data);  //server doesn't provid anything useful, grrr
+            //console.log("ERROR: ");
+            //console.log("text:", textStatus);
+            //console.log('res', res);
+            //console.log('data:')
+            //console.log(data);  //server doesn't provid anything useful, grrr
             startGame(level, true);
 
            // alert('Error Loading Your Game! Sorry :(')
@@ -1060,3 +1086,4 @@ function loadGame(state){
 function kill(){ //Incase the program is out of control
 	entities = [];
 }
+

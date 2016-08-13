@@ -74,13 +74,15 @@
         
         <div id = 'signInBox' class="text-vertical-center">
             <h1>Game of Thrones RTS</h1>
-           
+            <div  id = 'initialDescription' class = "col-xs-8 col-xs-offset-2">
+            <p>Winter is coming. Get ready to take on your enemies from Game of Thrones! This game allows you to go head-to-head with fearsome enemies as you defend your base against their terror. Create an account so you can login and save your games! If it gets to be too much, just logout and when you’re ready again, pick up where you left off. Can you defeat your enemies in all three levels?</p>
+           </div>
             <br>
-            <div class = "col-xs-4 col-xs-offset-4">
+            <div class = "col-xs-8 col-xs-offset-2">
             <h2 id = 'prompt' class="form-signin-heading">Login</h2>
-            <div class = 'btn-toolbar' id = "levelButtons"> 
-                <a id = "theNorth" class="btn btn-primary" onclick="startGame('theNorth')">The North</a>
+            <div class = 'col-xs-8 col-xs-offset-2' id = "levelButtons"> 
                 <a id = "theNeck" class="btn btn-primary" onclick="startGame('theNeck')">The Neck</a>
+                <a id = "theNorth" class="btn btn-primary" onclick="startGame('theNorth')">The North</a>
                 <a id = "dorne" class="btn btn-primary" onclick="startGame('dorne')">Dorne</a>
                 <a id = "cancelLevel" class="btn btn-danger">Cancel</a>
             </div>
