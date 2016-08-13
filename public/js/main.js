@@ -927,7 +927,7 @@ function addAlreadyBeen(entity) {
 }
 
 function entityIsBlocked(x, y) {
-    if (isBlocked(x, y) === true || isBlocked(x + 30, y) === true || isBlocked(x, y + 30) === true || isBlocked(x + 30, y + 30) === true) {
+    if (isBlocked(x, y) === true || isBlocked(x + 18, y) === true || isBlocked(x, y + 18) === true || isBlocked(x + 18, y + 18) === true) {
         return true;
     }
     return false;
