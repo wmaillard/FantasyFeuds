@@ -270,20 +270,22 @@ function setUpEverything(){
 
             var x = ~~(e.offsetX / zoom - backgroundOffset.x);
             var y = ~~(e.offsetY / zoom - backgroundOffset.y);
-            var entity;
-            if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
-                entity = new Entity({
-                    'x': x,
-                    'y': y
-                }, "img/characters/giant.png", 75);
-            } else {
-                entity = new Entity({
-                    'x': x,
-                    'y': y
-                }, "img/characters/soldier.png", 25);
-            }
-            entities[entity.id] = entity;
-            travelSouth(entity);
+            if(!entityIsBlocked(x, y)){
+	            var entity;
+	            if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
+	                entity = new Entity({
+	                    'x': x,
+	                    'y': y
+	                }, "img/characters/giant.png", 75);
+	            } else {
+	                entity = new Entity({
+	                    'x': x,
+	                    'y': y
+	                }, "img/characters/soldier.png", 25);
+	            }
+	            entities[entity.id] = entity;
+	            travelSouth(entity);
+        }
 
         } else click = false;
 
