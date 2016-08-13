@@ -277,11 +277,13 @@ function setUpEverything(){
 	                    'x': x,
 	                    'y': y
 	                }, "img/characters/giant.png", 75);
+
 	            } else {
 	                entity = new Entity({
 	                    'x': x,
 	                    'y': y
 	                }, "img/characters/soldier.png", 25);
+	                entity.isHero = true;
 	            }
 	            entities[entity.id] = entity;
 	            travelSouth(entity);
