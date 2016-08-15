@@ -648,7 +648,7 @@ $("#gameContainer").on('mousedown', function(e) {
 }).on('mousemove', function(e) {
     mapMove(e);
 });
-$("#gameContainer").on('touchstart', function(e) {
+$("#foreground").on('touchstart', function(e) {
     pressMap(e, true)
     return false;
 }).on('touchend', function(e) {
