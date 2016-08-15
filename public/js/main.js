@@ -650,8 +650,10 @@ $("#gameContainer").on('mousedown', function(e) {
 });
 $("#gameContainer").on('touchstart', function(e) {
     pressMap(e, true)
+    return false;
 }).on('touchend', function(e) {
-    releasePressMap(e, true)
+    releasePressMap(e, true);
+    return false;
 }).on('touchmove', function(e) {
     mapMove(e, true);
     return false;
