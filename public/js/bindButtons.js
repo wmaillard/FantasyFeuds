@@ -115,6 +115,8 @@ var BindButtons = {
           }
   
           } else click = false;
+          
+          return false;
   
       })
   
