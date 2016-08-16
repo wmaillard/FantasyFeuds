@@ -1,4 +1,4 @@
-var bindButtons = { 
+var BindButtons = { 
  bindAll: function(){
   	$('#signOut').click(function() {
   		$('#saveGame').hide();
