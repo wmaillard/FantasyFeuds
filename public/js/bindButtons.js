@@ -206,3 +206,4 @@ var BindButtons = {
           $('#prompt').text('Choose a level');
       })
   }
+}
