@@ -4,6 +4,10 @@ canvas {
   top: 0;
   left: 0;
 }
+#info{
+	z-index: 2;
+	display: inline;
+}
 #foreground {
   z-index: 1;
 }

@@ -50,8 +50,11 @@ $(function() {
     $("#background").attr("width", $("#gameContainer").width());
     $("#foreground").attr("height", $("#gameContainer").height());
     $("#foreground").attr("width", $("#gameContainer").width());
+    $("#info").attr("height", $("#gameContainer").height());
+    $("#info").attr("width", $("#gameContainer").width());   
     ctxF = $("#foreground")[0].getContext("2d");
     ctxB = $("#background")[0].getContext("2d");
+    ctxI = $("#info")[0].getContext("2d");
 
 
 
@@ -127,7 +130,7 @@ function startLevel() {
     var entityTrack = 0;
     var entityOnBackground = false;
     var clearedF = false;
-    if(mapInterval){
+    if(!mapInterval){
 
 
     	mapInterval = setInterval(function() {
@@ -149,7 +152,8 @@ function startLevel() {
 	            }
 
 	        } else if (entityTrack % entitySpeed === 0) { //simple way to animate entities, should be a better way (else if, entities are frozen when pan)
-	            drawEntities(entities, ctxF);
+	            console.log('Yo');
+                drawEntities(entities, ctxF);
 	            /*drawEntities(entities.slice(quarter/ 4 * entities.length, (quarter + 1)/4 * entities.length - 1), ctxF);
 	            quarter++;  //Ugg this would work if enties was an array, need to convert to array then back to object or reconfigure project var myarray = Array.prototype.slice.call(myobject, 1) 
 	            quarter %= 4;*/

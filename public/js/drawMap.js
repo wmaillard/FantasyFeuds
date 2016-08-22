@@ -9,8 +9,9 @@ var levelHeight;
 var size = 32; //Tile size is 32 x 32, get this from the map so we don't use magic numbers
 var fps = 30//This is just for panning
 var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
-var ctxB;  //Foreground and background context
+var ctxB;  //Foreground, background, and info context
 var ctxF;
+var ctxI;
 var useMin = true; //use minimized images
 var zoom = 1; //starting zoom of map
 var firstLoad = true;  //If true then all the images will be loaded up and cached
@@ -214,7 +215,7 @@ function drawEntities(entities, ctx, lock, clear) { //changed heroes position
             scratchCanvas.drawImage(entities[entity].blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         } else {
           
-          if(entities[entity].current === true){  
+          if(entities[entity].selected === true){  
             //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
             scratchCanvas.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
             scratchCanvas.beginPath();

@@ -23,7 +23,7 @@ function Entity(xyStart, png, health) {
     this.team = 'red'; // red or blue
     this.ai = false;
     // kim add
-    this.current = false;
+    this.selected = false;
     this.fighting = false;
     this.pathStart = {};
     this.pathStart.x = 0;
@@ -36,9 +36,12 @@ function Entity(xyStart, png, health) {
     this.path = [];
     this.dijkstraGrid = []; 
     
-    this.image.onload = function() {
+    entityLoaded = function() {
         this.loaded = true;
     }
+
+    this.image.onload = entityLoaded.bind(this);
+
     for (var i = 0; i < 1000; i++) {
         if (!entities[i]) {
             this.id = i;
