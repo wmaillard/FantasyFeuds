@@ -1,3 +1,18 @@
+var panning = false;  //Is the mouse held down?
+var fullOnPanning = false;  //Is the mouse held down and has it moved over 5px?
+var zoomHappened = false;
+var click = false;  //Any kind of click?
+
+var backgroundOffset = {
+        "x": 0,
+        "y": 0
+    } //Default offset view of map
+
+var currentCoords = {
+        'x': 0,
+        'y': 0
+    } //Mouse coordinates, these are for panning
+ 
 
  function mapMove(e, mobile) {
     if (mobile) {
@@ -14,7 +29,6 @@
         click = false;
         backgroundOffset.x += e.clientX - currentCoords.x;
         backgroundOffset.y += e.clientY - currentCoords.y;
-        // backgroundChange = true;
 
         currentCoords.x = e.clientX;
         currentCoords.y = e.clientY;

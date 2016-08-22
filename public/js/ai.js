@@ -14,7 +14,7 @@ function travelSouth(entity) {
     if(!entity.intervalSet){
       entity.intervalSet = true;
       setInterval(function() {
-          if (!pause) {
+
               if (shouldGoThere(entity.x, entity.y + 5, entity)) {
                   addAlreadyBeen(entity);
                   entity.y += 5;
@@ -34,7 +34,7 @@ function travelSouth(entity) {
                   entity.directionPointing = 'W';
               }
 
-          }
+          
       }, 250)
   }
 }

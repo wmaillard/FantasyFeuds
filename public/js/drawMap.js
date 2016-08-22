@@ -1,3 +1,22 @@
+
+
+var level;
+var clearBackground = false;  //Should we clear the map
+var blockingTerrain = [];  //Things that you can't walk over
+var entities = []; 
+var levelWidth;
+var levelHeight;
+var size = 32; //Tile size is 32 x 32, get this from the map so we don't use magic numbers
+var fps = 30//This is just for panning
+var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
+var ctxB;  //Foreground and background context
+var ctxF;
+var useMin = true; //use minimized images
+var zoom = 1; //starting zoom of map
+var firstLoad = true;  //If true then all the images will be loaded up and cached
+
+
+
 //Loading tiled maps***
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
 //Class to load the map
@@ -164,6 +183,13 @@ var scene = {
 //function to draw the entities
 function drawEntities(entities, ctx, lock, clear) { //changed heroes position
 
+      var directions = {
+        'S': 0,
+        'W': 1,
+        'E': 2,
+        'N': 3
+    }
+
     var scratchCanvas = document.createElement('canvas');
     scratchCanvas = scratchCanvas.getContext("2d");
     scratchCanvas.canvas.height = levelHeight * 32 * zoom;
@@ -289,14 +315,14 @@ function drawEntities(entities, ctx, lock, clear) { //changed heroes position
         var width = scratchCanvas.canvas.width;
         var height = scratchCanvas.canvas.height;
 
-        console.log('height')
+       /* console.log('height')
         console.log(height)
         console.log('bheight')
         console.log($('#background').height())
 
 
 
-         /* console.log('zoom:')
+         console.log('zoom:')
           console.log(zoom);
           console.log('ctx');
           console.log(ctx.canvas.width)*/
