@@ -2,7 +2,6 @@
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
 //Class to load the map
 var scene = {
-    zoom: 1,
     tileSets: [],
     context: "",
     layers: [],
@@ -165,11 +164,10 @@ var scene = {
 //function to draw the entities
 function drawEntities(entities, ctx, lock, clear) { //changed heroes position
 
-    var scratchCanvas = ctx.canvas.cloneNode();
+    var scratchCanvas = document.createElement('canvas');
     scratchCanvas = scratchCanvas.getContext("2d");
-    scratchCanvas.canvas.height = levelHeight * 32;
-    scratchCanvas.canvas.width = levelHeight * 32;
-    //scratchCanvas.clearRect(0, 0, scratchCanvas.canvas.width, scratchCanvas.canvas.height); //may not need
+    scratchCanvas.canvas.height = levelHeight * 32 * zoom;
+    scratchCanvas.canvas.width = levelHeight * 32 * zoom;
 
     for (var entity in entities) {
 
@@ -201,7 +199,7 @@ function drawEntities(entities, ctx, lock, clear) { //changed heroes position
       }
 
                       
-          if(entities[entity].isHero === true){
+      if(entities[entity].isHero === true){
          scratchCanvas.fillStyle = "green";
       }else{
         scratchCanvas.fillStyle = "yellow";
@@ -228,7 +226,7 @@ function drawEntities(entities, ctx, lock, clear) { //changed heroes position
           }
      scratchCanvas.fillStyle = "red"; //generalize this
 
-            var health = 100 - entities[entity].health; //Hacky fix for healthbar issue
+      var health = 100 - entities[entity].health; //Hacky fix for healthbar issue
       var bnh = 1000 - baseNHealth;
       var bsh = 1000 - baseSHealth;
             if(level === 'theNorth'){
@@ -244,13 +242,72 @@ function drawEntities(entities, ctx, lock, clear) { //changed heroes position
           
 
             scratchCanvas.fillRect(entities[entity].x + (1 - health / 100) * size, entities[entity].y - size/ 4, (health / 100) * size, size / 13);
-            scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
+
+/*            var can2 = document.createElement('canvas');
+            var w = entities[entity].size;
+            var h = entities[entity].size;
+            can2.width = w/2; //w = 32 * 6 http://jsfiddle.net/qwDDP/
+            can2.height = h/2;
+            var ctx2 = can2.getContext('2d');
+
+            ctx2.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, 0, 0, w/2, h/2);
+            ctx2.drawImage(can2, 0, 0, w/2, h/2, 0, 0, w/4, h/4);
+            ctx2.drawImage(can2, 0, 0, w/4, h/4, 0, 0, w/6, h/6);*/
+
+       /*   var can2 = document.createElement('canvas');  //Trying to make entities not blurry here
+          console.log(entities[entity].size)
+            var width = entities[entity].size;
+            var height = entities[entity].size;
+            can2.width = width;
+            can2.height = height;
+            var ctx2 = can2.getContext('2d');
+
+            ctx2.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, 0, 0, width, height);
+
+          while(width * 3/4 > 32){
+            ctx2.drawImage(ctx2.canvas, 0, 0, width, height, 0, 0, width *3/ 4, height*3/4)
+            width*=3/4;
+            height *=3/4;
+          }
+          width *=4/3;
+          height*=4/3;
+*/
+
+            scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
         }
 
         if (!clear) {
             ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
         }
+        /*console.log($('#background').width());
+        console.log($('#background').height())
+        console.log('scratch:');
+        console.log(scratchCanvas.canvas.height);
+        console.log(scratchCanvas.canvas.width);*/
 
+
+        var width = scratchCanvas.canvas.width;
+        var height = scratchCanvas.canvas.height;
+
+        console.log('height')
+        console.log(height)
+        console.log('bheight')
+        console.log($('#background').height())
+
+
+
+         /* console.log('zoom:')
+          console.log(zoom);
+          console.log('ctx');
+          console.log(ctx.canvas.width)*/
+
+
+
+
+
+
+
+          //Here you are upscaling everything in scratchCanvas so it probably looks shitty. Draw the scratch canvas at the correct zoom and then draw it on ctx dumbass, heh heh heh
         ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
     }

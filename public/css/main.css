@@ -14,7 +14,7 @@ canvas {
   z-index: 2;
 }
 
-#signUpForm {
+#signUpForm, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{
 	display: none;
 }
 #signInBox {
@@ -22,13 +22,7 @@ canvas {
 	z-index: 3;
 	background-color:rgba(255, 255, 255, 0.5);
 }
-#levelButtons{
-	display: none;
-}
-#cancel{
-	display: none;
-}
+
 #sidebar-wrapper{
 	opacity: .8;
 }
-

@@ -82,16 +82,6 @@ function metaStartGame(overRide){
 $(function() {
     BindButtons.bindAll();
 
-    
-	$('#saveAlertBad').hide();
-	$('#saveAlertGood').hide();
-    $('#levelButtons').hide();
-    $('#signedInNav').hide();
-    Cookies.get('loggedIn') === 'true' ? $('#signInNav').hide() : $('#signInNav').show();
-    $('#menu-toggle').hide();
-    $('#cancel').hide();
-
-
     if (Cookies.get('loggedIn') === "true") {
         startGame(levels[Cookies.get('level')]);
         $('#signInNav').hide();
@@ -99,14 +89,7 @@ $(function() {
         $('#signedInNav div').text('Signed in as ' + Cookies.get('userName'));
 
     }
-   
 
- 
-    $('#cancelLevel').hide();
-
-  
-
-   
 
     // ************End Login
 

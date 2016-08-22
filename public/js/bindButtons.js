@@ -121,9 +121,8 @@ var BindButtons = {
       })
   
       $('#levelSelect').click(function(){
-          displayLevels("Choose a Level")
+          displayLevels("Choose a Level");
       	return false;
-  
   
       })
         $('#signUp').click(function() {
@@ -204,6 +203,24 @@ var BindButtons = {
           $('#skip').hide();
           $('#levelButtons').show();
           $('#prompt').text('Choose a level');
-      })
+      });
+      
+      $("#gameContainer").on('mousedown', function(e) {
+		    pressMap(e)
+		}).on('mouseup', function(e) {
+		    releasePressMap(e)
+		}).on('mousemove', function(e) {
+		    mapMove(e);
+		});
+		$("#foreground").on('touchstart', function(e) {
+		    pressMap(e, true)
+		    return false;
+		}).on('touchend', function(e) {
+		    releasePressMap(e, true);
+		    return false;
+		}).on('touchmove', function(e) {
+		    mapMove(e, true);
+		    return false;
+		});
   }
 }
