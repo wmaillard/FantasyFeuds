@@ -55,6 +55,7 @@ var currentCoords = {
 
     else {
        click = true;  //This means it was a quick click
+       clickGameContainer(e);
 
     }
 
@@ -104,11 +105,9 @@ function kill(){ //Incase the program is out of control
 }
 
 function clickGameContainer(e){
-   if(e.originalEvent.touches){
-        e = e.originalEvent.touches[0];
-   }
+
  
-   if (click) {
+
         console.log('clicked');
         console.log(e);
       var x = ~~(e.offsetX / zoom - backgroundOffset.x);
@@ -140,7 +139,7 @@ function clickGameContainer(e){
     }
     click = false;
 
-  }
+  
           
 
   
