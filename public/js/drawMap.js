@@ -190,7 +190,7 @@ function drawEntities(entities, ctx, lock, clear) {
  var scratchCanvas = ctx.canvas.cloneNode();    
  scratchCanvas = scratchCanvas.getContext("2d");
     scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
-    scratchCanvas.canvas.width = levelHeight * 32 ;
+    scratchCanvas.canvas.width = levelWidth * 32 ;
 
     for (var entity in entities) {
 
