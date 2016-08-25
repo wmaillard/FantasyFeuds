@@ -117,11 +117,11 @@ function clickGameContainer(e){
       var y = ~~(e.clientY / zoom - backgroundOffset.y);
 
       var entityAtClick = entityIsThere(x, y);
-      if(false && entityAtClick){ //debugging *******************
+      if(entityAtClick){ //debugging *******************
         deselectAllEntities();
         entityAtClick.selected = true;
       }
-      else if(true || !entityIsBlocked(x, y)){ //debugging
+      else if(!entityIsBlocked(x, y)){ //debugging
         var entity;
         if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
             entity = new Entity({
