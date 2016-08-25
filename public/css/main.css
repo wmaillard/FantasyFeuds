@@ -15,7 +15,7 @@ canvas {
   z-index: 0;
 }
 #menu-toggle {
-  z-index: 2;
+  z-index: 3;
 }
 
 #signUpForm, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{

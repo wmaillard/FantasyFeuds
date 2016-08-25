@@ -136,7 +136,7 @@ function clickGameContainer(e){
 
   }
           
-return false;
+
   
    
 }
@@ -174,7 +174,8 @@ function selectMulti(x, y, originalX, originalY){
     ctxI.beginPath();
     ctxI.lineWidth="1";
     ctxI.strokeStyle="dark-grey";
-    ctxI.rect(originalX, originalY, x - originalX, y - originalY);
+    ctxI.globalAlpha=0.2
+    ctxI.fillRect(originalX, originalY, x - originalX, y - originalY);
     ctxI.stroke();
 
 
@@ -185,5 +186,6 @@ function selectEntities(x, y, oldX, oldY){
     y = ~~(y / zoom - backgroundOffset.y);
     oldX = ~~(oldX / zoom - backgroundOffset.x);
     oldY = ~~(oldY / zoom - backgroundOffset.y);
+    deselectAllEntities();
     entityIsThere(x, y, x + oldX, y + oldY)
 }
