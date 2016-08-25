@@ -247,7 +247,7 @@ function animateEntity(entity){
   }
 }
 
-function drawHightlight(entity, ctx){
+function drawHighlight(entity, ctx){
   ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
   ctx.beginPath();
   ctx.ellipse(entity.x + size / 2, entity.y + size * 4/5, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
