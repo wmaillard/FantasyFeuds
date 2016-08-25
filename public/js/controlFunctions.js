@@ -55,7 +55,7 @@ var currentCoords = {
 
     else {
        click = true;  //This means it was a quick click
-       clickGameContainer(e);
+
 
     }
 
@@ -71,6 +71,10 @@ function releasePressMap(e, mobile) {
         ctxI.clearRect(0, 0, $("#info").width(), $("#info").height())
         selectEntities(e.clientX, e.clientY, currentCoords.x, currentCoords.y);
         wasCtrl = false;
+    }
+    if(click){
+        clickGameContainer(e);
+        click = false;
     }
 
 }
