@@ -90,7 +90,7 @@ var BindButtons = {
   
   
       
-   $('#gameContainer').click(clickGameContainer)
+ //  $('#gameContainer').click(clickGameContainer)
 
 
   
