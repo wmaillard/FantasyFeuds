@@ -76,6 +76,7 @@ function releasePressMap(e, mobile) {
 
 function pressMap(e, mobile) {
     if (mobile) {
+        console.log(e);
         e = e.touches[0];
     }
     currentCoords.x = e.clientX;
