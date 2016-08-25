@@ -1,6 +1,6 @@
 
 
-var level;
+var level = 0;
 var clearBackground = false;  //Should we clear the map
 var blockingTerrain = [];  //Things that you can't walk over
 var entities = []; 
@@ -178,11 +178,7 @@ var scene = {
 }
 
 
-
-
-
-//function to draw the entities
-function drawEntities(entities, ctx, lock, clear) { //changed heroes position
+function drawEntities(entities, ctx, lock, clear) { 
 
       var directions = {
         'S': 0,
@@ -191,153 +187,119 @@ function drawEntities(entities, ctx, lock, clear) { //changed heroes position
         'N': 3
     }
 
-    var scratchCanvas = document.createElement('canvas');
-    scratchCanvas = scratchCanvas.getContext("2d");
-    scratchCanvas.canvas.height = levelHeight * 32 * zoom;
-    scratchCanvas.canvas.width = levelHeight * 32 * zoom;
+ var scratchCanvas = ctx.canvas.cloneNode();    
+ scratchCanvas = scratchCanvas.getContext("2d");
+    scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
+    scratchCanvas.canvas.width = levelHeight * 32 ;
 
     for (var entity in entities) {
 
+
+
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
-        if (entities[entity].walking == true) {
-            if (!lock) {
-                entities[entity].walkingState === 0 ? entities[entity].walkingState = 2 : entities[entity].walkingState = 0;
-            }
-        } else {
-            entities[entity].walking.state = 1;
-        }
+        animateEntity(entities[entity]);
+
 
         var x, y;
         x = entities[entity].x;
         y = entities[entity].y;
+
+
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
             scratchCanvas.drawImage(entities[entity].blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         } else {
           
           if(entities[entity].selected === true){  
-            //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
-            scratchCanvas.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
-            scratchCanvas.beginPath();
-            scratchCanvas.ellipse(entities[entity].x + size / 2, entities[entity].y + size * 4/5, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
-            scratchCanvas.strokeStyle='red';
-            scratchCanvas.stroke();
-            scratchCanvas.restore();
-      }
-
-                      
-      if(entities[entity].isHero === true){
-         scratchCanvas.fillStyle = "green";
-      }else{
-        scratchCanvas.fillStyle = "yellow";
-      }
-
-          scratchCanvas.fillRect(entities[entity].x, entities[entity].y - size/ 4, size, size / 13);
-
-
-          if(level === 'theNorth'){  //generalize this
-            scratchCanvas.fillStyle = "green";
-            scratchCanvas.fillRect(675, 2150, size*5, 2*size / 13);
-            scratchCanvas.fillStyle = "yellow";
-            scratchCanvas.fillRect(460, 100, size*5, 2*size / 13);
-          }else if (level === 'theNeck'){
-            scratchCanvas.fillStyle = "green";
-            scratchCanvas.fillRect(200, 2150, size*5, 2*size / 13);
-            scratchCanvas.fillStyle = "yellow";
-            scratchCanvas.fillRect(600, 90, size*5, 2*size / 13);
-          }else if (level === 'dorne'){
-            scratchCanvas.fillStyle = "green";
-            scratchCanvas.fillRect(650, 2150, size*5, 2*size / 13);
-            scratchCanvas.fillStyle = "yellow";
-            scratchCanvas.fillRect(500, 90, size*5, 2*size / 13);
+                //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+                drawHighlight(entities[entity], scratchCanvas);
           }
-     scratchCanvas.fillStyle = "red"; //generalize this
+        }
+        scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
-      var health = 100 - entities[entity].health; //Hacky fix for healthbar issue
-      var bnh = 1000 - baseNHealth;
-      var bsh = 1000 - baseSHealth;
-            if(level === 'theNorth'){
-              scratchCanvas.fillRect(460 + (1 - bnh/ 1000) * size * 5, 100, bnh / 1000 * size*5, 2*size / 13);
-              scratchCanvas.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-            }else if(level === 'theNeck'){
-              scratchCanvas.fillRect(600 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
-              scratchCanvas.fillRect(200+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-            }else if(level === 'dorne'){
-              scratchCanvas.fillRect(500 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
-              scratchCanvas.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-            }
-          
 
-            scratchCanvas.fillRect(entities[entity].x + (1 - health / 100) * size, entities[entity].y - size/ 4, (health / 100) * size, size / 13);
 
-/*            var can2 = document.createElement('canvas');
-            var w = entities[entity].size;
-            var h = entities[entity].size;
-            can2.width = w/2; //w = 32 * 6 http://jsfiddle.net/qwDDP/
-            can2.height = h/2;
-            var ctx2 = can2.getContext('2d');
-
-            ctx2.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, 0, 0, w/2, h/2);
-            ctx2.drawImage(can2, 0, 0, w/2, h/2, 0, 0, w/4, h/4);
-            ctx2.drawImage(can2, 0, 0, w/4, h/4, 0, 0, w/6, h/6);*/
-
-       /*   var can2 = document.createElement('canvas');  //Trying to make entities not blurry here
-          console.log(entities[entity].size)
-            var width = entities[entity].size;
-            var height = entities[entity].size;
-            can2.width = width;
-            can2.height = height;
-            var ctx2 = can2.getContext('2d');
-
-            ctx2.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, 0, 0, width, height);
-
-          while(width * 3/4 > 32){
-            ctx2.drawImage(ctx2.canvas, 0, 0, width, height, 0, 0, width *3/ 4, height*3/4)
-            width*=3/4;
-            height *=3/4;
+          if (!clear) {
+             ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
           }
-          width *=4/3;
-          height*=4/3;
-*/
-
-            scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
-        }
-
-        if (!clear) {
-            ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
-        }
-        /*console.log($('#background').width());
-        console.log($('#background').height())
-        console.log('scratch:');
-        console.log(scratchCanvas.canvas.height);
-        console.log(scratchCanvas.canvas.width);*/
 
 
-        var width = scratchCanvas.canvas.width;
-        var height = scratchCanvas.canvas.height;
-
-       /* console.log('height')
-        console.log(height)
-        console.log('bheight')
-        console.log($('#background').height())
+            var width = scratchCanvas.canvas.width;
+            var height = scratchCanvas.canvas.height;
 
 
+              //Here you are upscaling everything in scratchCanvas so it probably looks shitty. Draw the scratch canvas at the correct zoom and then draw it on ctx dumbass, heh heh heh
+            ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
-         console.log('zoom:')
-          console.log(zoom);
-          console.log('ctx');
-          console.log(ctx.canvas.width)*/
-
-
-
-
-
-
-
-          //Here you are upscaling everything in scratchCanvas so it probably looks shitty. Draw the scratch canvas at the correct zoom and then draw it on ctx dumbass, heh heh heh
-        ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
+            //ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
     }
     
 
 }
+
+function animateEntity(entity){
+    if (entity.walking == true){  
+          entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
+      }
+   else {
+      entity.walking.state = 1;  
+  }
+}
+
+function drawHightlight(entity, ctx){
+  ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
+  ctx.beginPath();
+  ctx.ellipse(entity.x + size / 2, entity.y + size * 4/5, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
+  ctx.strokeStyle='red';
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawHealthBar(entity, ctx){
+                      
+  if(entity.isHero === true){
+     ctx.fillStyle = "green";
+  }else{
+    ctx.fillStyle = "yellow";
+  }
+
+      ctx.fillRect(entity.x, entity.y - size/ 4, size, size / 13);
+
+
+      if(level === 'theNorth'){  //generalize this
+        ctx.fillStyle = "green";
+        ctx.fillRect(675, 2150, size*5, 2*size / 13);
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(460, 100, size*5, 2*size / 13);
+      }else if (level === 'theNeck'){
+        ctx.fillStyle = "green";
+        ctx.fillRect(200, 2150, size*5, 2*size / 13);
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(600, 90, size*5, 2*size / 13);
+      }else if (level === 'dorne'){
+        ctx.fillStyle = "green";
+        ctx.fillRect(650, 2150, size*5, 2*size / 13);
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(500, 90, size*5, 2*size / 13);
+      }
+  ctx.fillStyle = "red"; //generalize this
+
+  var health = 100 - entity.health; //Hacky fix for healthbar issue
+  var bnh = 1000 - baseNHealth;
+  var bsh = 1000 - baseSHealth;
+        if(level === 'theNorth'){
+          ctx.fillRect(460 + (1 - bnh/ 1000) * size * 5, 100, bnh / 1000 * size*5, 2*size / 13);
+          ctx.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
+        }else if(level === 'theNeck'){
+          ctx.fillRect(600 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
+          ctx.fillRect(200+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
+        }else if(level === 'dorne'){
+          ctx.fillRect(500 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
+          ctx.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
+        }
+      
+
+        ctx.fillRect(entity.x + (1 - health / 100) * size, entity.y - size/ 4, (health / 100) * size, size / 13);
+
+    }

@@ -55,7 +55,7 @@ $(function() {
     ctxF = $("#foreground")[0].getContext("2d");
     ctxB = $("#background")[0].getContext("2d");
     ctxI = $("#info")[0].getContext("2d");
-
+    startGame('theNorth');
 
 
     // ************End Login
