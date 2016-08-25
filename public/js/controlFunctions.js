@@ -104,7 +104,9 @@ function kill(){ //Incase the program is out of control
 }
 
 function clickGameContainer(e){
-        console.log(e);
+   if(e.originalEvent.touches){
+        e = e.originalEvent.touches[0];
+   }
  
    if (click) {
       var x = ~~(e.offsetX / zoom - backgroundOffset.x);
