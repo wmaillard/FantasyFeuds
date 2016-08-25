@@ -30,3 +30,6 @@ canvas {
 #sidebar-wrapper{
 	opacity: .8;
 }
+body {
+	overflow-y:hidden
+}
