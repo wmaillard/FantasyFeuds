@@ -18,7 +18,7 @@ var currentCoords = {
 
  function mapMove(e, mobile) {
     if (mobile) {
-        e = e.touches[0];
+        e = e.originalEvent.originalEvent.touches[0];
     }
 
     var changeX = Math.abs(e.clientX - currentCoords.x);
@@ -77,7 +77,7 @@ function releasePressMap(e, mobile) {
 function pressMap(e, mobile) {
     if (mobile) {
         console.log(e);
-        e = e.touches[0];
+        e = e.originalEvent.originalEvent.touches[0];
     }
     currentCoords.x = e.clientX;
     currentCoords.y = e.clientY;
