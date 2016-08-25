@@ -17,9 +17,7 @@ var currentCoords = {
  
 
  function mapMove(e, mobile) {
-    if (mobile) {
-        e = e.originalEvent.touches[0];
-    }
+        e = switchEventToMobile(e);
 
     var changeX = Math.abs(e.clientX - currentCoords.x);
     var changeY = Math.abs(e.clientY - currentCoords.y);
@@ -59,9 +57,8 @@ var currentCoords = {
 }
 
 function releasePressMap(e, mobile) {
-        if(e.originalEvent.changedTouches){
-                e = e.originalEvent.changedTouches[0];
-        }
+        e = switchEventToMobile(e);
+
     panning = false;
     fullOnPanning = false;
 
@@ -79,10 +76,8 @@ function releasePressMap(e, mobile) {
 }
 
 function pressMap(e, mobile) {
-    if (mobile) {
-        console.log(e);
-        e = e.originalEvent.touches[0];
-    }
+    e = switchEventToMobile(e);
+
     currentCoords.x = e.clientX;
     currentCoords.y = e.clientY;
     ////console.log(isBlocked(~~((currentCoords.x - backgroundOffset.x) / zoom),
@@ -196,4 +191,10 @@ function selectEntities(x, y, oldX, oldY){
     oldY = ~~(oldY / zoom - backgroundOffset.y);
     deselectAllEntities();
     entityIsThere(x, y, x + oldX, y + oldY)
+}
+function switchEventToMobile(e){
+        if(e.originalEvent.changedTouches){
+                e = e.originalEvent.changedTouches[0];
+        }
+        return e;
 }
