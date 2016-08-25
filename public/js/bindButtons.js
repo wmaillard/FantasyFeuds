@@ -186,7 +186,7 @@ var BindButtons = {
 		}).on('mousemove', function(e) {
 		    mapMove(e);
 		});
-		$("#foreground").on('touchstart', function(e) {
+	$("#gameContainer").on('touchstart', function(e) {
 		    pressMap(e, true)
 		    return false;
 		}).on('touchend', function(e) {
