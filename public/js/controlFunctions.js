@@ -1,7 +1,7 @@
 var panning = false;  //Is the mouse held down?
 var fullOnPanning = false;  //Is the mouse held down and has it moved over 5px?
 var zoomHappened = false;
-var click = false;  //Was it a quick click?
+var click = true;  //Was it a quick click?
 var size = 32;  //Get rid of this magic number
 var wasCtrl = false;
 
@@ -34,12 +34,10 @@ var currentCoords = {
             console.log('ctrl down');
             selectMulti(e.clientX, e.clientY, currentCoords.x, currentCoords.y);
             wasCtrl = true;
-            click = false;
         }
 
 
         else{
-            click = false;
             backgroundOffset.x += e.clientX - currentCoords.x;
             backgroundOffset.y += e.clientY - currentCoords.y;
 
@@ -50,13 +48,12 @@ var currentCoords = {
             }
             fullOnPanning = true;
         }
+        click = false;
 
     } 
 
     else {
        click = true;  //This means it was a quick click
-
-
     }
 
 }
@@ -74,7 +71,6 @@ function releasePressMap(e, mobile) {
     }
     if(click){
         clickGameContainer(e);
-        click = false;
     }
 
 }
