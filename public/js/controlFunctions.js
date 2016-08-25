@@ -109,6 +109,8 @@ function clickGameContainer(e){
    }
  
    if (click) {
+        console.log('clicked');
+        console.log(e);
       var x = ~~(e.offsetX / zoom - backgroundOffset.x);
       var y = ~~(e.offsetY / zoom - backgroundOffset.y);
 
