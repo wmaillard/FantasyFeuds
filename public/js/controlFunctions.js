@@ -59,6 +59,9 @@ var currentCoords = {
 }
 
 function releasePressMap(e, mobile) {
+        if(e.originalEvent.changedTouches){
+                e = e.originalEvent.changedTouches;
+        }
     panning = false;
     fullOnPanning = false;
 
