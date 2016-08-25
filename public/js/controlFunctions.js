@@ -60,7 +60,7 @@ var currentCoords = {
 
 function releasePressMap(e, mobile) {
         if(e.originalEvent.changedTouches){
-                e = e.originalEvent.changedTouches;
+                e = e.originalEvent.changedTouches[0];
         }
     panning = false;
     fullOnPanning = false;
