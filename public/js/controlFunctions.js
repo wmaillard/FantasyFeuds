@@ -121,7 +121,7 @@ function clickGameContainer(e){
         deselectAllEntities();
         entityAtClick.selected = true;
       }
-      else if(!entityIsBlocked(x, y)){
+      else if(true || !entityIsBlocked(x, y)){ //debugging
         var entity;
         if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
             entity = new Entity({
@@ -140,7 +140,7 @@ function clickGameContainer(e){
         entities.push(entity);
 
     }
-    click = false;
+    click = true;
 
   
           
