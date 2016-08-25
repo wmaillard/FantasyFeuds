@@ -103,6 +103,7 @@ function kill(){ //Incase the program is out of control
 }
 
 function clickGameContainer(e){
+        console.log(e);
  
    if (click) {
       var x = ~~(e.offsetX / zoom - backgroundOffset.x);
