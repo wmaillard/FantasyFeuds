@@ -46,7 +46,7 @@ $(function() {
 
     }
 
-    $("#background").attr("height", $("#gameContainer").height());
+    $("#background").attr("height", 200);
     $("#background").attr("width", $("#gameContainer").width());
     $("#foreground").attr("height", $("#gameContainer").height());
     $("#foreground").attr("width", $("#gameContainer").width());
