@@ -144,7 +144,8 @@ function startLevel() {
 	                    clearedF = true;
 	                }
 	                scene.load(level, ctxB, zoom)
-	                drawEntities(entities, ctxB, true, true);
+	                //drawEntities(entities, ctxB, true, true);
+	           	drawEntities(entities, ctxF, true);
 	            } else if (zoomHappened) {
 	                scene.load(level, ctxB, zoom);
 	                drawEntities(entities, ctxF, true);
