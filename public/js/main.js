@@ -47,11 +47,11 @@ $(function() {
     }
 
     $("#background").attr("height", window.innerHeight);
-    $("#background").attr("width", $("#gameContainer").width());
-    $("#foreground").attr("height", $("#gameContainer").height());
-    $("#foreground").attr("width", $("#gameContainer").width());
-    $("#info").attr("height", $("#gameContainer").height());
-    $("#info").attr("width", $("#gameContainer").width());   
+    $("#background").attr("width", window.innerWidth));
+    $("#foreground").attr("height", window.innerHeight);
+    $("#foreground").attr("width", window.innerWidth);
+    $("#info").attr("height", window.innerHeight);
+    $("#info").attr("width", window.innerWidth);   
     ctxF = $("#foreground")[0].getContext("2d");
     ctxB = $("#background")[0].getContext("2d");
     ctxI = $("#info")[0].getContext("2d");
