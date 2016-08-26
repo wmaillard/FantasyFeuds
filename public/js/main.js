@@ -47,7 +47,7 @@ $(function() {
     }
 
     $("#background").attr("height", window.innerHeight);
-    $("#background").attr("width", window.innerWidth));
+    $("#background").attr("width", window.innerWidth);
     $("#foreground").attr("height", window.innerHeight);
     $("#foreground").attr("width", window.innerWidth);
     $("#info").attr("height", window.innerHeight);
