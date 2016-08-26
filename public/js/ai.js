@@ -51,7 +51,7 @@ function addAlreadyBeen(entity) {
 function entityIsBlocked(x, y) {
     if (isBlocked(x, y) === true || isBlocked(x + 18, y) === true || isBlocked(x, y + 18) === true || isBlocked(x + 18, y + 18) === true) {
         return true;
-    }else if(isBlocked(x, y) === undefined || isBlocked(x + 18, y) === undefined || isBlocked(x, y + 18) === undefined || isBlocked(x + 18, y + 18) === undefined){
+    }else if(isBlocked(x, y) === undefined || isBlocked(x + 32, y) === undefined || isBlocked(x, y + 32) === undefined || isBlocked(x + 32, y + 32) === undefined){
         return true;
     }else return false;
 }
