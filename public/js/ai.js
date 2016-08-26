@@ -3,11 +3,7 @@
 //   x = ~~((x - backgroundOffset.x) / zoom); //where 32 is the size of a tile, consistent for our applications
 //   y = ~~((y - backgroundOffset.y) / zoom);
 
-function isBlocked(x, y) {
 
-    return blockingTerrain[~~(x / 32)][~~(y / 32)];
-
-}
 function travelSouth(entity) {
 
     entity.heading.y = entity.y + 1000;
@@ -40,7 +36,9 @@ function travelSouth(entity) {
 }
     
     
-
+function isBlocked(x, y) {
+    return blockingTerrain[~~(x / 32)][~~(y / 32)];
+}
 
 
 function addAlreadyBeen(entity) {
@@ -53,8 +51,9 @@ function addAlreadyBeen(entity) {
 function entityIsBlocked(x, y) {
     if (isBlocked(x, y) === true || isBlocked(x + 18, y) === true || isBlocked(x, y + 18) === true || isBlocked(x + 18, y + 18) === true) {
         return true;
-    }
-    return false;
+    }else if(isBlocked(x, y) === undefined || isBlocked(x + 18, y) === undefined || isBlocked(x, y + 18) === undefined || isBlocked(x + 18, y + 18) === undefined){
+        return true;
+    }else return false;
 }
 
 function shouldGoThere(x, y, entity) {
