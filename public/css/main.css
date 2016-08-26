@@ -6,6 +6,10 @@ canvas {
   height: 100%;
   width: 100%;
 }
+#info{
+	z-index: 2;
+	display: inline;
+}
 #foreground {
   z-index: 1;
 }
@@ -13,10 +17,10 @@ canvas {
   z-index: 0;
 }
 #menu-toggle {
-  z-index: 2;
+  z-index: 3;
 }
 
-#signUpForm {
+#signUpForm, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{
 	display: none;
 }
 #signInBox {
@@ -24,13 +28,10 @@ canvas {
 	z-index: 3;
 	background-color:rgba(255, 255, 255, 0.5);
 }
-#levelButtons{
-	display: none;
-}
-#cancel{
-	display: none;
-}
+
 #sidebar-wrapper{
 	opacity: .8;
 }
-
+body {
+	overflow-y:hidden
+}

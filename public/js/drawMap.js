@@ -1,8 +1,27 @@
+
+
+var level = 0;
+var clearBackground = false;  //Should we clear the map
+var blockingTerrain = [];  //Things that you can't walk over
+var entities = []; 
+var levelWidth;
+var levelHeight;
+var size = 32; //Tile size is 32 x 32, get this from the map so we don't use magic numbers
+var fps = 30//This is just for panning
+var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
+var ctxB;  //Foreground, background, and info context
+var ctxF;
+var ctxI;
+var useMin = true; //use minimized images
+var zoom = 1; //starting zoom of map
+var firstLoad = true;  //If true then all the images will be loaded up and cached
+
+
+
 //Loading tiled maps***
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
 //Class to load the map
 var scene = {
-    zoom: 1,
     tileSets: [],
     context: "",
     layers: [],
@@ -159,101 +178,128 @@ var scene = {
 }
 
 
+function drawEntities(entities, ctx, lock, clear) { 
 
+      var directions = {
+        'S': 0,
+        'W': 1,
+        'E': 2,
+        'N': 3
+    }
 
-
-//function to draw the entities
-function drawEntities(entities, ctx, lock, clear) { //changed heroes position
-
-    var scratchCanvas = ctx.canvas.cloneNode();
-    scratchCanvas = scratchCanvas.getContext("2d");
-    scratchCanvas.canvas.height = levelHeight * 32;
-    scratchCanvas.canvas.width = levelHeight * 32;
-    //scratchCanvas.clearRect(0, 0, scratchCanvas.canvas.width, scratchCanvas.canvas.height); //may not need
+ var scratchCanvas = ctx.canvas.cloneNode();    
+ scratchCanvas = scratchCanvas.getContext("2d");
+    scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
+    scratchCanvas.canvas.width = levelWidth * 32 ;
 
     for (var entity in entities) {
 
+
+
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
-        if (entities[entity].walking == true) {
-            if (!lock) {
-                entities[entity].walkingState === 0 ? entities[entity].walkingState = 2 : entities[entity].walkingState = 0;
-            }
-        } else {
-            entities[entity].walking.state = 1;
-        }
+        animateEntity(entities[entity]);
+
 
         var x, y;
         x = entities[entity].x;
         y = entities[entity].y;
+
+
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
             scratchCanvas.drawImage(entities[entity].blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         } else {
           
-          if(entities[entity].current === true){  
-            //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
-            scratchCanvas.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
-            scratchCanvas.beginPath();
-            scratchCanvas.ellipse(entities[entity].x + size / 2, entities[entity].y + size * 4/5, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
-            scratchCanvas.strokeStyle='red';
-            scratchCanvas.stroke();
-            scratchCanvas.restore();
-      }
-
-                      
-          if(entities[entity].isHero === true){
-         scratchCanvas.fillStyle = "green";
-      }else{
-        scratchCanvas.fillStyle = "yellow";
-      }
-
-          scratchCanvas.fillRect(entities[entity].x, entities[entity].y - size/ 4, size, size / 13);
-
-
-          if(level === 'theNorth'){  //generalize this
-            scratchCanvas.fillStyle = "green";
-            scratchCanvas.fillRect(675, 2150, size*5, 2*size / 13);
-            scratchCanvas.fillStyle = "yellow";
-            scratchCanvas.fillRect(460, 100, size*5, 2*size / 13);
-          }else if (level === 'theNeck'){
-            scratchCanvas.fillStyle = "green";
-            scratchCanvas.fillRect(200, 2150, size*5, 2*size / 13);
-            scratchCanvas.fillStyle = "yellow";
-            scratchCanvas.fillRect(600, 90, size*5, 2*size / 13);
-          }else if (level === 'dorne'){
-            scratchCanvas.fillStyle = "green";
-            scratchCanvas.fillRect(650, 2150, size*5, 2*size / 13);
-            scratchCanvas.fillStyle = "yellow";
-            scratchCanvas.fillRect(500, 90, size*5, 2*size / 13);
+          if(entities[entity].selected === true){  
+                //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+                drawHighlight(entities[entity], scratchCanvas);
           }
-     scratchCanvas.fillStyle = "red"; //generalize this
-
-            var health = 100 - entities[entity].health; //Hacky fix for healthbar issue
-      var bnh = 1000 - baseNHealth;
-      var bsh = 1000 - baseSHealth;
-            if(level === 'theNorth'){
-              scratchCanvas.fillRect(460 + (1 - bnh/ 1000) * size * 5, 100, bnh / 1000 * size*5, 2*size / 13);
-              scratchCanvas.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-            }else if(level === 'theNeck'){
-              scratchCanvas.fillRect(600 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
-              scratchCanvas.fillRect(200+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-            }else if(level === 'dorne'){
-              scratchCanvas.fillRect(500 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
-              scratchCanvas.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-            }
-          
-
-            scratchCanvas.fillRect(entities[entity].x + (1 - health / 100) * size, entities[entity].y - size/ 4, (health / 100) * size, size / 13);
-            scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         }
+        scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
-        if (!clear) {
-            ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
-        }
 
-        ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
+
+          if (!clear) {
+             ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
+          }
+
+
+            var width = scratchCanvas.canvas.width;
+            var height = scratchCanvas.canvas.height;
+
+
+              //Here you are upscaling everything in scratchCanvas so it probably looks shitty. Draw the scratch canvas at the correct zoom and then draw it on ctx dumbass, heh heh heh
+            ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
+
+            //ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
     }
     
 
 }
+
+function animateEntity(entity){
+    if (entity.walking == true){  
+          entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
+      }
+   else {
+      entity.walking.state = 1;  
+  }
+}
+
+function drawHighlight(entity, ctx){
+  ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
+  ctx.beginPath();
+  ctx.ellipse(entity.x + size / 2, entity.y + size * 4/5, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
+  ctx.strokeStyle='red';
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawHealthBar(entity, ctx){
+                      
+  if(entity.isHero === true){
+     ctx.fillStyle = "green";
+  }else{
+    ctx.fillStyle = "yellow";
+  }
+
+      ctx.fillRect(entity.x, entity.y - size/ 4, size, size / 13);
+
+
+      if(level === 'theNorth'){  //generalize this
+        ctx.fillStyle = "green";
+        ctx.fillRect(675, 2150, size*5, 2*size / 13);
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(460, 100, size*5, 2*size / 13);
+      }else if (level === 'theNeck'){
+        ctx.fillStyle = "green";
+        ctx.fillRect(200, 2150, size*5, 2*size / 13);
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(600, 90, size*5, 2*size / 13);
+      }else if (level === 'dorne'){
+        ctx.fillStyle = "green";
+        ctx.fillRect(650, 2150, size*5, 2*size / 13);
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(500, 90, size*5, 2*size / 13);
+      }
+  ctx.fillStyle = "red"; //generalize this
+
+  var health = 100 - entity.health; //Hacky fix for healthbar issue
+  var bnh = 1000 - baseNHealth;
+  var bsh = 1000 - baseSHealth;
+        if(level === 'theNorth'){
+          ctx.fillRect(460 + (1 - bnh/ 1000) * size * 5, 100, bnh / 1000 * size*5, 2*size / 13);
+          ctx.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
+        }else if(level === 'theNeck'){
+          ctx.fillRect(600 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
+          ctx.fillRect(200+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
+        }else if(level === 'dorne'){
+          ctx.fillRect(500 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
+          ctx.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
+        }
+      
+
+        ctx.fillRect(entity.x + (1 - health / 100) * size, entity.y - size/ 4, (health / 100) * size, size / 13);
+
+    }
