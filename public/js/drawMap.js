@@ -43,7 +43,7 @@ var scene = {
         if (layer.name === 'BaseS' && firstLoad) {
             levelWidth = layer.width;
             levelHeight = layer.height;
-            backgroundOffset.y = -levelHeight*size + $(window).height();
+            //backgroundOffset.y = -levelHeight*size + $(window).height();
             if (levelWidth * size < window.innerWidth) {
                 backgroundOffset.x = window.innerWidth - levelWidth * size
             }; //fixes window too wide bug

@@ -12,18 +12,40 @@ var AI = {
 
   //cNode.x, cNode.y, eNode.x, eNode.y, blockingTerrain (true && undefined is blocking)
   drawTestDots: function(blockingTerrain, ctx){
+    if(!this.terrainArray){
+      this.copyBlockingTerrain(blockingTerrain);
+      var current = {x : 5, y: 5, GScore: 0};
+      var end = {x : 40, y: 60};
+      this.terrainArray[end.x][end.y].color = 'lime'
+      this.terrainArray[5][5].val = 'selected';
+      this.AStar(current, end)
+    }
     ctx.clearRect(0, 0, ctxI.canvas.width, ctxI.canvas.height);
-    for(var i = 0; i < blockingTerrain.length; i++){
-      for(var j = 0; j < blockingTerrain[i].length; j++){
+    for(var i = 0; i < this.terrainArray.length; i++){
+      for(var j = 0; j < this.terrainArray[i].length; j++){
         var color;
-        if(blockingTerrain[i][j] === true || blockingTerrain[i][j] === undefined){
+        if(this.terrainArray[i][j].color){
+          color = this.terrainArray[i][j].color;
+        }
+        else if(this.terrainArray[i][j].val === true || this.terrainArray[i][j].val === undefined){
           color = 'red';
+        }else if(this.terrainArray[i][j].val === 'wall'){
+          color = 'yellow'
+        }
+        else if(this.terrainArray[i][j].val === 'baseN'){
+          color = 'blue'
+        }
+        else if(this.terrainArray[i][j].val === 'baseS'){
+          color = 'violet'
+        }
+        else if(this.terrainArray[i][j].val === 'selected'){
+          color = 'deepPink'
         }
         else{
           color = 'green';
         }
-        var x = ~~((i ) * 32 + 16+ backgroundOffset.x);
-        var y = ~~((j )) * 32 + 16+ backgroundOffset.y;
+        var x = ~~((i ) * 32 + 16 + backgroundOffset.x);
+        var y = ~~((j )) * 32 + 16 + backgroundOffset.y;
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
         ctx.fillStyle = color;
@@ -34,35 +56,89 @@ var AI = {
       }
     }
   },
-  AStar: function(cNode, eNode, graph){
-    this.closedSet = [];
-    this.openSet = [cNode];
-    this.cameFrom = [];
-    
-    while(openSet.length > 0){
-      var current = getLowestFScore(this.openSet);
-      if(this.openSet[current].x === eNode.x && this.openSet[current].y === eNode.y){
-        return this.createPath(cameFrom, this.openSet[current]);
-      }
-      openSet.splice(current, 1); //take currebbnt out of openSet
-
-      closedSet.push(this.openSet[current]);
-      for (var i = 0; i < 8; i++){
-        if(this.findInArray(this.getNextNodeCoords(current, i), closedSet) === -1){
-          continue;
-        }else if(checkIfBlocked(cNode, graph, nextNode))
-        var possibleG = current.G + calcGScore(i);
-        if(this.findInArray(this.getNextNodeCoords(current, i), openSet) === -1){
-          openSet.push(this.getNextNodeCoords(current, i));
-        }
-        else if(possibleG >= 5){}
+  copyBlockingTerrain: function(blockingTerrain){
+    this.terrainArray = JSON.parse(JSON.stringify(blockingTerrain));
+    for(var i = 0; i < this.terrainArray.length; i++){
+      for(var j = 0; j < this.terrainArray[i].length; j++){
+        var val = this.terrainArray[i][j];
+        this.terrainArray[i][j] = {};
+        this.terrainArray[i][j].val = val;
 
       }
     }
 
   },
-  findInArray: function(item, arrayXY){
-    for(var i = 0; i < arrayXY.length; i++){
+  AStar: function(startNode, eNode){
+    this.closedSet = [];
+    this.openSet = [];
+    var cNode = startNode;
+    cNode.HScore = this.calcHScore(cNode, eNode);
+    cNode.FScore = cNode.GScore + cNode.HScore;
+    this.openSet.push(cNode);
+
+
+
+    do{
+      cNode = this.getLowestFScore(this.openSet);
+      this.addNonBlockedNeighborsToOpen(cNode, eNode);
+      var index = this.findInArray(cNode, this.openSet);
+
+      if(index === -1){
+        console.log('did not find cNode in openSet')
+        break;
+      }
+      this.openSet.splice(index, 1); //get rid of cNode
+      this.closedSet.push(cNode);
+      if(cNode.x === eNode.x && cNode.y === eNode.y){
+        console.log('found end');
+        this.drawPath(cNode, startNode);
+        break;
+      }
+
+    }while(this.openSet.length > 0)
+
+
+
+
+
+  },
+  drawPath(cNode, startNode){
+    var endNode = cNode;
+    while(cNode.x !== startNode.x && cNode.y !== startNode.y){
+      this.terrainArray[cNode.x][cNode.y].color = 'yellow';
+      cNode = cNode.parent;
+    }
+    this.terrainArray[startNode.x][startNode.y].color = 'black';
+    this.terrainArray[endNode.x][endNode.y].color = 'black';
+  },
+  addNonBlockedNeighborsToOpen: function(cNode, eNode){
+    for(var i = 0; i < 8; i++){
+      if(this.checkIfFree(cNode, i) && this.findInArray(cNode, this.closedSet) === -1){
+        var nextNode = this.getNextNodeCoords(cNode, i);
+
+
+        this.terrainArray[nextNode.x][nextNode.y].color = 'blue';
+
+
+        nextNode.parent = cNode;
+        this.setScores(nextNode, eNode, i);
+
+
+
+
+
+        this.openSet.push(nextNode);  //Change this to a priority queue at some point
+
+      }
+    }
+  },
+  setScores: function(nextNode, eNode, neighborNum){
+    nextNode.GScore = this.calcGScore(nextNode, neighborNum);
+    nextNode.HScore = this.calcHScore(nextNode, eNode);
+    nextNode.FScore = nextNode.GScore + nextNode.HScore;
+  },
+  findInArray: function(item, array){
+    for(var i = 0; i < array.length; i++){
       if(array[i].x === item.x && array[i].y === item.y){
         return i;
       }
@@ -72,12 +148,12 @@ var AI = {
   createPath: function(cameFrom, current){
 
   },
-  getLowestFScore: function(openSet){
+  getLowestFScore: function(set){
     var lowest = {};
-    lowest.fScore = Number.MAX_SAFE_INTEGER;
-    for(var item in openSet){
-      if(openSet[item].fScore < lowest.fScore){
-        lowest = item;
+    lowest.FScore = Number.MAX_SAFE_INTEGER;
+    for(var i = 0; i < set.length; i++){
+      if(set[i].FScore < lowest.FScore){
+        lowest = set[i];
       }
     }
     return lowest;
@@ -87,20 +163,26 @@ var AI = {
   calcHScore: function(nextCoords, eNode){
     return Math.abs(eNode.x - nextCoords.x) + Math.abs(eNode.y - nextCoords.y);
   },
-  calcGScore: function(nextNode){ //next node is the number 0-7
-    if(nextNode === 0 || nextNode === 2 || nextNode === 5 || nextNode === 7){
-      return 14;
+  calcGScore: function(nextNode, neighborNum){ //next node is the number 0-7
+    if(neighborNum === 0 || neighborNum === 2 || neighborNum === 5 || neighborNum === 7){
+      return 14 + nextNode.parent.GScore;
     }
-    else return 10;
+    else return 10 + nextNode.parent.GScore;
   },
   /*nextNode is like this:
 
     0   1   2
     3  cur  4
     5   6   7 */
-  checkIfBlocked: function(cNode, graph, nextNode){
+  checkIfFree: function(cNode, nextNode){
     var nextCoords = this.getNextNodeCoords(cNode, nextNode);
-    var nodeValue = graph[nextCoords.x][nextCoords.y];
+    var nodeValue;
+    if(this.terrainArray[nextCoords.x] === undefined || this.terrainArray[nextCoords.x][nextCoords.y] === undefined){
+      nodeValue = undefined;
+    }
+    else{
+      nodeValue = this.terrainArray[nextCoords.x][nextCoords.y].val;
+    }
     if(nodeValue === true || nodeValue === undefined){
       return false;
     }
@@ -117,7 +199,7 @@ var AI = {
         nextCoords = this.changeNextNodeCoords(cNode, 0, -1);
         break;
       case 2:
-        nextCoords = this.changeNextNodeCoords(cNode, 0, -1);
+        nextCoords = this.changeNextNodeCoords(cNode, 1, -1);
         break;
       case 3:
         nextCoords = this.changeNextNodeCoords(cNode, -1, 0);
@@ -136,6 +218,7 @@ var AI = {
         break;
 
     }
+    return nextCoords;
 
   },
   changeNextNodeCoords(cNode, dx, dy){
