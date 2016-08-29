@@ -18,7 +18,15 @@ var AI = {
       var end = {x : 40, y: 60};
       this.terrainArray[end.x][end.y].color = 'lime'
       this.terrainArray[5][5].val = 'selected';
+
+
+      var t0 = performance.now();
+
       this.AStar(current, end)
+
+      var t1 = performance.now();
+      console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+      
     }
     ctx.clearRect(0, 0, ctxI.canvas.width, ctxI.canvas.height);
     for(var i = 0; i < this.terrainArray.length; i++){
@@ -30,7 +38,7 @@ var AI = {
         else if(this.terrainArray[i][j].val === true || this.terrainArray[i][j].val === undefined){
           color = 'red';
         }else if(this.terrainArray[i][j].val === 'wall'){
-          color = 'yellow'
+          color = 'lightblue'
         }
         else if(this.terrainArray[i][j].val === 'baseN'){
           color = 'blue'
@@ -68,12 +76,12 @@ var AI = {
     }
 
   },
-  AStar: function(startNode, eNode){
+  AStar: function(startNode, eNode){  //This takes about 15 ms right now, pretty good!
     this.closedSet = [];
     this.openSet = [];
     var cNode = startNode;
     cNode.HScore = this.calcHScore(cNode, eNode);
-    cNode.FScore = cNode.GScore + cNode.HScore;
+    cNode.FScore = startNode.GScore + cNode.HScore;
     this.openSet.push(cNode);
 
 
@@ -89,6 +97,7 @@ var AI = {
       }
       this.openSet.splice(index, 1); //get rid of cNode
       this.closedSet.push(cNode);
+
       if(cNode.x === eNode.x && cNode.y === eNode.y){
         console.log('found end');
         this.drawPath(cNode, startNode);
@@ -113,21 +122,25 @@ var AI = {
   },
   addNonBlockedNeighborsToOpen: function(cNode, eNode){
     for(var i = 0; i < 8; i++){
-      if(this.checkIfFree(cNode, i) && this.findInArray(cNode, this.closedSet) === -1){
-        var nextNode = this.getNextNodeCoords(cNode, i);
-
+      var nextNode = this.getNextNodeCoords(cNode, i);
+      if(this.checkIfFree(nextNode) && this.findInArray(nextNode, this.closedSet) === -1){
 
         this.terrainArray[nextNode.x][nextNode.y].color = 'blue';
-
-
         nextNode.parent = cNode;
         this.setScores(nextNode, eNode, i);
 
+        var index = this.findInArray(nextNode, this.openSet); 
+        if(index !== -1){
+          if(this.openSet[index].GScore > nextNode.GScore){
+            this.openSet[index].GScore = nextNode.GScore;
+            this.openSet[index].FScore = this.openSet[index].GScore + this.openSet[index].HScore
+            this.openSet[index].parent = cNode;
 
-
-
-
-        this.openSet.push(nextNode);  //Change this to a priority queue at some point
+          }
+        }
+        else{
+          this.openSet.push(nextNode);  //Change this to a priority queue at some point
+        }
 
       }
     }
@@ -161,21 +174,26 @@ var AI = {
 
 
   calcHScore: function(nextCoords, eNode){
-    return Math.abs(eNode.x - nextCoords.x) + Math.abs(eNode.y - nextCoords.y);
+    //diagonal distance from here: http://www.growingwiththeweb.com/2012/06/a-pathfinding-algorithm.html
+    
+    return Math.max(Math.abs(nextCoords.x - eNode.x), Math.abs(nextCoords.y - eNode.y));
+
+    //Manhattan method
+    //return Math.abs(eNode.x - nextCoords.x) + Math.abs(eNode.y - nextCoords.y);
   },
   calcGScore: function(nextNode, neighborNum){ //next node is the number 0-7
-    if(neighborNum === 0 || neighborNum === 2 || neighborNum === 5 || neighborNum === 7){
+ /*   if(neighborNum === 0 || neighborNum === 2 || neighborNum === 5 || neighborNum === 7){
       return 14 + nextNode.parent.GScore;
     }
-    else return 10 + nextNode.parent.GScore;
+    else return 10 + nextNode.parent.GScore;*/
+    return 1 + nextNode.parent.GScore;
   },
   /*nextNode is like this:
 
     0   1   2
     3  cur  4
     5   6   7 */
-  checkIfFree: function(cNode, nextNode){
-    var nextCoords = this.getNextNodeCoords(cNode, nextNode);
+  checkIfFree: function(nextCoords){
     var nodeValue;
     if(this.terrainArray[nextCoords.x] === undefined || this.terrainArray[nextCoords.x][nextCoords.y] === undefined){
       nodeValue = undefined;
