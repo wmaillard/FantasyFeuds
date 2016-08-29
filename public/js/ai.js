@@ -13,19 +13,23 @@ var AI = {
   //cNode.x, cNode.y, eNode.x, eNode.y, blockingTerrain (true && undefined is blocking)
   drawTestDots: function(blockingTerrain, ctx){
     if(!this.terrainArray){
-      this.copyBlockingTerrain(blockingTerrain);
+
       var current = {x : 5, y: 5, GScore: 0};
       var end = {x : 40, y: 60};
-      this.terrainArray[end.x][end.y].color = 'lime'
-      this.terrainArray[5][5].val = 'selected';
-
 
       var t0 = performance.now();
 
-      this.AStar(current, end)
+      var path = this.AStar(current, end, blockingTerrain);
+
+      this.terrainArray[end.x][end.y].color = 'lime'
+      this.terrainArray[5][5].val = 'selected';
 
       var t1 = performance.now();
       console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+      var coords;
+      while(coords = path.pop()){
+        console.log(coords);
+      }
       
     }
     ctx.clearRect(0, 0, ctxI.canvas.width, ctxI.canvas.height);
@@ -76,7 +80,8 @@ var AI = {
     }
 
   },
-  AStar: function(startNode, eNode){  //This takes about 15 ms right now, pretty good!
+  AStar: function(startNode, eNode, blockingTerrain){  //This takes about  6 ms right now, pretty good!
+    this.copyBlockingTerrain(blockingTerrain);
     this.closedSet = [];
     this.openSet = [];
     var cNode = startNode;
@@ -100,8 +105,8 @@ var AI = {
 
       if(cNode.x === eNode.x && cNode.y === eNode.y){
         console.log('found end');
-        this.drawPath(cNode, startNode);
-        break;
+        var path = this.drawPath(cNode, startNode);
+        return path;
       }
 
     }while(this.openSet.length > 0)
@@ -112,13 +117,19 @@ var AI = {
 
   },
   drawPath(cNode, startNode){
+    var path = [];
     var endNode = cNode;
     while(cNode.x !== startNode.x && cNode.y !== startNode.y){
+      var coords = {};
+      coords.x = cNode.x;
+      coords.y = cNode.y;
+      path.push(coords);
       this.terrainArray[cNode.x][cNode.y].color = 'yellow';
       cNode = cNode.parent;
     }
     this.terrainArray[startNode.x][startNode.y].color = 'black';
     this.terrainArray[endNode.x][endNode.y].color = 'black';
+    return path;
   },
   addNonBlockedNeighborsToOpen: function(cNode, eNode){
     for(var i = 0; i < 8; i++){
