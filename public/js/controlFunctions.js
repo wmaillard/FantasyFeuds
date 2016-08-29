@@ -202,10 +202,10 @@ function selectMulti(x, y, originalX, originalY){
 }
 
 function selectEntities(x, y, oldX, oldY){
-    x = ~~(x / zoom - backgroundOffset.x);
-    y = ~~(y / zoom - backgroundOffset.y);
-    oldX = ~~(oldX / zoom - backgroundOffset.x);
-    oldY = ~~(oldY / zoom - backgroundOffset.y);
+    x = ~~(x / zoom - backgroundOffset.x + 16 * zoom);
+    y = ~~(y / zoom - backgroundOffset.y + 16 * zoom);
+    oldX = ~~(oldX / zoom - backgroundOffset.x + 16 * zoom);
+    oldY = ~~(oldY / zoom - backgroundOffset.y + 16 * zoom);
     deselectAllEntities();
     entityIsThere(x, y, x + oldX, y + oldY)
 }
