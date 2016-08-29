@@ -143,12 +143,15 @@ function startLevel() {
 	                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
 	                    clearedF = true;
 	                }
-	                scene.load(level, ctxB, zoom)
-	                drawEntities(entities, ctxB, true, true);
+	                scene.load(level, ctxB, zoom);
+                    AI.drawTestDots(blockingTerrain, ctxI);
+	                //drawEntities(entities, ctxB, true, true);
+	           	drawEntities(entities, ctxF, true);
 	            } else if (zoomHappened) {
 	                scene.load(level, ctxB, zoom);
 	                drawEntities(entities, ctxF, true);
 	                zoomHappened = false;
+                    AI.drawTestDots(blockingTerrain, ctxI)
 	            }
 
 	        } else if (entityTrack % entitySpeed === 0) { //simple way to animate entities, should be a better way (else if, entities are frozen when pan)
@@ -168,6 +171,9 @@ function startLevel() {
 
 
 
+function isBlocked(x, y) {
+    return blockingTerrain[~~(x / 32)][~~(y / 32)];
+}
 
 
 

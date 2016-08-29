@@ -101,13 +101,17 @@ function zoomOut() {
 function kill(){ //Incase the program is out of control
     entities = [];
 }
-
+function entityIsSelected(){
+	var selectedEntities = [];
+	for(var i = 0; i < entities.length; i++){
+		if(entities[i].selected === true){
+			selectedEntities.push(entities[i])
+		}
+	}
+	return selectedEntities;
+}
 function clickGameContainer(e){
 
- 
-
-        console.log('clicked');
-        console.log(e);
       var x = ~~(e.clientX / zoom - backgroundOffset.x);
       var y = ~~(e.clientY / zoom - backgroundOffset.y);
 
@@ -117,6 +121,18 @@ function clickGameContainer(e){
         entityAtClick.selected = true;
       }
       else if(!entityIsBlocked(x, y)){ //debugging
+      	var selectedEntities = entityIsSelected();
+       	if(selectedEntities.length > 0){
+       		for(var i = 0; i < selectedEntities.length; i++){
+       			console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
+       			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));
+       			selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
+       		}
+       	}
+
+       	else{
+
+
         var entity;
         if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
             entity = new Entity({
@@ -133,6 +149,7 @@ function clickGameContainer(e){
         }
         travelSouth(entity);
         entities.push(entity);
+    }
 
     }
     click = true;
