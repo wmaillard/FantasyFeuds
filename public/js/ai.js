@@ -11,11 +11,10 @@ var AI = {
   //10 points for adjacent node 14 for diagonal
 
   //cNode.x, cNode.y, eNode.x, eNode.y, blockingTerrain (true && undefined is blocking)
-  drawTestDots: function(blockingTerrain, ctx){
+  drawTestDots: function(current, end, blockingTerrain, ctx){
     if(!this.terrainArray){
 
-      var current = {x : 5, y: 5, GScore: 0};
-      var end = {x : 40, y: 60};
+      current.GScore = 0;
 
       var t0 = performance.now();
 
@@ -85,6 +84,7 @@ var AI = {
     this.closedSet = [];
     this.openSet = [];
     var cNode = startNode;
+    cNode.GScore = 0;
     cNode.HScore = this.calcHScore(cNode, eNode);
     cNode.FScore = startNode.GScore + cNode.HScore;
     this.openSet.push(cNode);
@@ -267,8 +267,26 @@ function travelSouth(entity) {
     if(!entity.intervalSet){
       entity.intervalSet = true;
       setInterval(function() {
+        if(!entity.nextNode){
+          entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+          entity.walkingState = 1;
+        }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
+          if(~~(entity.x / 32) > entity.nextNode.x){
+            entity.x -= 10;
+          }else if (~~(entity.x / 32) < entity.nextNode.x){
+            entity.x += 10;
+          }
+          if(~~(entity.y / 32) > entity.nextNode.y){
+            entity.y -= 10;
+          }else if(~~(entity.y / 32) < entity.nextNode.y){
+            entity.y += 10
+          }
+        }else{
 
-              if (shouldGoThere(entity.x, entity.y + 5, entity)) {
+          entity.nextNode = entity.path.pop();
+
+        }
+           /*   if (shouldGoThere(entity.x, entity.y + 5, entity)) {
                   addAlreadyBeen(entity);
                   entity.y += 5;
                   entity.directionPointing = 'S';
@@ -285,7 +303,7 @@ function travelSouth(entity) {
                   addAlreadyBeen(entity);
                   entity.x -= 5;
                   entity.directionPointing = 'W';
-              }
+              }*/
 
           
       }, 250)
