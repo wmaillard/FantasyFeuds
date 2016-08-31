@@ -19,6 +19,8 @@ var baseNHealth = 1000;
 
 var mapInterval = false;  //Has the main drawing interval been set?
 
+var debugPathfinding = false
+
 
 
 function metaStartGame(overRide){
@@ -144,7 +146,9 @@ function startLevel() {
 	                    clearedF = true;
 	                }
 	                scene.load(level, ctxB, zoom);
-                    AI.drawTestDots(blockingTerrain, ctxI);
+                    if(debugPathfinding){
+                        AI.drawTestDots(blockingTerrain, ctxI);
+                    }
 	                //drawEntities(entities, ctxB, true, true);
 	           	drawEntities(entities, ctxF, true);
 	            } else if (zoomHappened) {
