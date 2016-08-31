@@ -12,23 +12,21 @@ var AI = {
 
   //cNode.x, cNode.y, eNode.x, eNode.y, blockingTerrain (true && undefined is blocking)
   drawTestDots: function(current, end, blockingTerrain, ctx){
+    var path;
     if(!this.terrainArray){
 
       current.GScore = 0;
 
       var t0 = performance.now();
 
-      var path = this.AStar(current, end, blockingTerrain);
+      path = this.AStar(current, end, blockingTerrain);
 
       this.terrainArray[end.x][end.y].color = 'lime'
       this.terrainArray[5][5].val = 'selected';
 
       var t1 = performance.now();
       console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
-      var coords;
-      while(coords = path.pop()){
-        console.log(coords);
-      }
+
       
     }
     ctx.clearRect(0, 0, ctxI.canvas.width, ctxI.canvas.height);
@@ -66,6 +64,7 @@ var AI = {
         ctx.stroke();
       }
     }
+    return path;
   },
   copyBlockingTerrain: function(blockingTerrain){
     this.terrainArray = JSON.parse(JSON.stringify(blockingTerrain));
@@ -119,14 +118,13 @@ var AI = {
   drawPath(cNode, startNode){
     var path = [];
     var endNode = cNode;
-    while(cNode.x !== startNode.x && cNode.y !== startNode.y){
+    do{
       var coords = {};
       coords.x = cNode.x;
       coords.y = cNode.y;
       path.push(coords);
       this.terrainArray[cNode.x][cNode.y].color = 'yellow';
-      cNode = cNode.parent;
-    }
+    }while(cNode = cNode.parent)
     this.terrainArray[startNode.x][startNode.y].color = 'black';
     this.terrainArray[endNode.x][endNode.y].color = 'black';
     return path;
@@ -169,9 +167,6 @@ var AI = {
     }
     return -1;
   },
-  createPath: function(cameFrom, current){
-
-  },
   getLowestFScore: function(set){
     var lowest = {};
     lowest.FScore = Number.MAX_SAFE_INTEGER;
@@ -185,12 +180,19 @@ var AI = {
 
 
   calcHScore: function(nextCoords, eNode){
-    //diagonal distance from here: http://www.growingwiththeweb.com/2012/06/a-pathfinding-algorithm.html
+    //diagonal distance no weight from here: http://www.growingwiththeweb.com/2012/06/a-pathfinding-algorithm.html
     
-    return Math.max(Math.abs(nextCoords.x - eNode.x), Math.abs(nextCoords.y - eNode.y));
+    //return Math.max(Math.abs(nextCoords.x - eNode.x), Math.abs(nextCoords.y - eNode.y));
 
     //Manhattan method
     //return Math.abs(eNode.x - nextCoords.x) + Math.abs(eNode.y - nextCoords.y);
+
+    //diagonal distance
+    var d_max = Math.max(Math.abs(nextCoords.x - eNode.x), Math.abs(nextCoords.y - eNode.y));
+    var d_min = Math.min(Math.abs(nextCoords.x - eNode.x), Math.abs(nextCoords.y - eNode.y));
+    var c_n = 10;
+    var c_d = c_n * 1.4141;
+    return c_d * d_min + c_n * (d_max - d_min);
   },
   calcGScore: function(nextNode, neighborNum){ //next node is the number 0-7
  /*   if(neighborNum === 0 || neighborNum === 2 || neighborNum === 5 || neighborNum === 7){
