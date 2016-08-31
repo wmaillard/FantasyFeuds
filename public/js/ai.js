@@ -267,9 +267,10 @@ function travelSouth(entity) {
     if(!entity.intervalSet){
       entity.intervalSet = true;
       setInterval(function() {
+        if(entity.walking === true){
         if(!entity.nextNode){
           entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-          entity.walkingState = 1;
+          entity.walking = false;
         }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
           if(~~(entity.x / 32) > entity.nextNode.x){
             entity.x -= 10;
@@ -286,6 +287,7 @@ function travelSouth(entity) {
           entity.nextNode = entity.path.pop();
 
         }
+      }
            /*   if (shouldGoThere(entity.x, entity.y + 5, entity)) {
                   addAlreadyBeen(entity);
                   entity.y += 5;

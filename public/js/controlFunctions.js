@@ -126,6 +126,7 @@ function clickGameContainer(e){
        		for(var i = 0; i < selectedEntities.length; i++){
        			console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
        			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));
+       			selectedEntities[i].walking = true;
        			selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
        		}
        	}
