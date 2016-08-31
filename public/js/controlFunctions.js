@@ -116,17 +116,21 @@ function clickGameContainer(e){
       var y = ~~(e.clientY / zoom - backgroundOffset.y);
 
       var entityAtClick = entityIsThere(x, y);
-      if(entityAtClick){ //debugging *******************
+      if(entityAtClick){ 
         deselectAllEntities();
         entityAtClick.selected = true;
       }
-      else if(!entityIsBlocked(x, y)){ //debugging
+      else if(!entityIsBlocked(x, y)){ 
       	var selectedEntities = entityIsSelected();
+      	console.log('spot is free');
        	if(selectedEntities.length > 0){
+       		console.log('there is a selected entity');
        		for(var i = 0; i < selectedEntities.length; i++){
        			console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
        			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));
-       			selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
+       			selectedEntities[i].walking = true;
+       			selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
+       			console.log(selectedEntities[i].path);
        		}
        	}
 
@@ -202,10 +206,10 @@ function selectMulti(x, y, originalX, originalY){
 }
 
 function selectEntities(x, y, oldX, oldY){
-    x = ~~(x / zoom - backgroundOffset.x);
-    y = ~~(y / zoom - backgroundOffset.y);
-    oldX = ~~(oldX / zoom - backgroundOffset.x);
-    oldY = ~~(oldY / zoom - backgroundOffset.y);
+    x = ~~(x / zoom - backgroundOffset.x + 16 * zoom);
+    y = ~~(y / zoom - backgroundOffset.y + 16 * zoom);
+    oldX = ~~(oldX / zoom - backgroundOffset.x + 16 * zoom);
+    oldY = ~~(oldY / zoom - backgroundOffset.y + 16 * zoom);
     deselectAllEntities();
     entityIsThere(x, y, x + oldX, y + oldY)
 }
