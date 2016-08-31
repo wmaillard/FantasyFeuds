@@ -26,7 +26,7 @@ var currentCoords = {
         fullOnPanning = false;
     }
 
-    if ((panning && (changeY > 1 || changeX > 1)) || fullOnPanning) {
+    if ((panning && (changeY > 3 || changeX > 3)) || fullOnPanning) {
 
         if(e.ctrlKey){
             console.log('ctrl down');
@@ -179,7 +179,9 @@ function entityIsThere(x, y, rangeX, rangeY){
         for(var i = 0; i < entities.length; i++){
             var entX = entities[i].x;
             var entY = entities[i].y;
-            if(x >= entX && x <= entX + size && y >= entY - size / 2 && y <= entY + size){
+            console.log('entX:', entX, 'x:', x);
+            console.log('enty:', entY, 'y:', y);
+            if(x  >= entX - 16 && x <= entX + 16 && y >= entY - 16 && y <= entY + 16){
                 return entities[i];
             }
         }
