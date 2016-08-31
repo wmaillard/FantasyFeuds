@@ -26,7 +26,7 @@ var currentCoords = {
         fullOnPanning = false;
     }
 
-    if ((panning && (changeY > 5 || changeX > 5)) || fullOnPanning) {
+    if ((panning && (changeY > 1 || changeX > 1)) || fullOnPanning) {
 
         if(e.ctrlKey){
             console.log('ctrl down');
