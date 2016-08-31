@@ -265,30 +265,33 @@ var AI = {
 }
 function travelSouth(entity) {
 
-    entity.heading.y = entity.y + 1000;
     if(!entity.intervalSet){
       entity.intervalSet = true;
       setInterval(function() {
         if(entity.walking === true){
-        if(!entity.nextNode){
-          entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-          entity.walking = false;
-        }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
-          if(~~(entity.x / 32) > entity.nextNode.x){
-            entity.x -= 10;
-          }else if (~~(entity.x / 32) < entity.nextNode.x){
-            entity.x += 10;
-          }
-          if(~~(entity.y / 32) > entity.nextNode.y){
-            entity.y -= 10;
-          }else if(~~(entity.y / 32) < entity.nextNode.y){
-            entity.y += 10
-          }
-        }else{
+          if(!entity.nextNode){
+            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+            if(entity.path.length === 0 ){
+              entity.x = entity.heading.x;
+              entity.y = entity.heading.y;
+              entity.walking = false;
+            }
+          }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
+            if(~~(entity.x / 32) > entity.nextNode.x){
+              entity.x -= 10;
+            }else if (~~(entity.x / 32) < entity.nextNode.x){
+              entity.x += 10;
+            }
+            if(~~(entity.y / 32) > entity.nextNode.y){
+              entity.y -= 10;
+            }else if(~~(entity.y / 32) < entity.nextNode.y){
+              entity.y += 10
+            }
+          }else{
 
-          entity.nextNode = entity.path.pop();
+            entity.nextNode = entity.path.pop();
 
-        }
+          }
       }
            /*   if (shouldGoThere(entity.x, entity.y + 5, entity)) {
                   addAlreadyBeen(entity);

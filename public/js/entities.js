@@ -9,7 +9,7 @@ function Entity(xyStart, png, health) {
     this.heading.x = this.x;
     this.heading.y = this.y;
     this.action = 'defending'; //attacking, defending
-    this.walking = true;
+    this.walking = false;
     this.walkingState = '0';
     this.alreadyBeen = [];
     this.alreadyBeen[this.x] = [];
@@ -35,6 +35,9 @@ function Entity(xyStart, png, health) {
     this.pathDist = 0;
     this.path = [];
     this.dijkstraGrid = []; 
+    this.nextNode = false;
+
+
     
     entityLoaded = function() {
         this.loaded = true;
