@@ -1,10 +1,27 @@
 {
   "name": "GOTRTS",
-  "version": "0.0.1",
-  "description": "GOTRTS game",
-  "scripts":
-  {"start": "node index.js"},
+  "version": "1.0.0",
+  "description": "##Post Midterm Check -------------------------------------------------------------------------------------------------------------------------------- ##U.I. - [ ] Things to get rid of once in production: travel south, travel south by load (made need to add kims stuff), the already been array - [ ] Add Kim's stuff to the save state and load it.  Including base health.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmaillard/GOTRTS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wmaillard/GOTRTS/issues"
+  },
+  "homepage": "https://github.com/wmaillard/GOTRTS#readme",
+  "engines": {
+    "node": "6.2.0"
+  },
   "dependencies": {
-    "express": "^4.10.2"
+    "express": "4.14.0",
+    "socket.io": "1.4.8"
   }
 }

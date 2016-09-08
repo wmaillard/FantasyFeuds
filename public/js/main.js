@@ -57,6 +57,13 @@ $(function() {
     ctxF = $("#foreground")[0].getContext("2d");
     ctxB = $("#background")[0].getContext("2d");
     ctxI = $("#info")[0].getContext("2d");
+
+
+    var socket = io();
+    socket.on('time', function(timeString){
+        console.log('Server time: ' + timeString)
+    })
+    
     startGame('theNorth');
 
 
