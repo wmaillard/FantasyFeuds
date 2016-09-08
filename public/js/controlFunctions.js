@@ -129,7 +129,13 @@ function clickGameContainer(e){
        			console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
        			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));
        			selectedEntities[i].walking = true;
-       			selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
+       			if(debugPathfinding){
+					selectedEntities[i].path = AI.drawTestDots({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
+       			}
+       			else{
+       				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
+
+       			}
        			console.log(selectedEntities[i].path);
        		}
        	}

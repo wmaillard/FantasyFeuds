@@ -155,7 +155,9 @@ function startLevel() {
 	                scene.load(level, ctxB, zoom);
 	                drawEntities(entities, ctxF, true);
 	                zoomHappened = false;
-                    AI.drawTestDots(blockingTerrain, ctxI)
+                    if(debugPathfinding){
+                        AI.drawTestDots(blockingTerrain, ctxI);
+                    }
 	            }
 
 	        } else if (entityTrack % entitySpeed === 0) { //simple way to animate entities, should be a better way (else if, entities are frozen when pan)

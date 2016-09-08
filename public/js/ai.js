@@ -29,6 +29,7 @@ var AI = {
 
       
     }
+
     ctx.clearRect(0, 0, ctxI.canvas.width, ctxI.canvas.height);
     for(var i = 0; i < this.terrainArray.length; i++){
       for(var j = 0; j < this.terrainArray[i].length; j++){
@@ -79,6 +80,7 @@ var AI = {
 
   },
   AStar: function(startNode, eNode, blockingTerrain){  //This takes about  6 ms right now, pretty good!
+
     this.copyBlockingTerrain(blockingTerrain);
     this.closedSet = [];
     this.openSet = [];
