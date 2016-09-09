@@ -46,7 +46,15 @@ function metaStartGame(overRide){
 
 	} 
 }
-
+function onlyPlayerEntities(entities, playerId){
+	var playerEntities = [];
+	for(var entity in entities){
+		if(entities[entity].playerId === playerId){
+			playerEntities.push(entities[entity]);
+		}
+	}
+	return playerEntities;
+}
 $(function() {
     BindButtons.bindAll();
 
@@ -84,7 +92,7 @@ $(function() {
     })
     
     setInterval(function(){
-    	socket.emit('clientEntities', entities);
+    	socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
     }, 20)
     
     setInterval(moveEntities(entities), 250);
