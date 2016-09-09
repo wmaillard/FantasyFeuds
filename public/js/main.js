@@ -80,7 +80,7 @@ $(function() {
     
     setInterval(function(){
     	socket.emit('clientEntities', entities);
-    }, 100)
+    }, 10)
     
     startGame('theNorth');
 
