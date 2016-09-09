@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
 setInterval(() => {
 	allEntities = [];
 	for(var userId in userEntities){
-		allEntities = allEntites.concat(userEntities[userId]);
+		allEntities = allEntities.concat(userEntities[userId]);
 	}
 	
 	io.emit('time', allEntities)
