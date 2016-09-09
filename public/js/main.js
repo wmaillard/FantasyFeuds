@@ -73,6 +73,9 @@ $(function() {
         console.log('Server time: ' + timeString);
         socket.emit('clientEntities', entities);
     })
+    socket.on('ping', function(response){
+    	console.log(response);
+    })
     
     startGame('theNorth');
 
