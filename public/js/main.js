@@ -69,8 +69,9 @@ $(function() {
 
 
     var socket = io();
-    socket.on('time', function(timeString){
-        console.log('Server time: ' + timeString);
+    socket.on('time', function(serveEntities){
+        console.log('Entities:');
+        console.log(serveEntities);
         socket.emit('clientEntities', entities);
     })
     socket.on('ping', function(response){
