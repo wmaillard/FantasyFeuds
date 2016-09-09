@@ -3,7 +3,6 @@ function Entity(xyStart, health, type) {
     this.type = type;
     this.x = xyStart.x;
     this.y = xyStart.y;
-    this.png = png;
     this.health = health;
     this.directionPointing = 'E'; //N, W, E, S
     this.heading = {};
