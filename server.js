@@ -14,14 +14,14 @@ const server = express()
 const io = socketIO(server);
 
 var allEntities = [];
-var userEntities;
+var userEntities = {};
 
 io.on('connection', (socket) => {
   console.log('Client connected');
   socket.on('disconnect', () => console.log('Client disconnected'));
   socket.on('clientEntities', (entities) => {
-  	userEntities[socket.id] = entities;
-  	io.emit('ping', 'client ' + socket.id + ' just sent me something')
+  	userEntities[convertId(socket.id)] = entities;
+  	io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
 });
 
@@ -34,3 +34,7 @@ setInterval(() => {
 	io.emit('time', allEntities)
 
 }, 1000);
+
+function convertId(oldId){
+	return oldId.slice(2);
+}
