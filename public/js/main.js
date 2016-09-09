@@ -70,7 +70,7 @@ $(function() {
 
     var socket = io();
     socket.on('time', function(timeString){
-        console.log('Server time: ' + timeString)
+        //console.log('Server time: ' + timeString)
     })
     
     startGame('theNorth');
