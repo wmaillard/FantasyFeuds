@@ -85,7 +85,7 @@ $(function() {
     
     setInterval(function(){
     	socket.emit('clientEntities', entities);
-    }, 500)
+    }, 20)
     
     setInterval(moveEntities(entities), 250);
     
