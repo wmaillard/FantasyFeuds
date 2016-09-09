@@ -195,7 +195,7 @@ function loadGame(state){
                 entities[entity].blank.src = 'img/characters/blank.png'
                 entities[entity].image.src = entities[entity].png;
                 entities[entity].intervalSet = false;
-                travelSouth(entities[entity]); //won't need this
+                //travelSouth(entities[entity]); //won't need this
             }
             firstLoad = true;
 
