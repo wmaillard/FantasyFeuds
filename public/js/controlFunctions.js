@@ -157,7 +157,7 @@ function clickGameContainer(e){
             }, 25, 'soldier', playerId);
             entity.isHero = true;
         }
-        travelSouth(entity);
+        //travelSouth(entity);
         entities.push(entity);
     }
 
