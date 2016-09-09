@@ -1,5 +1,5 @@
 //GLOBALS
-var APIURL = "https://got-rts.appspot.com"; //"http://httpbin.org/post" // 
+var APIURL = "https://got-rts.appspot.com"; 
 
 
 
