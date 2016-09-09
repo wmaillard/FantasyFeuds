@@ -269,7 +269,9 @@ function moveEntities() {
 
     for(var entity in entities){
       entity = entities[entity];
+      console.log('************************************');
         if(entity.walking === true){
+          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
           if(!entity.nextNode){
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
             entity.walking = false;
