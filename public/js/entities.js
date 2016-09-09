@@ -1,5 +1,6 @@
 
-function Entity(xyStart, png, health) {
+function Entity(xyStart, health, type) {
+    this.type = type;
     this.x = xyStart.x;
     this.y = xyStart.y;
     this.png = png;
@@ -11,15 +12,12 @@ function Entity(xyStart, png, health) {
     this.action = 'defending'; //attacking, defending
     this.walking = true;
     this.walkingState = '0';
-    this.alreadyBeen = [];
+/*    this.alreadyBeen = [];
     this.alreadyBeen[this.x] = [];
-    this.alreadyBeen[this.x][this.y] = true;
+    this.alreadyBeen[this.x][this.y] = true;*/
     this.size = 150;
-    this.image = new Image();
-    this.blank = new Image();
-    this.blank.src = 'img/characters/blank.png'
-    this.image.src = png;
-    this.loaded = false;
+
+    this.loaded = true; //Need to check if relavent
     this.team = 'red'; // red or blue
     this.ai = false;
     // kim add
@@ -34,13 +32,7 @@ function Entity(xyStart, png, health) {
     this.dest.distance = 0;
     this.pathDist = 0;
     this.path = [];
-    this.dijkstraGrid = []; 
     
-    entityLoaded = function() {
-        this.loaded = true;
-    }
-
-    this.image.onload = entityLoaded.bind(this);
 
     for (var i = 0; i < 1000; i++) {
         if (!entities[i]) {
