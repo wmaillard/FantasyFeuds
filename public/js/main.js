@@ -21,6 +21,15 @@ var mapInterval = false;  //Has the main drawing interval been set?
 
 var debugPathfinding = false
 
+var characterImages = {};
+
+characterImages.blank = new Image();
+characterImages.blank.src = 'img/characters/blank.png';
+characterImages.giant = new Image();
+characterImages.giant.src = 'img/characters/giant.png';
+characterImages.soldier = new Image();
+characterImages.soldier.src = 'img/characters/soldier.png';
+
 
 
 function metaStartGame(overRide){
