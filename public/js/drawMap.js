@@ -195,7 +195,7 @@ function drawEntities(entities, ctx, lock, clear) {
     for (var entity in entities) {
 
 
-
+        
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
         animateEntity(entities[entity]);
@@ -205,7 +205,7 @@ function drawEntities(entities, ctx, lock, clear) {
         x = entities[entity].x;
         y = entities[entity].y;
 
-
+        drawHealthBar(entities[entity], scratchCanvas);
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
             scratchCanvas.drawImage(entities[entity].blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         } else {
