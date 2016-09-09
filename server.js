@@ -27,6 +27,8 @@ io.on('connection', (socket) => {
 
 setInterval(() => {
 	allEntities = [];
+	console.log('User Entities: ');
+	console.log(userEntities);
 	for(var userId in userEntities){
 		allEntities = allEntities.concat(userEntities[userId]);
 	}
