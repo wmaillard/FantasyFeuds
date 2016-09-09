@@ -207,7 +207,7 @@ function drawEntities(entities, ctx, lock, clear) {
 
         drawHealthBar(entities[entity], scratchCanvas);
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
-            scratchCanvas.drawImage(entities[entity].blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
+            scratchCanvas.drawImage(characterImages.blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         } else {
           
           if(entities[entity].selected === true){  
@@ -215,7 +215,7 @@ function drawEntities(entities, ctx, lock, clear) {
                 drawHighlight(entities[entity], scratchCanvas);
           }
         }
-        scratchCanvas.drawImage(entities[entity].image, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
+        scratchCanvas.drawImage(characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
 
 
