@@ -117,11 +117,11 @@ function startLevel() {
         }
     }
 
-    entity = new Entity({
+   /* entity = new Entity({
                     'x': 0,
                     'y': 0
     }, "img/characters/blank.png", 75);
-    entities.push(entity);
+    entities.push(entity);*/
 
 
 	$('#problem').remove();
