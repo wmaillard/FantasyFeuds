@@ -265,7 +265,7 @@ var AI = {
 
 
 }
-function moveEntities(entities) {
+function moveEntities() {
 
     for(var entity in entities){
       entity = entities[entity];
@@ -294,15 +294,6 @@ function moveEntities(entities) {
 
 }
     
-    
-
-
-function addAlreadyBeen(entity) {
-    if (!entity.alreadyBeen[entity.x]) {
-        entity.alreadyBeen[entity.x] = [];
-    }
-    entity.alreadyBeen[entity.x][entity.y] = true;
-}
 
 function entityIsBlocked(x, y) {
     if (isBlocked(x, y) === true || isBlocked(x + 18, y) === true || isBlocked(x, y + 18) === true || isBlocked(x + 18, y + 18) === true) {
@@ -312,7 +303,4 @@ function entityIsBlocked(x, y) {
     }else return false;
 }
 
-function shouldGoThere(x, y, entity) {
-    return (entityIsBlocked(x, y) !== true && (typeof entity.alreadyBeen[x] == 'undefined' || typeof entity.alreadyBeen[x][y + 5] == 'undefined'));
-}
 
