@@ -38,8 +38,8 @@ function metaStartGame(overRide){
 	}
 	else{
 		entities = [];
-        baseSHealth = 1000;
-        baseNHealth = 1000;
+        	baseSHealth = 1000;
+        	baseNHealth = 1000;
 		firstLoad = true;
 		startLevel();
 
@@ -70,7 +70,8 @@ $(function() {
 
     var socket = io();
     socket.on('time', function(timeString){
-        //console.log('Server time: ' + timeString)
+        console.log('Server time: ' + timeString);
+        socket.emit('clientEntities', entities);
     })
     
     startGame('theNorth');
