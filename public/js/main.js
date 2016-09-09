@@ -70,7 +70,7 @@ $(function() {
 
 
     var socket = io();
-    playerId = socket.id;
+    
     socket.on('time', function(serverEntities){
         console.log('Entities:');
         console.log(serverEntities);
@@ -78,6 +78,9 @@ $(function() {
     })
     socket.on('ping', function(response){
     	console.log(response);
+    })
+    socket.on('connect', function(){
+    	playerId = socket.id;
     })
     
     setInterval(function(){
