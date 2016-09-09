@@ -87,6 +87,8 @@ $(function() {
     	socket.emit('clientEntities', entities);
     }, 500)
     
+    setInterval(moveEntities(entities), 250);
+    
     startGame('theNorth');
 
 
