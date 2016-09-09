@@ -72,11 +72,15 @@ $(function() {
     socket.on('time', function(serverEntities){
         console.log('Entities:');
         console.log(serverEntities);
-        socket.emit('clientEntities', entities);
+        entities = serverEntities;
     })
     socket.on('ping', function(response){
     	console.log(response);
     })
+    
+    setInterval(function(){
+    	socket.emit('clientEntities', entities);
+    }, 100)
     
     startGame('theNorth');
 
