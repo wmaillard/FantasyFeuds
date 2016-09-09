@@ -148,13 +148,13 @@ function clickGameContainer(e){
             entity = new Entity({
                 'x': x,
                 'y': y
-            }, 75, 'giant');
+            }, 75, 'giant', playerId);
 
         } else {
             entity = new Entity({
                 'x': x,
                 'y': y
-            }, 25, 'soldier');
+            }, 25, 'soldier', playerId);
             entity.isHero = true;
         }
         travelSouth(entity);
