@@ -1,5 +1,6 @@
 //GLOBALS
 var APIURL = "https://got-rts.appspot.com"; 
+var playerId;
 
 
 
@@ -69,6 +70,7 @@ $(function() {
 
 
     var socket = io();
+    playerId = socket.id;
     socket.on('time', function(serverEntities){
         console.log('Entities:');
         console.log(serverEntities);
