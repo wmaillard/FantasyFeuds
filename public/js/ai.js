@@ -265,55 +265,33 @@ var AI = {
 
 
 }
-function travelSouth(entity) {
+function moveEntities(entities) {
 
-    entity.heading.y = entity.y + 1000;
-    if(!entity.intervalSet){
-      entity.intervalSet = true;
-      setInterval(function() {
+    for(var entity in entities){
+      entity = entities[entity];
         if(entity.walking === true){
-        if(!entity.nextNode){
-          entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-          entity.walking = false;
-        }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
-          if(~~(entity.x / 32) > entity.nextNode.x){
-            entity.x -= 10;
-          }else if (~~(entity.x / 32) < entity.nextNode.x){
-            entity.x += 10;
-          }
-          if(~~(entity.y / 32) > entity.nextNode.y){
-            entity.y -= 10;
-          }else if(~~(entity.y / 32) < entity.nextNode.y){
-            entity.y += 10
-          }
-        }else{
+          if(!entity.nextNode){
+            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+            entity.walking = false;
+          }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
+            if(~~(entity.x / 32) > entity.nextNode.x){
+              entity.x -= 10;
+            }else if (~~(entity.x / 32) < entity.nextNode.x){
+              entity.x += 10;
+            }
+            if(~~(entity.y / 32) > entity.nextNode.y){
+              entity.y -= 10;
+            }else if(~~(entity.y / 32) < entity.nextNode.y){
+              entity.y += 10
+            }
+          }else{
 
-          entity.nextNode = entity.path.pop();
+            entity.nextNode = entity.path.pop();
 
         }
       }
-           /*   if (shouldGoThere(entity.x, entity.y + 5, entity)) {
-                  addAlreadyBeen(entity);
-                  entity.y += 5;
-                  entity.directionPointing = 'S';
+    }
 
-              } else if (shouldGoThere(entity.x + 5, entity.y, entity)) {
-                  addAlreadyBeen(entity);
-                  entity.x += 5;
-                  entity.directionPointing = 'E';
-              } else if (shouldGoThere(entity.x, entity.y - 5, entity)) {
-                  addAlreadyBeen(entity);
-                  entity.y -= 5;
-                  entity.directionPointing = 'N';
-              } else if (shouldGoThere(entity.x - 5, entity.y, entity)) {
-                  addAlreadyBeen(entity);
-                  entity.x -= 5;
-                  entity.directionPointing = 'W';
-              }*/
-
-          
-      }, 250)
-  }
 }
     
     
