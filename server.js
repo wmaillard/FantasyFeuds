@@ -15,26 +15,30 @@ const io = socketIO(server);
 
 var allEntities = [];
 var userEntities = {};
+var change = false;
 
 io.on('connection', (socket) => {
   console.log('Client connected');
   socket.on('disconnect', () => console.log('Client disconnected'));
   socket.on('clientEntities', (entities) => {
+  	change = true;
   	userEntities[convertId(socket.id)] = entities;
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
 });
 
 setInterval(() => {
-	allEntities = [];
-	/*console.log('User Entities: ');
-	console.log(userEntities);*/
-	for(var userId in userEntities){
-		allEntities = allEntities.concat(userEntities[userId]);
-	}
-	moveEntities(allEntities);
-	
-	io.emit('allEntities', allEntities)
+	if(change){
+		allEntities = [];
+		/*console.log('User Entities: ');
+		console.log(userEntities);*/
+		for(var userId in userEntities){
+			allEntities = allEntities.concat(userEntities[userId]);
+		}
+		moveEntities(allEntities);
+		
+		io.emit('allEntities', allEntities)
+}
 
 }, 250);
 
