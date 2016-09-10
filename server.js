@@ -23,6 +23,7 @@ io.on('connection', (socket) => {
   socket.on('clientEntities', (entities) => {
   	change = true;
   	userEntities[convertId(socket.id)] = entities;
+  	console.log('client ' + convertId(socket.id) + ' just sent me something');
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
 });
@@ -38,6 +39,7 @@ setInterval(() => {
 		moveEntities(allEntities);
 		
 		io.emit('allEntities', allEntities)
+		change = false;
 }
 
 }, 250);
