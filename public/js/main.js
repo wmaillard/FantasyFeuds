@@ -20,7 +20,9 @@ var baseNHealth = 1000;
 
 var mapInterval = false;  //Has the main drawing interval been set?
 
-var debugPathfinding = false
+var debugPathfinding = false;
+
+var serverSentChange = false;
 
 var playerColor = getRandomColor();
 
@@ -90,12 +92,14 @@ $(function() {
     var socket = io();
     
     socket.on('allEntities', function(serverEntities){
+        serverSentChange = true;
         for(var entity in serverEntities){
             if(serverEntities[entity].selected === true && serverEntities[entity].playerId !== playerId){
                 serverEntities[entity].selected = false;
             }
         }
         entities = serverEntities;
+
     })
     socket.on('ping', function(response){
     	console.log(response);
@@ -103,10 +107,19 @@ $(function() {
     socket.on('connect', function(){
     	playerId = socket.id;
     })
-    
+    var oldEntities = JSON.stringify(entities);
     setInterval(function(){
-    	socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
-    }, 50)
+        if(serverSentChange){
+            serverSentChange = false;
+        }
+        else if(JSON.stringify(entities) !== oldEntities){
+            oldEntities = JSON.stringify(entities);
+            socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
+            console.log('Sent the server some info');
+            console.log(onlyPlayerEntities(entities, playerId));
+        }
+
+    }, 10)
     
 /*    setInterval(function(){
     	moveEntities();
