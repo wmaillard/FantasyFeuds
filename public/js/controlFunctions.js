@@ -135,9 +135,7 @@ function clickGameContainer(e){
        			else{
 
        				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
-                    if(selectedEntities[i].path.length > 0){
-                        socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
-                    }
+                    
        			}
        			//console.log(selectedEntities[i].path);
        		}
