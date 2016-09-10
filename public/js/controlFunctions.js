@@ -126,17 +126,20 @@ function clickGameContainer(e){
        	if(selectedEntities.length > 0){
        		console.log('there is a selected entity');
        		for(var i = 0; i < selectedEntities.length; i++){
-       			console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
-       			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));
+       			/*console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
+       			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));*/
        			selectedEntities[i].walking = true;
        			if(debugPathfinding){
 					selectedEntities[i].path = AI.drawTestDots({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
        			}
        			else{
-       				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
 
+       				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
+                    if(selectedEntities[i].path.length > 0){
+                        socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
+                    }
        			}
-       			console.log(selectedEntities[i].path);
+       			//console.log(selectedEntities[i].path);
        		}
        	}
 
