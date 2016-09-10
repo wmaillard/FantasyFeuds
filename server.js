@@ -32,11 +32,43 @@ setInterval(() => {
 	for(var userId in userEntities){
 		allEntities = allEntities.concat(userEntities[userId]);
 	}
+	moveEntities(allEntities);
 	
-	io.emit('time', allEntities)
+	io.emit('allEntities', allEntities)
 
-}, 1000);
+}, 250);
 
 function convertId(oldId){
 	return oldId.slice(2);
 }
+
+function moveEntities(entities) {
+
+    for(var entity in entities){
+      entity = entities[entity];
+
+        if(entity.walking === true){
+          if(!entity.nextNode){
+            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+            entity.walking = false;
+          }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
+            if(~~(entity.x / 32) > entity.nextNode.x){
+              entity.x -= 10;
+            }else if (~~(entity.x / 32) < entity.nextNode.x){
+              entity.x += 10;
+            }
+            if(~~(entity.y / 32) > entity.nextNode.y){
+              entity.y -= 10;
+            }else if(~~(entity.y / 32) < entity.nextNode.y){
+              entity.y += 10
+            }
+          }else{
+
+            entity.nextNode = entity.path.pop();
+
+        }
+      }
+    }
+
+}
+  

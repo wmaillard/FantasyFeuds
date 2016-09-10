@@ -116,7 +116,7 @@ function clickGameContainer(e){
       var y = ~~(e.clientY / zoom - backgroundOffset.y);
 
       var entityAtClick = entityIsThere(x, y);
-      if(entityAtClick){ 
+      if(entityAtClick && entityAtClick.playerId === playerId){ 
         deselectAllEntities();
         entityAtClick.selected = true;
       }
@@ -148,13 +148,13 @@ function clickGameContainer(e){
             entity = new Entity({
                 'x': x,
                 'y': y
-            }, 75, 'giant', playerId);
+            }, 90, 'giant', playerId, playerColor);
 
         } else {
             entity = new Entity({
                 'x': x,
                 'y': y
-            }, 25, 'soldier', playerId);
+            }, 90, 'soldier', playerId, playerColor);
             entity.isHero = true;
         }
         //travelSouth(entity);

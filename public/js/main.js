@@ -22,6 +22,8 @@ var mapInterval = false;  //Has the main drawing interval been set?
 
 var debugPathfinding = false
 
+var playerColor = getRandomColor();
+
 var characterImages = {};
 
 characterImages.blank = new Image();
@@ -32,6 +34,14 @@ characterImages.soldier = new Image();
 characterImages.soldier.src = 'img/characters/soldier.png';
 
 
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
 
 function metaStartGame(overRide){
 	if(!overRide && Cookies.get('loggedIn') === "true"){
@@ -79,9 +89,12 @@ $(function() {
 
     var socket = io();
     
-    socket.on('time', function(serverEntities){
-        console.log('Entities:');
-        console.log(serverEntities);
+    socket.on('allEntities', function(serverEntities){
+        for(var entity in serverEntities){
+            if(serverEntities[entity].selected === true && serverEntities[entity].playerId !== playerId){
+                serverEntities[entity].selected = false;
+            }
+        }
         entities = serverEntities;
     })
     socket.on('ping', function(response){
@@ -93,11 +106,11 @@ $(function() {
     
     setInterval(function(){
     	socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
-    }, 20)
+    }, 50)
     
-    setInterval(function(){
+/*    setInterval(function(){
     	moveEntities();
-    }, 250);
+    }, 250);*/
     
     startGame('theNorth');
 

@@ -1,5 +1,6 @@
 
-function Entity(xyStart, health, type, playerId) {
+function Entity(xyStart, health, type, playerId, color) {
+    this.color = color
     this.playerId = playerId;
     this.type = type;
     this.x = xyStart.x;

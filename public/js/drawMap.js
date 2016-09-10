@@ -258,11 +258,9 @@ function drawHighlight(entity, ctx){
 
 function drawHealthBar(entity, ctx){
                       
-  if(entity.isHero === true){
-     ctx.fillStyle = "green";
-  }else{
-    ctx.fillStyle = "yellow";
-  }
+
+     ctx.fillStyle = entity.color;
+
 
       ctx.fillRect(entity.x, entity.y - size/ 4, size, size / 13);
 
@@ -270,7 +268,7 @@ function drawHealthBar(entity, ctx){
       if(level === 'theNorth'){  //generalize this
         ctx.fillStyle = "green";
         ctx.fillRect(675, 2150, size*5, 2*size / 13);
-        ctx.fillStyle = "yellow";
+        ctx.fillStyle = playerColor;
         ctx.fillRect(460, 100, size*5, 2*size / 13);
       }else if (level === 'theNeck'){
         ctx.fillStyle = "green";
