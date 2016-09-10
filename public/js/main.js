@@ -106,7 +106,7 @@ $(function() {
     
     setInterval(function(){
     	socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
-    }, 50)
+    }, 20)
     
 /*    setInterval(function(){
     	moveEntities();

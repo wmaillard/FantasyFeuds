@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
   socket.on('clientEntities', (entities) => {
   	userEntities[convertId(socket.id)] = entities;
-  	io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
+  	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
 });
 
