@@ -267,7 +267,6 @@ var AI = {
 }
 function moveEntities() {
 
-<<<<<<< HEAD
     for(var entity in entities){
       entity = entities[entity];
       console.log('************************************');
@@ -276,19 +275,6 @@ function moveEntities() {
           if(!entity.nextNode){
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
             entity.walking = false;
-=======
-    if(!entity.intervalSet){
-      entity.intervalSet = true;
-      setInterval(function() {
-        if(entity.walking === true){
-          if(!entity.nextNode){
-            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-            if(entity.path.length === 0 ){
-              entity.x = entity.heading.x;
-              entity.y = entity.heading.y;
-              entity.walking = false;
-            }
->>>>>>> origin/master
           }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
             if(~~(entity.x / 32) > entity.nextNode.x){
               entity.x -= 10;
@@ -304,7 +290,7 @@ function moveEntities() {
 
             entity.nextNode = entity.path.pop();
 
-          }
+        }
       }
     }
 
