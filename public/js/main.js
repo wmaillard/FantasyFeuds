@@ -90,6 +90,7 @@ $(function() {
     var socket = io();
     
     socket.on('allEntities', function(serverEntities){
+
         for(var entity in serverEntities){
             if(serverEntities[entity].selected === true && serverEntities[entity].playerId !== playerId){
                 serverEntities[entity].selected = false;
@@ -103,10 +104,16 @@ $(function() {
     socket.on('connect', function(){
     	playerId = socket.id;
     })
-    
+    var oldEntities = entities;
     setInterval(function(){
-    	socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
-    }, 150)
+
+        if(JSON.stringify(entities) !== JSON.stringify(oldEntities)){
+            oldEntities = entities;
+            socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
+            console.log('Sent the server some info');
+        }
+
+    }, 5)
     
 /*    setInterval(function(){
     	moveEntities();
