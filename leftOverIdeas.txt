@@ -1,0 +1,19 @@
+##Fancy ideas 
+--------------------------------------------------------------------------------------------------------------------------------
+- [x] Cache loading the background for better performance
+- [ ] Resize the map on a window resize
+- [ ] Create more precise outlines of terrain so entities can move closer to them, instead of avoiding their box entirely
+- [x] Mobile touch commands
+- [x] Panning could be better because background and entities are refreshed at different rates so entities jump a little, maybe if(panning) refresh entity to current state -- This may be an easy fix
+- [ ] Token Invalidation for logout/new token requests
+- [ ] Memcache of Invalid Tokens to compare to until timeout date
+- [ ] *BUG -> Fix '\n' appeneded to http response from .Encode()* -- I don't think this matters now, JQuery can deal with it if you don't tell it to expect JSON - Will
+- [ ] There may be issues with dragging too quickly outside the window, need to work on the limitOffset function.  --Look at setTimeOut instead of setInterval for dynamically changing fps
+- [ ] Stop loading every layer every time, instead flatten and store. Should boost speed.  (this will break drawEntitiesBackground, will need to slightly edit this) --> Probably should flatten then create a function to just redraw certain layers, or even better flatten all top layers and flatten bottom layers then load in the order bottom -> entities -> top.  May be able to edit scene.load to take an arguement and load either tops or bottoms.  That means that top will need to be loaded every time an entity is animated, is this a problem?  So infrequent that it may not matter
+- [ ] Massively refactor the code to include many files using require.js .  Separate things out in a more OOP way and get rid of global variables.
+- [ ] Refactor backend to further seperate concerns
+- [ ] Refactor backend error handling
+- [ ] UI for adding an entity - ~~Probably figure out how to add a <canvas> in the nav menu,~~ could use draggable jquery!!!
+- [ ] Colors for teams/team item in entity
+- [ ] Stagger walking, surprisingly will take a lot of work.  Think it out, should this be the draw entities job or the walking function?  Should each entity be on its own ctx?  Because if you clear all the entities at once, they have to walk at the same pace. oooh could you do giant.ctx = ctx, then just clear and draw that somewhere on the canvas like scratch canvas?
+- [ ] still releveant?, depends on how AI is set up. change entity from attacking to defending somehow with UI (right click?, macs don't do that do they...ctrl-click or right click)
