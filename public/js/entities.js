@@ -11,7 +11,7 @@ function Entity(xyStart, health, type, playerId, color) {
     this.heading.x = this.x;
     this.heading.y = this.y;
     this.action = 'defending'; //attacking, defending
-    this.walking = true;
+    this.walking = false;
     this.walkingState = '0';
 /*    this.alreadyBeen = [];
     this.alreadyBeen[this.x] = [];
@@ -33,6 +33,13 @@ function Entity(xyStart, health, type, playerId, color) {
     this.dest.distance = 0;
     this.pathDist = 0;
     this.path = [];
+<<<<<<< HEAD
+=======
+    this.dijkstraGrid = []; 
+    this.nextNode = false;
+
+
+>>>>>>> origin/master
     
 
     for (var i = 0; i < 1000; i++) {
