@@ -213,8 +213,21 @@ function startLevel() {
 	                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
 	                    clearedF = true;
 	                }
-                    drawEntities(entities, ctxF, true);
+
 	                scene.load(level, ctxB, zoom);  //drawing all layers, could flatten, bug
+
+
+
+                    drawEntities(entities, ctxF, true);
+
+                    backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
+                     backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
+
+
+
+
+
+
                     if(debugPathfinding){
                         AI.drawTestDots(blockingTerrain, ctxI);
                     }
