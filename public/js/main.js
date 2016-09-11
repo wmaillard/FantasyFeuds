@@ -213,12 +213,13 @@ function startLevel() {
 	                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
 	                    clearedF = true;
 	                }
-	                scene.load(level, ctxB, zoom);
+                    drawEntities(entities, ctxF, true);
+	                scene.load(level, ctxB, zoom);  //drawing all layers, could flatten, bug
                     if(debugPathfinding){
                         AI.drawTestDots(blockingTerrain, ctxI);
                     }
 	                //drawEntities(entities, ctxB, true, true);
-	           	drawEntities(entities, ctxF, true);
+
 	            } else if (zoomHappened) {
 	                scene.load(level, ctxB, zoom);
 	                drawEntities(entities, ctxF, true);

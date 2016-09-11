@@ -7,7 +7,7 @@ var entities = [];
 var levelWidth;
 var levelHeight;
 var size = 32; //Tile size is 32 x 32, get this from the map so we don't use magic numbers
-var fps = 30//This is just for panning
+var fps = 5//This is just for panning
 var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
 var ctxB;  //Foreground, background, and info context
 var ctxF;
@@ -171,7 +171,7 @@ var scene = {
                     scene.loadTileset(scene.data);
                 }) //.fail(alert("aweful things have happend"));
         } else {
-            scene.loadTileset(scene.data);
+            scene.renderLayers(false);
         }
 
     }
