@@ -18,6 +18,7 @@ var userEntities = {};
 var change = false;
 
 io.on('connection', (socket) => {
+	change = true;
   console.log('Client connected');
   socket.on('disconnect', () => console.log('Client disconnected'));
   socket.on('clientEntities', (entities) => {
