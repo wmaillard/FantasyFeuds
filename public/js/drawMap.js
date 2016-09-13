@@ -195,17 +195,31 @@ function drawEntities(entities, ctx, lock, clear) {
     scratchCanvas.canvas.width = levelWidth * 32 ;
 
     for (var entity in entities) {
-
-
         
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
         animateEntity(entities[entity]);
 
 
-        var x, y;
+        var x, y, nodeX, nodeY;
         x = entities[entity].x;
         y = entities[entity].y;
+        nodeX = ~~(x / size);
+        nodeY = ~~(y / size);
+        
+        if(!entities[entity].nodeX){
+            entities[entity].nodeX = nodeX;
+            entities[entity].nodeY = nodeY;
+            updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
+        }
+        else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){
+            var oldNode = {x: entites[entity].nodeX, y: entities[entity].nodeY};
+            entities[entity].nodeX = nodeX;
+            entities[entity].nodeY = nodeY;
+            updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
+        }
+        
+        
 
         drawHealthBar(entities[entity], scratchCanvas);
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
@@ -239,7 +253,24 @@ function drawEntities(entities, ctx, lock, clear) {
     
 
 }
-
+function updateEntityMap(entity, oldNode, newNode, entitiesMap){
+    if(oldNode){
+        var index = 0;
+        var deleteCount = 0;
+        for(var i in entitiesMap[oldNode.x][oldNode.y]){
+            if(entitiesMap[oldNode.x][oldNode.y][i].entity.id === entity.id){
+                console.log('found an entity in entitiesMap');
+                deleteCount = 1;
+                index = i;
+                break;
+            }
+        }
+        entitiesMap[oldNode.x][oldNode.y].splice (index, deleteCount);
+    }
+    if(newNode){
+        entitiesMap[newNode.x][newNode.y] = entity;
+    }
+}
 function animateEntity(entity){
     if (entity.walking === true){  
           entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
