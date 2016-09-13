@@ -208,7 +208,8 @@ function drawEntities(entities, ctx, lock, clear) {
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
             console.log('door one: ')
-            updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
+            updateEntityMap(entities[entity], entities[entity].oldNode, {x: nodeX, y: nodeY}, entitiesMap);
+            entities[entity].oldNode = {x: nodeX, y: nodeY};
         }
 
         else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){  //entity has moved
@@ -217,7 +218,7 @@ function drawEntities(entities, ctx, lock, clear) {
             entities[entity].nodeY = nodeY;
             console.log('door two: ')
             if(entities[entity].oldNode === undefined){console.log('why is old node undefined? server issues?')};
-            updateEntityMap(entities[entity], oldNode, entities[entity].oldNode, entitiesMap);
+            updateEntityMap(entities[entity], entities[entity].oldNode, entities[entity].oldNode, entitiesMap);
             entities[entity].oldNode = {x: nodeX, y: nodeY};
         }
         else if(!entityIsOnEntityMap(entities[entity], entitiesMap)){  //entity is not on the map where it should be.
