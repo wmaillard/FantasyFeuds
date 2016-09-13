@@ -1,9 +1,4 @@
-var panning = false;  //Is the mouse held down?
-var fullOnPanning = false;  //Is the mouse held down and has it moved over 5px?
-var zoomHappened = false;
-var click = true;  //Was it a quick click?
-var size = 32;  //Get rid of this magic number
-var wasCtrl = false;
+
 
 var backgroundOffset = {
         "x": 0,
