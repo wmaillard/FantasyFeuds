@@ -220,6 +220,7 @@ function drawEntities(entities, ctx, lock, clear) {
         if(entities[entity].nodeX === undefined){
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
+            console.log('door one: ')
             updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
         }
 
@@ -227,9 +228,11 @@ function drawEntities(entities, ctx, lock, clear) {
             var oldNode = {x: entities[entity].nodeX, y: entities[entity].nodeY};
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
+            console.log('door two: ')
             updateEntityMap(entities[entity], oldNode, {x: nodeX, y: nodeY}, entitiesMap)
         }
         else if(!entityIsOnEntityMap(entities[entity], entitiesMap)){  //check if entity is not on the map, but has nodeX and nodeY
+            console.log('door three: ')
             updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap);
         }
         
