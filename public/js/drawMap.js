@@ -217,6 +217,8 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
         
+        //Door one and three are dangerous because they give the opportunity to add an entity to the map without deleting its old location.
+        //Need to make %100 sure that everytime that an entity is added or updated, it is deleted and its oldNode is updated.
         if(entities[entity].nodeX === undefined){
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
@@ -227,7 +229,7 @@ function drawEntities(entities, ctx, lock, clear) {
         else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){  //need to check if entity is on node
             var x = entities[entity].nodeX;
             var y = entities[entity].nodeY;
-            var oldNode = {x: x, y: y};
+            var oldNode = {x: x, y: y};        //Old nodes may be messed up here, need to make sure to track them correctly
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
             console.log('door two: ')
