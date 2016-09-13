@@ -312,7 +312,7 @@ function attackableEntities(entity, entitiesMap){
     var nearbyEntities = [];
     for(var i = attackerNode.x - 1; i < attackerNode.x + 1; i++){
       for(var j = attackerNode.y - 1; j < attackerNode.y + 1; j++){
-        if(entitesMap[i][j] !== false){
+        if(entitesMap[i][j].length > 0){
           var entitiesAtNode = entitiesMap[i][j]
           for(var e in entitiesAtNode){
             if(entitiesAtNode[e].playerId !== entity.playerId){
