@@ -53,7 +53,12 @@ var scene = {
                 blockingTerrain[i] = new Array(layer.height);
                 blockingTerrain[i].fill(false);
             }
-            entitiesMap = deepCloneArray(blockingTerrain);
+            entitiesMap = new Array(layer.width);
+            for (var i = 0; i < layer.width; i++) {
+                entitiesMap[i] = new Array(layer.height);
+                entitiesMap[i].fill([]);
+            }
+            
         }
 
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
