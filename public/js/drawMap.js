@@ -221,7 +221,7 @@ function drawEntities(entities, ctx, lock, clear) {
             var oldNode = {x: entites[entity].nodeX, y: entities[entity].nodeY};
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
-            updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
+            updateEntityMap(entities[entity], oldNode, {x: nodeX, y: nodeY}, entitiesMap)
         }
         
         
@@ -273,7 +273,7 @@ function updateEntityMap(entity, oldNode, newNode, entitiesMap){
         entitiesMap[oldNode.x][oldNode.y].splice (index, deleteCount);
     }
     if(newNode){
-        entitiesMap[newNode.x][newNode.y] = entity;
+        entitiesMap[newNode.x][newNode.y].push(entity);
     }
 }
 function animateEntity(entity){
