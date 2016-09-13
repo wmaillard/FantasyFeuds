@@ -33,6 +33,8 @@ function onlyPlayerEntities(entities, playerId){
 	return playerEntities;
 }
 $(function() {
+	
+    playerColor = getRandomColor();
     BindButtons.bindAll();
 
     if (Cookies.get('loggedIn') === "true") {
