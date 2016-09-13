@@ -38,3 +38,10 @@ function roughSizeOfObject( object ) {
     }
     return bytes;
 }
+
+function testAttackRange(){
+      for(e in entities){
+        console.log('\nEntity with id: ' + entities[e].id + 'can attack the following \n')
+        attackableEntities(entities[e], entitiesMap)
+    }
+}
