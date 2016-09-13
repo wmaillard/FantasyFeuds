@@ -305,4 +305,25 @@ function entityIsBlocked(x, y) {
     }else return false;
 }
 
+function attackableEntities(entity, entitiesMap){
+  //Check if entities on nodes that are within range, then check if they are specifically within range via entity.x/.y
+  if(entity.attackType === 'sword'){
+    var attackerNode = {x : ~~(entity.x / 32), y : ~~(entity.y / 32)};
+    var nearbyEntities = [];
+    for(var i = attackerNode.x - 1; i < attackerNode.x + 1; i++){
+      for(var j = attackerNode.y - 1; j < attackerNode.y + 1; j++){
+        if(entitesMap[i][j] !== false){
+          var entitiesAtNode = entitiesMap[i][j]
+          for(var e in entitiesAtNode){
+            if(entitiesAtNode[e].playerId !== entity.playerId){
+              nearbyEntities.push(entitiesAtNode[e]);
+            }
+          }
+        }
+      }
+    }
+  }
+  console.log('nearbyEntities: ');
+  console.log(nearbyEntities);
+}
 
