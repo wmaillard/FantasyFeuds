@@ -229,7 +229,7 @@ function drawEntities(entities, ctx, lock, clear) {
             entities[entity].nodeY = nodeY;
             updateEntityMap(entities[entity], oldNode, {x: nodeX, y: nodeY}, entitiesMap)
         }
-        else if(!entityIsOnEntityMap(entity, entityMap)){  //check if entity is not on the map, but has nodeX and nodeY
+        else if(!entityIsOnEntityMap(entity, entitiesMap)){  //check if entity is not on the map, but has nodeX and nodeY
             updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap);
         }
         
