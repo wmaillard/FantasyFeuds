@@ -1,24 +1,4 @@
 
-
-var level = 0;
-var clearBackground = false;  //Should we clear the map
-var blockingTerrain = [];  //Things that you can't walk over
-var entitiesMap = []; //nodes that all the entities are on, currently only 15kB
-var entities = []; 
-var levelWidth;
-var levelHeight;
-var size = 32; //Tile size is 32 x 32, get this from the map so we don't use magic numbers
-var fps = 5//This is just for panning
-var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
-var ctxB;  //Foreground, background, and info context
-var ctxF;
-var ctxI;
-var useMin = true; //use minimized images
-var zoom = 1; //starting zoom of map
-var firstLoad = true;  //If true then all the images will be loaded up and cached
-
-
-
 //Loading tiled maps***
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
 //Class to load the map
