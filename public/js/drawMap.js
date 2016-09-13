@@ -225,7 +225,9 @@ function drawEntities(entities, ctx, lock, clear) {
         }
 
         else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){  //need to check if entity is on node
-            var oldNode = {x: entities[entity].nodeX, y: entities[entity].nodeY};
+            var x = entities[entity].nodeX;
+            var y = entities[entity].nodeY;
+            var oldNode = {x: x, y: y};
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
             console.log('door two: ')
