@@ -1,39 +1,4 @@
-//GLOBALS
-var APIURL = "https://got-rts.appspot.com"; 
-var playerId;
 
-
-
-var levels = ['theNeck', 'theNorth', 'dorne'];
-var levelTitles = {
-    theNeck: 'The Neck',
-    theNorth: 'The North',
-    dorne: 'Dorne'
-}
-var levelsWon = ['theNeck'];  //put this into player probably or just store server side eventually
-
-var player1 = {};
-var player2 = {};
-
-var baseSHealth = 1000;  //this will be moved when bases are turned into entities
-var baseNHealth = 1000;
-
-var mapInterval = false;  //Has the main drawing interval been set?
-
-var debugPathfinding = false;
-
-var serverSentChange = false;
-
-var playerColor = getRandomColor();
-
-var characterImages = {};
-
-characterImages.blank = new Image();
-characterImages.blank.src = 'img/characters/blank.png';
-characterImages.giant = new Image();
-characterImages.giant.src = 'img/characters/giant.png';
-characterImages.soldier = new Image();
-characterImages.soldier.src = 'img/characters/soldier.png';
 
 
 function getRandomColor() {
