@@ -37,9 +37,10 @@ var wasCtrl = false;
 var zoom = 1; //starting zoom of map
 var zoomHappened = false;
 
-characterImages.blank.src = 'img/characters/blank.png';
 characterImages.blank = new Image();
-characterImages.giant.src = 'img/characters/giant.png';
+characterImages.blank.src = 'img/characters/blank.png';
 characterImages.giant = new Image();
-characterImages.soldier.src = 'img/characters/soldier.png';
+characterImages.giant.src = 'img/characters/giant.png';
 characterImages.soldier = new Image();
+characterImages.soldier.src = 'img/characters/soldier.png';
+
