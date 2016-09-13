@@ -209,16 +209,12 @@ function startLevel() {
                     }
 	            }
 
-	        } else if (entityTrack % entitySpeed === 0) { //simple way to animate entities, should be a better way (else if, entities are frozen when pan)
-	            console.log('Yo');
-                drawEntities(entities, ctxF);
-	            /*drawEntities(entities.slice(quarter/ 4 * entities.length, (quarter + 1)/4 * entities.length - 1), ctxF);
-	            quarter++;  //Ugg this would work if enties was an array, need to convert to array then back to object or reconfigure project var myarray = Array.prototype.slice.call(myobject, 1) 
-	            quarter %= 4;*/
-	        } else {
-
-	            clearedF = false;
-	        }
+	        } 
+	        else {
+			drawEntities(entities, ctxF);
+	         //drawEntities(entities, ctxF);
+	         }
+	        
 
 	    }, 1000 / fps);
 	}
