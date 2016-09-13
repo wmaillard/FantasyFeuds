@@ -229,8 +229,8 @@ function drawEntities(entities, ctx, lock, clear) {
             entities[entity].nodeY = nodeY;
             updateEntityMap(entities[entity], oldNode, {x: nodeX, y: nodeY}, entitiesMap)
         }
-        else if(false){  //check if entity is not on the map, but has nodeX and nodeY
-            
+        else if(!entityIsOnEntityMap(entity, entityMap)){  //check if entity is not on the map, but has nodeX and nodeY
+            updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap);
         }
         
         
@@ -266,6 +266,15 @@ function drawEntities(entities, ctx, lock, clear) {
     }
     
 
+}
+function entityIsOnEntityMap(entity, entityMap){
+    var node = entityMap[entity.nodeX][entity.nodeY];
+    for(var e in node){
+        if(node[e].id === entity.id){
+            return true;
+        }
+    }
+    else return false;
 }
 function updateEntityMap(entity, oldNode, newNode, entitiesMap){
     if(oldNode){
