@@ -274,7 +274,7 @@ function entityIsOnEntityMap(entity, entityMap){
             return true;
         }
     }
-    else return false;
+    return false;
 }
 function updateEntityMap(entity, oldNode, newNode, entitiesMap){
     if(oldNode){
