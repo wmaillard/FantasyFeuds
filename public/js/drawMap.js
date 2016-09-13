@@ -3,6 +3,7 @@
 var level = 0;
 var clearBackground = false;  //Should we clear the map
 var blockingTerrain = [];  //Things that you can't walk over
+var entitiesMap = []; //nodes that all the entities are on, currently only 15kB
 var entities = []; 
 var levelWidth;
 var levelHeight;
@@ -52,6 +53,7 @@ var scene = {
                 blockingTerrain[i] = new Array(layer.height);
                 blockingTerrain[i].fill(false);
             }
+            entitiesMap = deepCloneArray(blockingTerrain);
         }
 
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
