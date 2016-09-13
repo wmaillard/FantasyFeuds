@@ -187,10 +187,7 @@ var scene = {
 
 function drawEntities(entities, ctx, lock, clear) { 
 
-    for(e in entities){
-        console.log('\nEntity with id: ' + entities[e].id + 'can attack the following \n')
-        attackableEntities(entities[e], entitiesMap)
-    }
+
 
 
       var directions = {
