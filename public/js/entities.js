@@ -1,5 +1,6 @@
 
 function Entity(xyStart, health, type, playerId, color) {
+    this.attackType = 'sword'; //extend this sometime
     this.color = color
     this.playerId = playerId;
     this.type = type;
