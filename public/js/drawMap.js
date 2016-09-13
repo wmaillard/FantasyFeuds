@@ -56,7 +56,9 @@ var scene = {
             entitiesMap = new Array(layer.width);
             for (var i = 0; i < layer.width; i++) {
                 entitiesMap[i] = new Array(layer.height);
-                entitiesMap[i].fill([]);
+                for(var j = 0; j < entitiesMap[i].length; j++){
+                    entitiesMap[i][j] = new Array(0);
+                }
             }
             
         }
