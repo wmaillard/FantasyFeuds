@@ -224,7 +224,7 @@ function drawEntities(entities, ctx, lock, clear) {
             updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
         }
         else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){
-            var oldNode = {x: entites[entity].nodeX, y: entities[entity].nodeY};
+            var oldNode = {x: entities[entity].nodeX, y: entities[entity].nodeY};
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
             updateEntityMap(entities[entity], oldNode, {x: nodeX, y: nodeY}, entitiesMap)
