@@ -201,6 +201,7 @@ function drawEntities(entities, ctx, lock, clear) {
         //Need to make %100 sure that everytime that an entity is added or updated, it is deleted and its oldNode is updated.
         if(entities[entity].nodeX === undefined){  //Entity was just added.
             if(entities[entity].oldNode === undefined){
+                entities[entity].oldNode = {};
                 entities[entity].oldNode.x = nodeX;
                 entities[entity].oldNode.y = nodeY;
             }
