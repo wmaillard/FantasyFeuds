@@ -284,7 +284,7 @@ function updateEntityMap(entity, oldNode, newNode, entitiesMap){
         var index = 0;
         var deleteCount = 0;
         for(var i in entitiesMap[oldNode.x][oldNode.y]){
-            if(entitiesMap[oldNode.x][oldNode.y][i].entity.id === entity.id){
+            if(entitiesMap[oldNode.x][oldNode.y][i].id === entity.id){
                 console.log('found an entity in entitiesMap');
                 deleteCount = 1;
                 index = i;
