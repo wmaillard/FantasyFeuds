@@ -199,25 +199,31 @@ function drawEntities(entities, ctx, lock, clear) {
         
         //Door one and three are dangerous because they give the opportunity to add an entity to the map without deleting its old location.
         //Need to make %100 sure that everytime that an entity is added or updated, it is deleted and its oldNode is updated.
-        if(entities[entity].nodeX === undefined){
+        if(entities[entity].nodeX === undefined){  //Entity was just added.
+            if(entities[entity].oldNode === undefined){
+                entities[entity].oldNode.x = nodeX;
+                entities[entity].oldNode.y = nodeY;
+            }
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
             console.log('door one: ')
             updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
         }
 
-        else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){  //need to check if entity is on node
-            var x = entities[entity].nodeX;
-            var y = entities[entity].nodeY;
-            var oldNode = {x: x, y: y};        //Old nodes may be messed up here, need to make sure to track them correctly
+        else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){  //entity has moved
+
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
             console.log('door two: ')
-            updateEntityMap(entities[entity], oldNode, {x: nodeX, y: nodeY}, entitiesMap)
+            if(entities[entity].oldNode === undefined){console.log('why is old node undefined? server issues?')};
+            updateEntityMap(entities[entity], oldNode, entities[entity].oldNode, entitiesMap);
+            entities[entity].oldNode = {x: nodeX, y: nodeY};
         }
-        else if(!entityIsOnEntityMap(entities[entity], entitiesMap)){  //check if entity is not on the map, but has nodeX and nodeY
+        else if(!entityIsOnEntityMap(entities[entity], entitiesMap)){  //entity is not on the map where it should be.
             console.log('door three: ')
-            updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap);
+            if(entities[entity].oldNode === undefined){console.log('why is old node undefined? server issues?')};
+            updateEntityMap(entities[entity], entities[entity].oldNode, {x: nodeX, y: nodeY}, entitiesMap);
+            entities[entity].oldNode = {x: nodeX, y: nodeY};
         }
         
         
