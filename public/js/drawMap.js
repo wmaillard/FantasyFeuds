@@ -215,7 +215,7 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
         
-        if(!entities[entity].nodeX){
+        if(entities[entity].nodeX === undefined){
             entities[entity].nodeX = nodeX;
             entities[entity].nodeY = nodeY;
             updateEntityMap(entities[entity], null, {x: nodeX, y: nodeY}, entitiesMap)
@@ -273,9 +273,11 @@ function updateEntityMap(entity, oldNode, newNode, entitiesMap){
                 break;
             }
         }
+        console.log('splicing');
         entitiesMap[oldNode.x][oldNode.y].splice (index, deleteCount);
     }
     if(newNode){
+        console.log('newNode');
         entitiesMap[newNode.x][newNode.y].push(entity);
     }
 }
