@@ -27,7 +27,7 @@ var mapInterval = false;  //Has the main drawing interval been set?
 var panning = false;  //Is the mouse held down?
 var player1 = {};
 var player2 = {};
-var playerColor = getRandomColor();
+var playerColor = 'black'; //like my soul :)
 var playerId;
 var serverSentChange = false;
 var size = 32;  //Get rid of this magic number
