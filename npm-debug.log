@@ -7,7 +7,7 @@
 6 silly lifecycle GOTRTS@1.0.0~prestart: no script for prestart, continuing
 7 info lifecycle GOTRTS@1.0.0~start: GOTRTS@1.0.0
 8 verbose lifecycle GOTRTS@1.0.0~start: unsafe-perm in lifecycle true
-9 verbose lifecycle GOTRTS@1.0.0~start: PATH: /usr/share/npm/bin/node-gyp-bin:/home/will/Documents/GOTRTS/node_modules/.bin:/home/will/bin:/home/will/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+9 verbose lifecycle GOTRTS@1.0.0~start: PATH: /usr/share/npm/bin/node-gyp-bin:/home/will/Documents/GOTRTS/node_modules/.bin:/usr/local/heroku/bin:/home/will/bin:/home/will/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 10 verbose lifecycle GOTRTS@1.0.0~start: CWD: /home/will/Documents/GOTRTS
 11 silly lifecycle GOTRTS@1.0.0~start: Args: [ '-c', 'node server.js' ]
 12 silly lifecycle GOTRTS@1.0.0~start: Returned: code: 1  signal: null

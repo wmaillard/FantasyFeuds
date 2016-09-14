@@ -1,6 +1,7 @@
 //Globals
 
 var APIURL = "https://got-rts.appspot.com";
+var attacks = [];
 var baseNHealth = 1000;
 var baseSHealth = 1000;  //this will be moved when bases are turned into entities
 var blockingTerrain = [];  //Things that you can't walk over
@@ -12,6 +13,7 @@ var ctxF;
 var ctxI;
 var debugPathfinding = false;
 var entities = [];
+var entitiesLastNode = {};
 var entitiesMap = []; //nodes that all the entities are on, currently only 15kB
 var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
 var firstLoad = true;  //If true then all the images will be loaded up and cached
@@ -31,7 +33,7 @@ var playerColor = 'black'; //like my soul :)
 var playerId;
 var serverSentChange = false;
 var size = 32;  //Get rid of this magic number
-var size = 32; //Tile size is 32 x 32, get this from the map so we don't use magic numbers
+var socket;
 var useMin = true; //use minimized images
 var wasCtrl = false;
 var zoom = 1; //starting zoom of map

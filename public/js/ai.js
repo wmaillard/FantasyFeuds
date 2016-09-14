@@ -309,19 +309,22 @@ function attackableEntities(entity, entitiesMap){
   //Check if entities on nodes that are within range, then check if they are specifically within range via entity.x/.y
   if(entity.attackType === 'sword'){
     var nearbyEntities = [];
-    console.log('z')
-    for(var i = entity.nodeX - 1; i <= entity.nodeX + 1; i++){
-      console.log('a')
-      for(var j = entity.nodeY - 1; j <= entity.nodeY + 1; j++){
-              console.log('b')
+    //console.log('z');
+    var nodeX = ~~(entity.x / 32);
+    var nodeY = ~~(entity.y / 32);
+
+    for(var i = nodeX - 1; i <= nodeX + 1; i++){
+      //console.log('a')
+      for(var j = nodeY - 1; j <= nodeY + 1; j++){
+              //console.log('b')
         if(entitiesMap[i][j].length > 0){
-           console.log('c')
+           //console.log('c')
           var entitiesAtNode = entitiesMap[i][j]
           for(var e in entitiesAtNode){
-            console.log('d')
+            //console.log('d')
             if(entitiesAtNode[e].playerId !== entity.playerId){
               nearbyEntities.push(entitiesAtNode[e]);
-              console.log('e')
+              //console.log('e')
             }
           }
         }
@@ -330,5 +333,9 @@ function attackableEntities(entity, entitiesMap){
   }
   console.log('nearbyEntities: ');
   console.log(nearbyEntities);
+  for(var i in nearbyEntities){
+    attacks.push({attacker: entity, victim: nearbyEntities[i]});
+  }
+  
 }
 

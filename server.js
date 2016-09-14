@@ -16,12 +16,17 @@ const io = socketIO(server);
 var allEntities = [];
 var userEntities = {};
 var change = false;
+var attacks = [];
 
 io.on('connection', (socket) => {
 	change = true;
   console.log('Client connected');
   socket.on('disconnect', () => console.log('Client disconnected'));
-  socket.on('clientEntities', (entities) => {
+  socket.on('clientEntities', (data) => {
+    var entities = data.entities;
+    attacks = data.attacks;
+
+    
   	change = true;
   	userEntities[convertId(socket.id)] = entities;
   	console.log('client ' + convertId(socket.id) + ' just sent me something');
@@ -34,9 +39,12 @@ setInterval(() => {
 		allEntities = [];
 		/*console.log('User Entities: ');
 		console.log(userEntities);*/
+
 		for(var userId in userEntities){
 			allEntities = allEntities.concat(userEntities[userId]);
 		}
+    applyAttacks(attacks, allEntities);
+
 		moveEntities(allEntities);
 		
 		io.emit('allEntities', allEntities)
@@ -44,6 +52,21 @@ setInterval(() => {
 }
 
 }, 250);
+
+function applyAttacks(attacks, entities){
+  //make this faster by indexing entities by id
+  //check to make sure attack is ok
+  //customize attacks for different kinds of entities
+  //check if health = 0 and set dead.
+  var attack;
+  while(attack = attacks.pop()){
+    for(var j in entities){
+      if(entities[j].id === attack.victim.id){
+        entities[j].health -= 20;
+      }
+    }
+  }
+}
 
 function convertId(oldId){
 	return oldId.slice(2);

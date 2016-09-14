@@ -168,7 +168,7 @@ var scene = {
 
 
 function drawEntities(entities, ctx, lock, clear) { 
-
+    //Lets just do this if there was a change, or does it matter.  There probably will always be a change...
 
 
 
@@ -186,6 +186,8 @@ function drawEntities(entities, ctx, lock, clear) {
 
     for (var entity in entities) {
         
+
+
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
         animateEntity(entities[entity]);
@@ -197,9 +199,12 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
         
+        setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
+        attackableEntities(entities[entity], entitiesMap);
+
         //Door one and three are dangerous because they give the opportunity to add an entity to the map without deleting its old location.
         //Need to make %100 sure that everytime that an entity is added or updated, it is deleted and its oldNode is updated.
-        if(entities[entity].nodeX === undefined){  //Entity was just added.
+/*        if(entities[entity].nodeX === undefined){  //Entity was just added.
             if(entities[entity].oldNode === undefined){
                 entities[entity].oldNode = {};
                 entities[entity].oldNode.x = nodeX;
@@ -226,7 +231,7 @@ function drawEntities(entities, ctx, lock, clear) {
             if(entities[entity].oldNode === undefined){console.log('why is old node undefined? server issues?')};
             updateEntityMap(entities[entity], entities[entity].oldNode, {x: nodeX, y: nodeY}, entitiesMap);
             entities[entity].oldNode = {x: nodeX, y: nodeY};
-        }
+        }*/
         
         
 
@@ -259,9 +264,13 @@ function drawEntities(entities, ctx, lock, clear) {
             //ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
     }
+}
     
 
-}
+
+
+
+/*
 function entityIsOnEntityMap(entity, entityMap){
     var node = entityMap[entity.nodeX][entity.nodeY];
     for(var e in node){
@@ -290,6 +299,35 @@ function updateEntityMap(entity, oldNode, newNode, entitiesMap){
         console.log('newNode');
         entitiesMap[newNode.x][newNode.y].push(entity);
     }
+}*/
+function setNodeXY(entity, entitiesMap,  entitiesLastNode){
+   
+
+    var newX = ~~(entity.x / 32);
+    var newY = ~~(entity.y / 32);
+    if(entitiesLastNode[entity.id]){
+        var oldX = entitiesLastNode[entity.id].x;
+        var oldY = entitiesLastNode[entity.id].y;  
+        var node = entitiesMap[oldX][oldY];
+ 
+        if(oldX !== newX || oldY !== newY){
+            for(var i in node){
+                if(node[i].id === entity.id){
+                    console.log('deleting some stuff')
+                    node.splice(i, 1);
+                    entitiesLastNode[entity.id] = {x: newX, y: newY};
+                    entitiesMap[newX][newY].push(entity);
+
+
+                }
+            }
+        }
+    }
+    else{
+        entitiesLastNode[entity.id] = {x: newX, y: newY};
+        entitiesMap[newX][newY].push(entity);
+    }
+
 }
 function animateEntity(entity){
     if (entity.walking === true){  
