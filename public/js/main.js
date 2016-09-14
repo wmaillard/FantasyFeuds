@@ -56,7 +56,7 @@ $(function() {
     ctxI = $("#info")[0].getContext("2d");
 
 
-    var socket = io();
+    socket = io();
     
     socket.on('allEntities', function(serverEntities){
         serverSentChange = true;
@@ -79,10 +79,13 @@ $(function() {
         if(serverSentChange){
             serverSentChange = false;
         }
-        else if(JSON.stringify(entities) !== oldEntities){
+        else if(JSON.stringify(entities) !== oldEntities || attacks.length > 0){
             oldEntities = JSON.stringify(entities);
-            socket.emit('clientEntities', onlyPlayerEntities(entities, playerId));
+            socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
+            attacks = [];
             console.log('Sent the server some info');
+            console.log('attacks: ');
+            console.log(attacks);
             console.log(onlyPlayerEntities(entities, playerId));
         }
 
