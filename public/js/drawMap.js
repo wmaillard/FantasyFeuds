@@ -215,9 +215,9 @@ function drawEntities(entities, ctx, lock, clear) {
           }
           
           var newCan =  document.createElement('canvas');  //This probably takes too long, keep one canvas active for this, store with character images.
-          var justOneSprite = cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity.size], entities[entity.size]);
+          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity.size], entities[entity.size]);
           
-          scratchCanvas.drawImage(justOneSprite, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
+          scratchCanvas.drawImage(newCan, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
         }
 
