@@ -267,7 +267,7 @@ function scaleDown(justCharacter, height, width){
 	while(oldWidth > width * 2 && oldHeight > height * 2){
 		oldWidth /= 2;
 		oldHeight /= 2;
-		ctx.clearRect(0, 0, scalingCanvas.width, scalingCanvas.height);
+		//ctx.clearRect(0, 0, scalingCanvas.width, scalingCanvas.height);
 		ctx.drawImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, oldWidth/2, oldHeight/2);
 	}
 	justCharacter.height = height;
