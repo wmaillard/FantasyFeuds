@@ -84,7 +84,7 @@ function moveEntities(entities) {
           }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
           	
           	
-          setDirectionFacing(entity); // Move this to the client
+
           
           
             if(~~(entity.x / 32) > entity.nextNode.x){
@@ -107,36 +107,5 @@ function moveEntities(entities) {
 
 }
 
-//Move this to the client
-function setDirectionFacing(entity){
-	if(entity.nextNode){
-		var currentNode = {x: ~~(entity.x / 32), y: ~~(enitity.y / 32)};
-		var nextNode = entity.nextNode;
-		var bPos = currentNode.y - currentNode.x;
-		var bNeg = currentNode.y + currentNode.x;
-		var yOnPos = nextNode.x + bPos;
-		var yOnNeg = -nextNode.x + bNeg;
-		if(nextNode.x < currentNode.x){
-			if(nextNode.y < yOnPos && nextNode.y > yOnNeg){
-				entity.directionPointing = 'W';
-			}
-			else if(nextNode.y < yOnNeg){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}else{
-			if(nextNode.y > yOnPos && nextNode.y < yOnNeg){
-				entity.directionPointing = 'E';
-			}			
-			else if(nextNode.y < yOnPos){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}
-	}
-}
+
   
