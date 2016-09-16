@@ -215,7 +215,7 @@ function drawEntities(entities, ctx, lock, clear) {
                 drawHighlight(entities[entity], scratchCanvas);
           }
           
-          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity.size], entities[entity.size]);
+          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
           
           scratchCanvas.drawImage(newCan, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
