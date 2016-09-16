@@ -82,6 +82,7 @@ function moveEntities(entities) {
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
             entity.walking = false;
           }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
+          setDirectionFacing(entity);
             if(~~(entity.x / 32) > entity.nextNode.x){
               entity.x -= 10;
             }else if (~~(entity.x / 32) < entity.nextNode.x){
@@ -100,5 +101,36 @@ function moveEntities(entities) {
       }
     }
 
+}
+function setDirectionFacing(entity){
+	if(entity.nextNode){
+		var currentNode = {x: ~~(entity.x / 32), y: ~~(enitity.y / 32)};
+		var nextNode = entity.nextNode;
+		var bPos = currentNode.y - currentNode.x;
+		var bNeg = currentNode.y + currentNode.x;
+		var yOnPos = nextNode.x + bPos;
+		var yOnNeg = -nextNode.x + bNeg;
+		if(nextNode.x < currentNode.x){
+			if(nextNode.y < yOnPos && nextNode.y > yOnNeg){
+				entity.directionFacing = 'W';
+			}
+			else if(nextNode.y < yOnNeg){
+				entity.directionFacing = 'N';
+			}
+			else{
+				entity.directionFacing = 'S'
+			}
+		}else{
+			if(nextNode.y > yOnPos && nextNode.y < yOnNeg){
+				entity.directionFacing = 'E';
+			}			
+			else if(nextNode.y < yOnPos){
+				entity.directionFacing = 'N';
+			}
+			else{
+				entity.directionFacing = 'S'
+			}
+		}
+	}
 }
   
