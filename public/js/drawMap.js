@@ -187,7 +187,8 @@ function drawEntities(entities, ctx, lock, clear) {
     for (var entity in entities) {
         
 
-
+        setDirectionFacing(entities[entity]);
+        
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
         animateEntity(entities[entity]);
@@ -201,39 +202,6 @@ function drawEntities(entities, ctx, lock, clear) {
         
         setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
         attackableEntities(entities[entity], entitiesMap);
-
-        //Door one and three are dangerous because they give the opportunity to add an entity to the map without deleting its old location.
-        //Need to make %100 sure that everytime that an entity is added or updated, it is deleted and its oldNode is updated.
-/*        if(entities[entity].nodeX === undefined){  //Entity was just added.
-            if(entities[entity].oldNode === undefined){
-                entities[entity].oldNode = {};
-                entities[entity].oldNode.x = nodeX;
-                entities[entity].oldNode.y = nodeY;
-            }
-            entities[entity].nodeX = nodeX;
-            entities[entity].nodeY = nodeY;
-            console.log('door one: ')
-            updateEntityMap(entities[entity], entities[entity].oldNode, {x: nodeX, y: nodeY}, entitiesMap);
-            entities[entity].oldNode = {x: nodeX, y: nodeY};
-        }
-
-        else if (entities[entity].nodeX !== nodeX || entities[entity].nodeY !== nodeY){  //entity has moved
-
-            entities[entity].nodeX = nodeX;
-            entities[entity].nodeY = nodeY;
-            console.log('door two: ')
-            if(entities[entity].oldNode === undefined){console.log('why is old node undefined? server issues?')};
-            updateEntityMap(entities[entity], entities[entity].oldNode, entities[entity].oldNode, entitiesMap);
-            entities[entity].oldNode = {x: nodeX, y: nodeY};
-        }
-        else if(!entityIsOnEntityMap(entities[entity], entitiesMap)){  //entity is not on the map where it should be.
-            console.log('door three: ')
-            if(entities[entity].oldNode === undefined){console.log('why is old node undefined? server issues?')};
-            updateEntityMap(entities[entity], entities[entity].oldNode, {x: nodeX, y: nodeY}, entitiesMap);
-            entities[entity].oldNode = {x: nodeX, y: nodeY};
-        }*/
-        
-        
 
         drawHealthBar(entities[entity], scratchCanvas);
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
@@ -392,3 +360,36 @@ function drawHealthBar(entity, ctx){
         ctx.fillRect(entity.x + (1 - health / 100) * size, entity.y - size/ 4, (health / 100) * size, size / 13);
 
     }
+//Move this to the client
+function setDirectionFacing(entity){
+    var currentNode = {x: ~~(entity.x / 32), y: ~~(enitity.y / 32)};
+	var nextNode = entity.nextNode;
+	if(nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
+
+		var bPos = currentNode.y - currentNode.x;
+		var bNeg = currentNode.y + currentNode.x;
+		var yOnPos = nextNode.x + bPos;
+		var yOnNeg = -nextNode.x + bNeg;
+		if(nextNode.x < currentNode.x){
+			if(nextNode.y < yOnPos && nextNode.y > yOnNeg){
+				entity.directionPointing = 'W';
+			}
+			else if(nextNode.y < yOnNeg){
+				entity.directionPointing = 'N';
+			}
+			else{
+				entity.directionPointing = 'S'
+			}
+		}else{
+			if(nextNode.y > yOnPos && nextNode.y < yOnNeg){
+				entity.directionPointing = 'E';
+			}			
+			else if(nextNode.y < yOnPos){
+				entity.directionPointing = 'N';
+			}
+			else{
+				entity.directionPointing = 'S'
+			}
+		}
+	}
+}
