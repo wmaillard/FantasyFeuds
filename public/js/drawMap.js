@@ -205,6 +205,7 @@ function drawEntities(entities, ctx, lock, clear) {
 
         drawHealthBar(entities[entity], scratchCanvas);
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
+           
             scratchCanvas.drawImage(characterImages.blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
         } else {
           
@@ -212,8 +213,11 @@ function drawEntities(entities, ctx, lock, clear) {
                 //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
                 drawHighlight(entities[entity], scratchCanvas);
           }
+          var justOneSprite = cutOutCharacter(characterImages[entities[entity].type], img_x, img_y, entities[entity.size], entities[entity.size]);
+          
+          scratchCanvas.drawImage(justOneSprite, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
+
         }
-        scratchCanvas.drawImage(characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
 
 
@@ -233,8 +237,28 @@ function drawEntities(entities, ctx, lock, clear) {
 
     }
 }
-    
 
+function cutOutCharacter(img, x, y, width, height){
+	var newCan =  document.createElement('canvas');  //This probably takes too long, keep one canvas active for this, store with character images.
+	newCan.width = width;
+	newCan.height = height;
+	var ctx = newCan.getContext('2d');
+	ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+	return ctx;
+	
+	
+}   
+function scaleDown(){
+	var can2 = document.createElement('canvas');
+	can2.width = w/2;
+	can2.height = w/2;
+	var ctx2 = can2.getContext('2d');
+	
+	ctx2.drawImage(img, 0, 0, w/2, h/2);
+	ctx2.drawImage(can2, 0, 0, w/2, h/2, 0, 0, w/4, h/4);
+	ctx2.drawImage(can2, 0, 0, w/4, h/4, 0, 0, w/6, h/6);
+	return can2;
+}
 
 
 
