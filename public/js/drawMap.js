@@ -366,13 +366,13 @@ function setDirectionFacing(entity){
 	var nextNode = entity.nextNode;
 	if(nextNode && nextNode.x !== currentNode.x || nextNode.y !== currentNode.y){
 		if(currentNode.x === nextNode.x){
-			if(current.y < nextNode.y){
+			if(currentNode.y < nextNode.y){
 				entity.directionPointing = 'S';
 			}else{
 				entity.directionPointing = 'N'
 			}
 		}else{
-			if(current.x < nextNode.x){
+			if(currentNode.x < nextNode.x){
 				entity.directionPointing = 'E'
 			}else{
 				entity.directionPointing = 'W';
