@@ -244,7 +244,7 @@ function cutOutCharacter(img, x, y, width, height){
 	newCan.height = height;
 	var ctx = newCan.getContext('2d');
 	ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
-	return ctx;
+	return newCan;
 	
 	
 }   
