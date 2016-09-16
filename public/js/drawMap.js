@@ -1,3 +1,4 @@
+var newCan =  document.createElement('canvas');  //This probably takes too long, keep one canvas active for this, store with character images.
 
 //Loading tiled maps***
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
@@ -214,7 +215,6 @@ function drawEntities(entities, ctx, lock, clear) {
                 drawHighlight(entities[entity], scratchCanvas);
           }
           
-          var newCan =  document.createElement('canvas');  //This probably takes too long, keep one canvas active for this, store with character images.
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity.size], entities[entity.size]);
           
           scratchCanvas.drawImage(newCan, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
