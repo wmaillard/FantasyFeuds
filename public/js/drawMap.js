@@ -365,6 +365,22 @@ function setDirectionFacing(entity){
     var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
 	var nextNode = entity.nextNode;
 	if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
+		if(currentNode.x === nextNode.x){
+			if(current.y < nextNode.y){
+				entity.directionPointing = 'S';
+			}else{
+				entity.directionPointing = 'N'
+			}
+		}else{
+			if(current.x < nextNode.x){
+				entity.directionPointing = 'E'
+			}else{
+				entity.directionPointing = 'W';
+			}
+		}
+	}
+/* Keep this for a more fluid testing
+	if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
 
 		var bPos = currentNode.y - currentNode.x;
 		var bNeg = currentNode.y + currentNode.x;
@@ -391,5 +407,5 @@ function setDirectionFacing(entity){
 				entity.directionPointing = 'S'
 			}
 		}
-	}
+	}*/
 }
