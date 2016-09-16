@@ -362,7 +362,7 @@ function drawHealthBar(entity, ctx){
     }
 //Move this to the client
 function setDirectionFacing(entity){
-    var currentNode = {x: ~~(entity.x / 32), y: ~~(enitity.y / 32)};
+    var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
 	var nextNode = entity.nextNode;
 	if(nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
 
