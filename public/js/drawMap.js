@@ -213,7 +213,9 @@ function drawEntities(entities, ctx, lock, clear) {
                 //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
                 drawHighlight(entities[entity], scratchCanvas);
           }
-          var justOneSprite = cutOutCharacter(characterImages[entities[entity].type], img_x, img_y, entities[entity.size], entities[entity.size]);
+          
+          var newCan =  document.createElement('canvas');  //This probably takes too long, keep one canvas active for this, store with character images.
+          var justOneSprite = cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity.size], entities[entity.size]);
           
           scratchCanvas.drawImage(justOneSprite, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
@@ -238,8 +240,7 @@ function drawEntities(entities, ctx, lock, clear) {
     }
 }
 
-function cutOutCharacter(img, x, y, width, height){
-	var newCan =  document.createElement('canvas');  //This probably takes too long, keep one canvas active for this, store with character images.
+function cutOutCharacter(newCan, img, x, y, width, height){
 	newCan.width = width;
 	newCan.height = height;
 	var ctx = newCan.getContext('2d');
