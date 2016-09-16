@@ -216,7 +216,8 @@ function drawEntities(entities, ctx, lock, clear) {
           }
           
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
-          
+
+          scaleDown(newCan, 32, 32);
           scratchCanvas.drawImage(newCan, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
         }
@@ -249,16 +250,31 @@ function cutOutCharacter(newCan, img, x, y, width, height){
 	
 	
 }   
-function scaleDown(){
-	var can2 = document.createElement('canvas');
-	can2.width = w/2;
-	can2.height = w/2;
-	var ctx2 = can2.getContext('2d');
+function scaleDown(justCharacter, height, width){
 	
-	ctx2.drawImage(img, 0, 0, w/2, h/2);
-	ctx2.drawImage(can2, 0, 0, w/2, h/2, 0, 0, w/4, h/4);
-	ctx2.drawImage(can2, 0, 0, w/4, h/4, 0, 0, w/6, h/6);
-	return can2;
+	var scalingCanvas = document.createElement('canvas');
+	var oldHeight, oldWidth;
+	oldHeight = justCharacter.height;
+	oldWidth = justCharacter.width;
+	
+
+	scalingCanvas.width = oldWidth;
+	scalingCanvas.height = oldHeight;
+	var ctx = scalingCanvas.getContext('2d');
+
+	ctx.drawImage(justCharacter, 0, 0, oldWidth, oldHeight);
+	
+	while(oldWidth > width * 2 && oldHeight > height * 2){
+		oldWidth /= 2;
+		oldHeight /= 2;
+		ctx.clearRect(0, 0, scalingCanvas.width, scalingCanvas.height);
+		ctx.drawImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, oldWidth/2, oldHeight/2);
+	}
+	justCharacter.height = height;
+	justCharacter.width = width;
+	var finalCtx = justCharacter.getContext('2d');
+	finalCtx.clearRect(0, 0, justCharacter.width, justCharacter.height);
+	finalCtx.drawImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, width, height);
 }
 
 
