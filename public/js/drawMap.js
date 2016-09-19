@@ -221,7 +221,7 @@ function drawEntities(entities, ctx, lock, clear) {
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
 
           scaleDown(newCan, 32, 32);
-          scratchCanvas.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
+          ctx.drawImage(newCan, 0, 0, 32, 32,  ~~(x / 32) - backgroundOffset.x, ~~(y / 32) - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 
         }
 
