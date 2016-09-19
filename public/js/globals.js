@@ -36,7 +36,7 @@ var size = 32;  //Get rid of this magic number
 var socket;
 var useMin = true; //use minimized images
 var wasCtrl = false;
-var zoom = 1; //starting zoom of map
+var zoom = 3; //starting zoom of map
 var zoomHappened = false;
 var canvasWidth; 
 var canvasHeight;
