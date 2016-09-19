@@ -98,18 +98,18 @@ var scene = {
 
             //scene.layers.push(scratchCanvas.canvas.toDataURL()); //save scratch canvas for later
             scene.layers.push(scratchCanvas.canvas);
-            scene.context.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / scene.zoom, $('#background').height() / scene.zoom, 0, 0, $('#background').width(), $('#background').height()); //draw image from scratch canvas for better performance
+            scene.context.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
 
         } else { //if all the layers have been previously loaded, use the cache
 
             scene.layers.forEach(function(layer) {
                 backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
                 backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
-                (layer.width + backgroundOffset.x) / scene.zoom < $('#background').width() ? backgroundOffset.x = $('#background').width() * scene.zoom - layer.width : backgroundOffset.x;
-                (layer.height + backgroundOffset.y) / scene.zoom < $('#background').height() ? backgroundOffset.y = $('#background').height() * scene.zoom - layer.height : backgroundOffset.y;
+                (layer.width + backgroundOffset.x) / scene.zoom < canvasWidth ? backgroundOffset.x = canvasWidth * scene.zoom - layer.width : backgroundOffset.x;
+                (layer.height + backgroundOffset.y) / scene.zoom < canvasHeight ? backgroundOffset.y = canvasHeight * scene.zoom - layer.height : backgroundOffset.y;
                 //var i = $("<img />", {src: src})[0];
                 // //console.log(layer);
-                scene.context.drawSafeImage(layer, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() * scene.zoom, $('#background').height() * scene.zoom, 0, 0, $('#background').width(), $('#background').height()); //draw image from scratch canvas for better performance
+                scene.context.drawSafeImage(layer, -backgroundOffset.x, -backgroundOffset.y, canvasWidth * scene.zoom, canvasHeight * scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
             });
         }
     },
