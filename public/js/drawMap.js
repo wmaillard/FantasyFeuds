@@ -207,15 +207,16 @@ function drawEntities(entities, ctx, lock, clear) {
         setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
         attackableEntities(entities[entity], entitiesMap);
 
-        drawHealthBar(entities[entity], scratchCanvas);
+        drawHealthBar(entities[entity], ctx);
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
-           
-            scratchCanvas.drawImage(characterImages.blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
+            cutOutCharacter(newCan, 'blank', img_x, img_y, entities[entity].size, entities[entity].size);
+
         } else {
-          
+          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
+
           if(entities[entity].selected === true){  
                 //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
-                drawHighlight(entities[entity], scratchCanvas);
+                drawHighlight(entities[entity], ctx);
           }
           
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
@@ -233,9 +234,6 @@ function drawEntities(entities, ctx, lock, clear) {
              ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
           }*/
 
-
-            var width = scratchCanvas.canvas.width;
-            var height = scratchCanvas.canvas.height;
 
 
               //Here you are upscaling everything in scratchCanvas so it probably looks shitty. Draw the scratch canvas at the correct zoom and then draw it on ctx dumbass, heh heh heh
