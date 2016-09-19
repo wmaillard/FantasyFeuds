@@ -38,6 +38,9 @@ var useMin = true; //use minimized images
 var wasCtrl = false;
 var zoom = 1; //starting zoom of map
 var zoomHappened = false;
+var canvasWidth; 
+var canvasHeight;
+var windowResize = false;  //This hasn't been implemented yet
 
 characterImages.blank = new Image();
 characterImages.blank.src = 'img/characters/blank.png';
@@ -46,3 +49,12 @@ characterImages.giant.src = 'img/characters/giant.png';
 characterImages.soldier = new Image();
 characterImages.soldier.src = 'img/characters/soldier.png';
 
+
+CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight){
+  if(!canvasWidth || !canvasHeight || windowResize){
+    canvasWidth = $('#background').width();
+    canvasHeight = $('#background').height();
+  }
+  if (dx  < canvasWidth && dy < canvasHeight && dx + dWidth > 0 && dy + dHeight > 0)
+        this.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+}
