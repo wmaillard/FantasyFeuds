@@ -1,3 +1,4 @@
+var newCan =  document.createElement('canvas');  //This probably takes too long, keep one canvas active for this, store with character images.
 
 //Loading tiled maps***
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
@@ -170,7 +171,7 @@ var scene = {
 function drawEntities(entities, ctx, lock, clear) { 
     //Lets just do this if there was a change, or does it matter.  There probably will always be a change...
 
-
+  ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
 
       var directions = {
         'S': 0,
@@ -179,10 +180,11 @@ function drawEntities(entities, ctx, lock, clear) {
         'N': 3
     }
 
- var scratchCanvas = ctx.canvas.cloneNode();    
+/* var scratchCanvas = ctx.canvas.cloneNode();    
  scratchCanvas = scratchCanvas.getContext("2d");
     scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
-    scratchCanvas.canvas.width = levelWidth * 32 ;
+    scratchCanvas.canvas.width = levelWidth * 32 ;*/
+    
 
     for (var entity in entities) {
         
@@ -203,38 +205,78 @@ function drawEntities(entities, ctx, lock, clear) {
         setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
         attackableEntities(entities[entity], entitiesMap);
 
-        drawHealthBar(entities[entity], scratchCanvas);
+        drawHealthBar(entities[entity], ctx);
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
-            scratchCanvas.drawImage(characterImages.blank, img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);
+            cutOutCharacter(newCan, 'blank', img_x, img_y, entities[entity].size, entities[entity].size);
+
         } else {
-          
+          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
+
           if(entities[entity].selected === true){  
                 //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
-                drawHighlight(entities[entity], scratchCanvas);
+                drawHighlight(entities[entity], ctx);
           }
+          
+          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
+
+        // scaleDown(newCan, 32, 32);
+          ctx.drawImage(newCan, 0, 0, 150, 150,  x * zoom + backgroundOffset.x * zoom, y * zoom + backgroundOffset.y * zoom, 32 * zoom, 32 * zoom);
+         //ctx.drawImage(newCan, 300, 200);
+        //  ctx.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
+
         }
-        scratchCanvas.drawImage(characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
 
 
 
-          if (!clear) {
+  /*        if (!clear) {
              ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
-          }
+          }*/
 
-
-            var width = scratchCanvas.canvas.width;
-            var height = scratchCanvas.canvas.height;
 
 
               //Here you are upscaling everything in scratchCanvas so it probably looks shitty. Draw the scratch canvas at the correct zoom and then draw it on ctx dumbass, heh heh heh
-            ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, -16 * zoom,  -16 * zoom, $('#background').width(), $('#background').height())
+            // This was the original one: ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, -16 * zoom,  -16 * zoom, $('#background').width(), $('#background').height())
 
             //ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
     }
 }
-    
 
+function cutOutCharacter(newCan, img, x, y, width, height){
+	newCan.width = width;
+	newCan.height = height;
+	var ctx = newCan.getContext('2d');
+	ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+	return newCan;
+	
+	
+}   
+function scaleDown(justCharacter, height, width){
+	
+	var scalingCanvas = document.createElement('canvas');
+	var oldHeight, oldWidth;
+	oldHeight = justCharacter.height;
+	oldWidth = justCharacter.width;
+	
+
+	scalingCanvas.width = oldWidth;
+	scalingCanvas.height = oldHeight;
+	var ctx = scalingCanvas.getContext('2d');
+
+	ctx.drawImage(justCharacter, 0, 0, oldWidth, oldHeight);
+	
+	while(oldWidth > width * 2 && oldHeight > height * 2){
+		oldWidth /= 2;
+		oldHeight /= 2;
+		//ctx.clearRect(0, 0, scalingCanvas.width, scalingCanvas.height);
+		ctx.drawImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, oldWidth/2, oldHeight/2);
+	}
+	justCharacter.height = height;
+	justCharacter.width = width;
+	var finalCtx = justCharacter.getContext('2d');
+	finalCtx.clearRect(0, 0, justCharacter.width, justCharacter.height);
+	finalCtx.drawImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, width, height);
+}
 
 
 
@@ -309,10 +351,11 @@ function animateEntity(entity){
 function drawHighlight(entity, ctx){
   ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
   ctx.beginPath();
-  ctx.ellipse(entity.x + size / 2, entity.y + size * 4/5, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
+  ctx.ellipse(entity.x * zoom + size * zoom / 2 + backgroundOffset.x * zoom, entity.y * zoom + size * zoom * 4/5 + backgroundOffset.y * zoom, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
   ctx.strokeStyle='red';
   ctx.stroke();
   ctx.restore();
+
 }
 
 function drawHealthBar(entity, ctx){
@@ -321,7 +364,7 @@ function drawHealthBar(entity, ctx){
      ctx.fillStyle = entity.color;
 
 
-      ctx.fillRect(entity.x, entity.y - size/ 4, size, size / 13);
+      ctx.fillRect(entity.x * zoom + backgroundOffset.x * zoom, entity.y * zoom - size * zoom/ 4 + backgroundOffset.y * zoom, size * zoom, size * zoom / 13);
 
 
       if(level === 'theNorth'){  //generalize this
@@ -357,14 +400,30 @@ function drawHealthBar(entity, ctx){
         }
       
 
-        ctx.fillRect(entity.x + (1 - health / 100) * size, entity.y - size/ 4, (health / 100) * size, size / 13);
+        ctx.fillRect(entity.x * zoom + (1 - health / 100) * size * zoom + backgroundOffset.x * zoom, entity.y * zoom - size * zoom/ 4 + backgroundOffset.y * zoom, (health / 100) * size * zoom, size * zoom / 13);
 
     }
 //Move this to the client
 function setDirectionFacing(entity){
-    var currentNode = {x: ~~(entity.x / 32), y: ~~(enitity.y / 32)};
+    var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
 	var nextNode = entity.nextNode;
-	if(nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
+	if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
+		if(currentNode.x === nextNode.x){
+			if(currentNode.y < nextNode.y){
+				entity.directionPointing = 'S';
+			}else{
+				entity.directionPointing = 'N'
+			}
+		}else{
+			if(currentNode.x < nextNode.x){
+				entity.directionPointing = 'E'
+			}else{
+				entity.directionPointing = 'W';
+			}
+		}
+	}
+/* Keep this for a more fluid testing
+	if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
 
 		var bPos = currentNode.y - currentNode.x;
 		var bNeg = currentNode.y + currentNode.x;
@@ -391,5 +450,5 @@ function setDirectionFacing(entity){
 				entity.directionPointing = 'S'
 			}
 		}
-	}
+	}*/
 }

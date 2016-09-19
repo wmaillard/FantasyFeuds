@@ -73,7 +73,7 @@ function releasePressMap(e, mobile) {
 function pressMap(e, mobile) {
     e = switchEventToMobile(e);
 
-    currentCoords.x = e.clientX;
+    currentCoords.x = e.clientX ;
     currentCoords.y = e.clientY;
     ////console.log(isBlocked(~~((currentCoords.x - backgroundOffset.x) / zoom),
     //~~((currentCoords.y - backgroundOffset.y) / zoom)));
@@ -107,8 +107,8 @@ function entityIsSelected(){
 }
 function clickGameContainer(e){
 
-      var x = ~~(e.clientX / zoom - backgroundOffset.x);
-      var y = ~~(e.clientY / zoom - backgroundOffset.y);
+      var x = ~~(e.clientX / zoom - size / 2 * zoom - backgroundOffset.x);  //size/2 shifts everything from top left corner to center
+      var y = ~~(e.clientY / zoom - size / 2 * zoom - backgroundOffset.y);
 
       var entityAtClick = entityIsThere(x, y);
       if(entityAtClick && entityAtClick.playerId === playerId){ 
