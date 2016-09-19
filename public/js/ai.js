@@ -331,8 +331,8 @@ function attackableEntities(entity, entitiesMap){
       }
     }
   }
-  console.log('nearbyEntities: ');
-  console.log(nearbyEntities);
+/*  console.log('nearbyEntities: ');
+  console.log(nearbyEntities);*/
   for(var i in nearbyEntities){
     attacks.push({attacker: entity, victim: nearbyEntities[i]});
   }
