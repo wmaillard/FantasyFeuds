@@ -107,8 +107,8 @@ function entityIsSelected(){
 }
 function clickGameContainer(e){
 
-      var x = ~~(e.clientX / zoom + size / 2 * zoom - backgroundOffset.x);  //size/32 shifts everything from top left corner to center
-      var y = ~~(e.clientY / zoom + size / 2 * zoom - backgroundOffset.y);
+      var x = ~~(e.clientX / zoom - size / 2 * zoom - backgroundOffset.x);  //size/2 shifts everything from top left corner to center
+      var y = ~~(e.clientY / zoom - size / 2 * zoom - backgroundOffset.y);
 
       var entityAtClick = entityIsThere(x, y);
       if(entityAtClick && entityAtClick.playerId === playerId){ 
