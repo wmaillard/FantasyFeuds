@@ -180,13 +180,11 @@ function drawEntities(entities, ctx, lock, clear) {
         'N': 3
     }
 
- var scratchCanvas = ctx.canvas.cloneNode();    
+/* var scratchCanvas = ctx.canvas.cloneNode();    
  scratchCanvas = scratchCanvas.getContext("2d");
     scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
-    scratchCanvas.canvas.width = levelWidth * 32 ;
+    scratchCanvas.canvas.width = levelWidth * 32 ;*/
     
-    var backgroundWidth = $('#background').width();
-    var backgroundHeight = $('#background').height();
 
     for (var entity in entities) {
         
@@ -353,10 +351,11 @@ function animateEntity(entity){
 function drawHighlight(entity, ctx){
   ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
   ctx.beginPath();
-  ctx.ellipse(entity.x + size * zoom / 2 + backgroundOffset.x, entity.y + size * zoom * 4/5 + backgroundOffset.y, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
+  ctx.ellipse(entity.x * zoom + size * zoom / 2 + backgroundOffset.x * zoom, entity.y * zoom + size * zoom * 4/5 + backgroundOffset.y * zoom, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
   ctx.strokeStyle='red';
   ctx.stroke();
   ctx.restore();
+
 }
 
 function drawHealthBar(entity, ctx){
@@ -365,7 +364,7 @@ function drawHealthBar(entity, ctx){
      ctx.fillStyle = entity.color;
 
 
-      ctx.fillRect(entity.x + backgroundOffset.x, entity.y - size * zoom/ 4 + backgroundOffset.y, size * zoom, size * zoom / 13);
+      ctx.fillRect(entity.x * zoom + backgroundOffset.x * zoom, entity.y * zoom - size * zoom/ 4 + backgroundOffset.y * zoom, size * zoom, size * zoom / 13);
 
 
       if(level === 'theNorth'){  //generalize this
@@ -401,7 +400,7 @@ function drawHealthBar(entity, ctx){
         }
       
 
-        ctx.fillRect(entity.x + (1 - health / 100) * size * zoom + backgroundOffset.x, entity.y - size * zoom/ 4 + backgroundOffset.y, (health / 100) * size * zoom, size * zoom / 13);
+        ctx.fillRect(entity.x * zoom + (1 - health / 100) * size * zoom + backgroundOffset.x * zoom, entity.y * zoom - size * zoom/ 4 + backgroundOffset.y * zoom, (health / 100) * size * zoom, size * zoom / 13);
 
     }
 //Move this to the client
