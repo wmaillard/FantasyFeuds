@@ -73,8 +73,8 @@ function releasePressMap(e, mobile) {
 function pressMap(e, mobile) {
     e = switchEventToMobile(e);
 
-    currentCoords.x = e.clientX;
-    currentCoords.y = e.clientY;
+    currentCoords.x = e.clientX + size / 2 * zoom;
+    currentCoords.y = e.clientY + size / 2 * zoom;
     ////console.log(isBlocked(~~((currentCoords.x - backgroundOffset.x) / zoom),
     //~~((currentCoords.y - backgroundOffset.y) / zoom)));
     panning = true;
