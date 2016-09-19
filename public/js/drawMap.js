@@ -184,6 +184,9 @@ function drawEntities(entities, ctx, lock, clear) {
  scratchCanvas = scratchCanvas.getContext("2d");
     scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
     scratchCanvas.canvas.width = levelWidth * 32 ;
+    
+    var backgroundWidth = $('#background').width();
+    var backgroundHeight = $('#background').height();
 
     for (var entity in entities) {
         
@@ -218,7 +221,7 @@ function drawEntities(entities, ctx, lock, clear) {
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
 
           scaleDown(newCan, 32, 32);
-          scratchCanvas.drawImage(newCan, entities[entity].x, entities[entity].y, 32, 32);  //This is going from 150 to 32
+          scratchCanvas.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 
         }
 
@@ -234,7 +237,7 @@ function drawEntities(entities, ctx, lock, clear) {
 
 
               //Here you are upscaling everything in scratchCanvas so it probably looks shitty. Draw the scratch canvas at the correct zoom and then draw it on ctx dumbass, heh heh heh
-            ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, -16 * zoom,  -16 * zoom, $('#background').width(), $('#background').height())
+            // This was the original one: ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, -16 * zoom,  -16 * zoom, $('#background').width(), $('#background').height())
 
             //ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
