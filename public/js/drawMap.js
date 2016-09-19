@@ -92,13 +92,13 @@ var scene = {
 
                 //  if(s_x > $('#background').width() || s_y > $('#background').height()){return;} //outside current window, don't load
 
-                scratchCanvas.drawSafeImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
+                scratchCanvas.drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
 
             });
 
             //scene.layers.push(scratchCanvas.canvas.toDataURL()); //save scratch canvas for later
             scene.layers.push(scratchCanvas.canvas);
-            scene.context.drawSafeImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / scene.zoom, $('#background').height() / scene.zoom, 0, 0, $('#background').width(), $('#background').height()); //draw image from scratch canvas for better performance
+            scene.context.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / scene.zoom, $('#background').height() / scene.zoom, 0, 0, $('#background').width(), $('#background').height()); //draw image from scratch canvas for better performance
 
         } else { //if all the layers have been previously loaded, use the cache
 
