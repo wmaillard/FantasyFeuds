@@ -344,7 +344,7 @@ function animateEntity(entity){
           entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
       }
    else {
-      entity.walking.state = 1;  
+      entity.walkingState = 1;  
   }
 }
 
