@@ -69,7 +69,7 @@ $(function() {
 
     })
     socket.on('ping', function(response){
-    	console.log(response);
+    	//console.log(response);
     })
     socket.on('connect', function(){
     	playerId = socket.id;
@@ -83,10 +83,10 @@ $(function() {
             oldEntities = JSON.stringify(entities);
             socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
             attacks = [];
-            console.log('Sent the server some info');
-            console.log('attacks: ');
-            console.log(attacks);
-            console.log(onlyPlayerEntities(entities, playerId));
+            //console.log('Sent the server some info');
+            //console.log('attacks: ');
+            //console.log(attacks);
+            //console.log(onlyPlayerEntities(entities, playerId));
         }
 
     }, 10)
