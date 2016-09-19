@@ -353,7 +353,7 @@ function animateEntity(entity){
 function drawHighlight(entity, ctx){
   ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
   ctx.beginPath();
-  ctx.ellipse(entity.x + size / 2 - backgroundOffset.x, entity.y + size * 4/5 - backgroundOffset.y, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
+  ctx.ellipse(entity.x + size * zoom / 2 + backgroundOffset.x, entity.y + size * zoom * 4/5 + backgroundOffset.y, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
   ctx.strokeStyle='red';
   ctx.stroke();
   ctx.restore();
@@ -365,7 +365,7 @@ function drawHealthBar(entity, ctx){
      ctx.fillStyle = entity.color;
 
 
-      ctx.fillRect(entity.x - backgroundOffset.x, entity.y - size * zoom/ 4 - backgroundOffset.y, size * zoom, size * zoom / 13);
+      ctx.fillRect(entity.x + backgroundOffset.x, entity.y - size * zoom/ 4 + backgroundOffset.y, size * zoom, size * zoom / 13);
 
 
       if(level === 'theNorth'){  //generalize this
@@ -401,7 +401,7 @@ function drawHealthBar(entity, ctx){
         }
       
 
-        ctx.fillRect(entity.x + (1 - health / 100) * size, entity.y - size/ 4, (health / 100) * size, size / 13);
+        ctx.fillRect(entity.x + (1 - health / 100) * size * zoom + backgroundOffset.x, entity.y - size * zoom/ 4 + backgroundOffset.y, (health / 100) * size * zoom, size * zoom / 13);
 
     }
 //Move this to the client
