@@ -221,7 +221,7 @@ function drawEntities(entities, ctx, lock, clear) {
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
 
         // scaleDown(newCan, 32, 32);
-          ctx.drawImage(newCan, 0, 0, 150, 150,  x + backgroundOffset.x, y + backgroundOffset.y, 32, 32);
+          ctx.drawImage(newCan, 0, 0, 150, 150,  x + backgroundOffset.x * zoom, y + backgroundOffset.y * zoom, 32 * zoom, 32 * zoom);
          //ctx.drawImage(newCan, 300, 200);
         //  ctx.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 
