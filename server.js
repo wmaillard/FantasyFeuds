@@ -61,8 +61,9 @@ function applyAttacks(attacks, entities){
   var attack;
   while(attack = attacks.pop()){
     for(var j in entities){
-      if(entities[j].id === attack.victim.id){
+      if(entities[j].id === attack.victim.id && entities[j].health > 0){
         entities[j].health -= 20;
+        entities[j].health < 0 ? entities[j].health = 0 : null;
       }
     }
   }
