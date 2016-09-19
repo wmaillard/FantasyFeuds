@@ -220,8 +220,8 @@ function drawEntities(entities, ctx, lock, clear) {
           
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
 
-          scaleDown(newCan, 32, 32);
-          ctxI.drawImage(newCan, 0, 0);
+        // scaleDown(newCan, 32, 32);
+          ctxI.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);
           ctx.drawImage(newCan, 300, 200);
           ctx.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 
@@ -229,9 +229,9 @@ function drawEntities(entities, ctx, lock, clear) {
 
 
 
-          if (!clear) {
+  /*        if (!clear) {
              ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
-          }
+          }*/
 
 
             var width = scratchCanvas.canvas.width;
