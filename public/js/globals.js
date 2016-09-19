@@ -5,6 +5,8 @@ var attacks = [];
 var baseNHealth = 1000;
 var baseSHealth = 1000;  //this will be moved when bases are turned into entities
 var blockingTerrain = [];  //Things that you can't walk over
+var canvasWidth; 
+var canvasHeight;
 var characterImages = {};
 var clearBackground = false;  //Should we clear the map
 var click = true;  //Was it a quick click?
@@ -36,11 +38,11 @@ var size = 32;  //Get rid of this magic number
 var socket;
 var useMin = true; //use minimized images
 var wasCtrl = false;
+var windowResize = false;  //This hasn't been implemented yet
 var zoom = 1; //starting zoom of map
 var zoomHappened = false;
-var canvasWidth; 
-var canvasHeight;
-var windowResize = false;  //This hasn't been implemented yet
+
+
 
 characterImages.blank = new Image();
 characterImages.blank.src = 'img/characters/blank.png';
