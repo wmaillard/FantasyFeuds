@@ -55,6 +55,6 @@ CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidt
     canvasWidth = $('#background').width();
     canvasHeight = $('#background').height();
   }
-  if (dx  < canvasWidth && dy < canvasHeight && dx + dWidth > 0 && dy + dHeight > 0)
+  if (dx  < canvasWidth && dy < canvasHeight && dx >= 0 && dy >= 0)
         this.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 }

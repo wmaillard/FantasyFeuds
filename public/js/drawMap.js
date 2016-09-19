@@ -98,18 +98,18 @@ var scene = {
 
             //scene.layers.push(scratchCanvas.canvas.toDataURL()); //save scratch canvas for later
             scene.layers.push(scratchCanvas.canvas);
-            scene.context.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / scene.zoom, $('#background').height() / scene.zoom, 0, 0, $('#background').width(), $('#background').height()); //draw image from scratch canvas for better performance
+            scene.context.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
 
         } else { //if all the layers have been previously loaded, use the cache
 
             scene.layers.forEach(function(layer) {
                 backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
                 backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
-                (layer.width + backgroundOffset.x) / scene.zoom < $('#background').width() ? backgroundOffset.x = $('#background').width() * scene.zoom - layer.width : backgroundOffset.x;
-                (layer.height + backgroundOffset.y) / scene.zoom < $('#background').height() ? backgroundOffset.y = $('#background').height() * scene.zoom - layer.height : backgroundOffset.y;
+                (layer.width + backgroundOffset.x) / scene.zoom < canvasWidth ? backgroundOffset.x = canvasWidth * scene.zoom - layer.width : backgroundOffset.x;
+                (layer.height + backgroundOffset.y) / scene.zoom < canvasHeight ? backgroundOffset.y = canvasHeight * scene.zoom - layer.height : backgroundOffset.y;
                 //var i = $("<img />", {src: src})[0];
                 // //console.log(layer);
-                scene.context.drawImage(layer, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() * scene.zoom, $('#background').height() * scene.zoom, 0, 0, $('#background').width(), $('#background').height()); //draw image from scratch canvas for better performance
+                scene.context.drawSafeImage(layer, -backgroundOffset.x, -backgroundOffset.y, canvasWidth * scene.zoom, canvasHeight * scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
             });
         }
     },
@@ -220,7 +220,7 @@ function drawEntities(entities, ctx, lock, clear) {
           cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
 
         // scaleDown(newCan, 32, 32);
-          ctx.drawImage(newCan, 0, 0, 150, 150,  x * zoom + backgroundOffset.x * zoom, y * zoom + backgroundOffset.y * zoom, 32 * zoom, 32 * zoom);
+          ctx.drawSafeImage(newCan, 0, 0, 150, 150,  x * zoom + backgroundOffset.x * zoom, y * zoom + backgroundOffset.y * zoom, 32 * zoom, 32 * zoom);
          //ctx.drawImage(newCan, 300, 200);
         //  ctx.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 
@@ -246,7 +246,7 @@ function cutOutCharacter(newCan, img, x, y, width, height){
 	newCan.width = width;
 	newCan.height = height;
 	var ctx = newCan.getContext('2d');
-	ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+	ctx.drawSafeImage(img, x, y, width, height, 0, 0, width, height);
 	return newCan;
 	
 	
@@ -269,13 +269,13 @@ function scaleDown(justCharacter, height, width){
 		oldWidth /= 2;
 		oldHeight /= 2;
 		//ctx.clearRect(0, 0, scalingCanvas.width, scalingCanvas.height);
-		ctx.drawImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, oldWidth/2, oldHeight/2);
+		ctx.drawSafeImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, oldWidth/2, oldHeight/2);
 	}
 	justCharacter.height = height;
 	justCharacter.width = width;
 	var finalCtx = justCharacter.getContext('2d');
 	finalCtx.clearRect(0, 0, justCharacter.width, justCharacter.height);
-	finalCtx.drawImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, width, height);
+	finalCtx.drawSafeImage(scalingCanvas, 0, 0, oldWidth, oldHeight, 0, 0, width, height);
 }
 
 
