@@ -408,7 +408,7 @@ function drawHealthBar(entity, ctx){
 function setDirectionFacing(entity){
     var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
 	var nextNode = entity.nextNode;
-	if(nextNode && nextNode.x !== currentNode.x || nextNode.y !== currentNode.y){
+	if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
 		if(currentNode.x === nextNode.x){
 			if(currentNode.y < nextNode.y){
 				entity.directionPointing = 'S';
