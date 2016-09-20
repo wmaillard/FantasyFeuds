@@ -6,6 +6,10 @@ canvas, #shop {
   width: 100%;
 }
 
+#shop{
+  overflow: scroll;
+}
+
 #info{
 	z-index: 2;
 	display: inline;
