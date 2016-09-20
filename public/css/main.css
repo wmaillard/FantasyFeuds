@@ -35,3 +35,7 @@ canvas {
 body {
 	overflow-y:hidden
 }
+#gameContainer{
+    position:fixed;
+    overflow:hidden;
+}
