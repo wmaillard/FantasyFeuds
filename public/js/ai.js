@@ -335,17 +335,36 @@ function attackableEntities(entity, entitiesMap){
   console.log(nearbyEntities);*/
   entity.betweenVictims = [];
   entity.gore = {};
+  var toDelete = {};
+  var found = false;
+  if(!entity.nearbyEntities){
+    entity.nearbyEntities = nearbyEntities;  //This doesn't need to be this big, if that becomes an issue
+  }
+  for(var j in entity.nearbyEntities){
+    for(var i in nearbyEntities){
+      if(entity.nearbyEntities[j].id === nearbyEntities[i]){
+        found = true;
+        break;
+    }
+    if(!found){
+      toDelete[entity.nearbyEntities[j].id] = true;
+  }
+  for(var i in toDelete){
+     controller.particles[cantor(entity.id, i)].stop() //Need to make this right
+     delete controller.particles[(cantor(entity.id, i))];
+  }
+
   for(var i in nearbyEntities){
 
     var victim = nearbyEntities[i];
     var betweenFighters = {x : (entity.x + nearbyEntities[i].x) / 2, 
                                 y : (entity.y + nearbyEntities[i].y) / 2};
-    entity.betweenVictims.push(betweenFighters);
-    if(!entity.gore[victim.id]){
+   // entity.betweenVictims.push(betweenFighters);
+    if(!controller.particles[(cantor(entity.id, victim.id))]){
       controller.init(betweenFighters.x, betweenFighters.y, cantor(entity.id, victim.id));
       entity.gore[nearbyEntities[i].id] = true;
     }
-    if(entity.moved && entity.movedCount > 3){
+    else if(entity.moved && entity.movedCount > 3){
       controller.particles[cantor(entity.id, victim.id)].stop() //Need to make this right
       delete controller.particles[(cantor(entity.id, victim.id))];
       controller.init(betweenFighters.x, betweenFighters.y,  cantor(entity.id, victim.id));
