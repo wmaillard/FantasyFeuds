@@ -6,6 +6,9 @@
 			particles : {},
 
 			init : function(x, y, id){
+				if(this.particles[id]){
+					return
+				}
 				console.log('yooooooooooo')
 				this.canvas = document.getElementById( "explosions" );
 				this.context = this.canvas.getContext( "2d" );
