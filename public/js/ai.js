@@ -298,9 +298,9 @@ function moveEntities() {
     
 
 function entityIsBlocked(x, y) {
-    if (isBlocked(x, y) === true || isBlocked(x + 18, y) === true || isBlocked(x, y + 18) === true || isBlocked(x + 18, y + 18) === true) {
+    if (isBlocked(x, y) === true || isBlocked(x + 16, y) === true || isBlocked(x, y + 16) === true || isBlocked(x + 16, y + 16) === true) {
         return true;
-    }else if(isBlocked(x, y) === undefined || isBlocked(x + 32, y) === undefined || isBlocked(x, y + 32) === undefined || isBlocked(x + 32, y + 32) === undefined){
+    }else if(isBlocked(x, y) === undefined || isBlocked(x + 16, y) === undefined || isBlocked(x, y + 16) === undefined || isBlocked(x + 16, y + 16) === undefined){
         return true;
     }else return false;
 }
@@ -336,6 +336,7 @@ function attackableEntities(entity, entitiesMap){
   for(var i in nearbyEntities){
     attacks.push({attacker: entity, victim: nearbyEntities[i]});
   }
+
   
 }
 

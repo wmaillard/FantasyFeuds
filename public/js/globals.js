@@ -19,6 +19,7 @@ var entities = [];
 var entitiesLastNode = {};
 var entitiesMap = []; //nodes that all the entities are on, currently only 15kB
 var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
+var entitySize = .5;
 var firstLoad = true;  //If true then all the images will be loaded up and cached
 var fps = 5//This is just for panning
 var fullOnPanning = false;  //Is the mouse held down and has it moved over 5px?
@@ -40,8 +41,8 @@ var socket;
 var useMin = true; //use minimized images
 var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
-var zoom = 1.5; //starting zoom of map
-var zoomHappened = false;
+var zoom = 1; //starting zoom of map
+var zoomHappened = true;
 
 var entityNames = {
 	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},

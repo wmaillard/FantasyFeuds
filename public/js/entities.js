@@ -7,7 +7,7 @@ function Entity(xyStart, health, type, playerId, color) {
     this.x = xyStart.x;
     this.y = xyStart.y;
     this.health = health;
-    this.directionPointing = 'E'; //N, W, E, S
+    this.directionPointing = 'S'; //N, W, E, S
     this.heading = {};
     this.heading.x = this.x;
     this.heading.y = this.y;
@@ -18,6 +18,9 @@ function Entity(xyStart, health, type, playerId, color) {
     this.alreadyBeen[this.x] = [];
     this.alreadyBeen[this.x][this.y] = true;*/
     this.size = characterImages[this.type].height / 4;
+
+    this.height = characterImages[this.type].height / 4;
+    this.width = characterImages[this.type].width / 3;
 
     this.loaded = true; //Need to check if relavent
     this.team = 'red'; // red or blue

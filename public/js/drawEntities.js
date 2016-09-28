@@ -35,22 +35,20 @@ function drawEntities(entities, ctx, lock, clear) {
         setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
         attackableEntities(entities[entity], entitiesMap);
 
-        drawHealthBar(entities[entity], ctx);
+        
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
-            cutOutCharacter(newCan, 'blank', img_x, img_y, entities[entity].size, entities[entity].size);
+            cutOutCharacter(newCan, 'blank', img_x, img_y, entities[entity].width, entities[entity].height, entities[entity]);
 
         } else {
-          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
 
-          if(entities[entity].selected === true){  
-                //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
-                drawHighlight(entities[entity], ctx);
-          }
+
+
           
-          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size);
+          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
+          drawHealthBar(entities[entity], newCan);
 
         // scaleDown(newCan, 32, 32);
-          ctx.drawSafeImage(newCan, 0, 0, 70, 70,  x * zoom + backgroundOffset.x * zoom, y * zoom + backgroundOffset.y * zoom, 32 * zoom, 32 * zoom);
+          ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height,  x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
          //ctx.drawImage(newCan, 300, 200);
         //  ctx.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 
@@ -72,11 +70,15 @@ function drawEntities(entities, ctx, lock, clear) {
     }
 }
 
-function cutOutCharacter(newCan, img, x, y, width, height){
+function cutOutCharacter(newCan, img, x, y, width, height, entity){
 	newCan.width = width;
-	newCan.height = height;
+	newCan.height = height * 2;
 	var ctx = newCan.getContext('2d');
-	ctx.drawSafeImage(img, x, y, width, height, 0, 0, width, height);
+  if(entity.selected === true){  
+        //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+        drawHighlight(entity, newCan);
+  }
+	ctx.drawImage(img, x, y, width, height, 0 , height * .5, width, height);
 	return newCan;
 	
 	
@@ -153,7 +155,7 @@ function setNodeXY(entity, entitiesMap,  entitiesLastNode){
         if(oldX !== newX || oldY !== newY){
             for(var i in node){
                 if(node[i].id === entity.id){
-                    console.log('deleting some stuff')
+                  //  console.log('deleting some stuff')
                     node.splice(i, 1);
                     entitiesLastNode[entity.id] = {x: newX, y: newY};
                     entitiesMap[newX][newY].push(entity);
@@ -170,67 +172,47 @@ function setNodeXY(entity, entitiesMap,  entitiesLastNode){
 
 }
 function animateEntity(entity){
-    if (entity.walking === true){  
+    if(!entity.walkingSlowDown){
+      entity.walkingSlowDown = 1;
+    }else if(entity.walking){
+      entity.walkingSlowDown++;
+      console.log(entity.walkingSlowDown)
+    }
+    if (entity.walking && entity.walkingSlowDown === 2){  
           entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
+          entity.walkingSlowDown = 0;
       }
-   else {
-      entity.walkingState = 1;  
-  }
+    else if(!entity.walking){
+        entity.walkingState = 1;  
+    }
 }
 
-function drawHighlight(entity, ctx){
+function drawHighlight(entity, canvas){
+
+  var ctx = canvas.getContext('2d');
   ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
   ctx.beginPath();
-  ctx.ellipse(entity.x * zoom + size * zoom / 2 + backgroundOffset.x * zoom, entity.y * zoom + size * zoom * 4/5 + backgroundOffset.y * zoom, 15 * zoom, 10 * zoom, 0, 0, Math.PI*2);
+  ctx.ellipse(canvas.width / 2,  canvas.height * 2/3, canvas.width / 3, canvas.width / 2.5, 0, 0, Math.PI*2);
   ctx.strokeStyle='red';
   ctx.stroke();
   ctx.restore();
 
 }
 
-function drawHealthBar(entity, ctx){
+function drawHealthBar(entity, canvas){
                       
-
-     ctx.fillStyle = entity.color;
-
-
-      ctx.fillRect(entity.x * zoom + backgroundOffset.x * zoom, entity.y * zoom - size * zoom/ 4 + backgroundOffset.y * zoom, size * zoom, size * zoom / 13);
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = entity.color;
 
 
-      if(level === 'theNorth'){  //generalize this
-        ctx.fillStyle = "green";
-        ctx.fillRect(675, 2150, size*5, 2*size / 13);
-        ctx.fillStyle = playerColor;
-        ctx.fillRect(460, 100, size*5, 2*size / 13);
-      }else if (level === 'theNeck'){
-        ctx.fillStyle = "green";
-        ctx.fillRect(200, 2150, size*5, 2*size / 13);
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(600, 90, size*5, 2*size / 13);
-      }else if (level === 'dorne'){
-        ctx.fillStyle = "green";
-        ctx.fillRect(650, 2150, size*5, 2*size / 13);
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(500, 90, size*5, 2*size / 13);
-      }
+  //ctx.fillRect(entity.x * zoom + backgroundOffset.x * zoom, entity.y * zoom - size * zoom/ 4 + backgroundOffset.y * zoom , size * zoom, size * zoom / 13);
+  ctx.fillRect(0, 0, canvas.width, canvas.height / 15);
   ctx.fillStyle = "red"; //generalize this
 
   var health = 100 - entity.health; //Hacky fix for healthbar issue
-  var bnh = 1000 - baseNHealth;
-  var bsh = 1000 - baseSHealth;
-        if(level === 'theNorth'){
-          ctx.fillRect(460 + (1 - bnh/ 1000) * size * 5, 100, bnh / 1000 * size*5, 2*size / 13);
-          ctx.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-        }else if(level === 'theNeck'){
-          ctx.fillRect(600 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
-          ctx.fillRect(200+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-        }else if(level === 'dorne'){
-          ctx.fillRect(500 + (1 - bnh/ 1000) * size * 5, 90, bnh / 1000 * size*5, 2*size / 13);
-          ctx.fillRect(675+ (1 - bsh/ 1000) * size * 5, 2150, bsh / 1000 *size*5, 2*size / 13);
-        }
       
 
-        ctx.fillRect(entity.x * zoom + (1 - health / 100) * size * zoom + backgroundOffset.x * zoom, entity.y * zoom - size * zoom/ 4 + backgroundOffset.y * zoom, (health / 100) * size * zoom, size * zoom / 13);
+  ctx.fillRect((1 - health / 100) * canvas.width, 0, (health / 100) * canvas.width, canvas.height / 15);
 
     }
 //Move this to the client

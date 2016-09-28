@@ -107,14 +107,26 @@ function entityIsSelected(){
 }
 function clickGameContainer(e){
 
-      var x = ~~(e.clientX / zoom - size / 2 * zoom - backgroundOffset.x);  //size/2 shifts everything from top left corner to center
-      var y = ~~(e.clientY / zoom - size / 2 * zoom - backgroundOffset.y);
+      var x = ~~(e.clientX / zoom -  backgroundOffset.x);  //size/2 shifts everything from top left corner to center
+      var y = ~~(e.clientY / zoom -  backgroundOffset.y);
 
-      var entityAtClick = entityIsThere(x, y);
-      if(entityAtClick && entityAtClick.playerId === playerId){ 
+    var entityAtClick = entityIsThere(x, y);
+    if(entityAtClick && entityAtClick.playerId === playerId){ 
         deselectAllEntities();
         entityAtClick.selected = true;
       }
+    else if(boughtEntity){
+            var entity;
+            entity = new Entity({
+                'x': x,
+                'y': y
+            }, 90, boughtEntity, playerId, playerColor);
+
+            //shift left a bit
+            entity.x += entity.width * .20;
+            entities.push(entity);
+            boughtEntity = null;
+    }
       else if(!entityIsBlocked(x, y)){ 
       	var selectedEntities = entityIsSelected();
       	console.log('spot is free');
@@ -128,7 +140,6 @@ function clickGameContainer(e){
 					selectedEntities[i].path = AI.drawTestDots({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
        			}
        			else{
-
        				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
                     
        			}
@@ -138,17 +149,7 @@ function clickGameContainer(e){
 
        	
 
-        else if(boughtEntity){
-            var entity;
-            entity = new Entity({
-                'x': x,
-                'y': y
-            }, 90, boughtEntity, playerId, playerColor);
 
-
-            entities.push(entity);
-            boughtEntity = null;
-    }
 
     }
     click = true;
@@ -172,7 +173,7 @@ function entityIsThere(x, y, rangeX, rangeY){
     }
     else{
         for(var i = 0; i < entities.length; i++){
-            var entX = entities[i].x;
+            var entX = entities[i].x - entities[i].width * entitySize * .2;
             var entY = entities[i].y;
             console.log('entX:', entX, 'x:', x);
             console.log('enty:', entY, 'y:', y);

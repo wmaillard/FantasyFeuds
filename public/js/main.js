@@ -33,10 +33,12 @@ $(function() {
             console.log('hey');
             boughtEntity = this.closest('.card').id;
             $('#shop').hide();
+            return false;
         })
     })
     $('#showShop').click(function(){
         $('#shop').show();
+        return false;
     });
 
     if (Cookies.get('loggedIn') === "true") {
