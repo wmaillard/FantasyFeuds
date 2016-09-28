@@ -352,7 +352,7 @@ function attackableEntities(entity, entitiesMap){
     }
   }
   for(var i in toDelete){
-    console.log('heeeyo: ' + cantor(entity.id, i);
+    console.log('heeeyo: ' + cantor(entity.id, i));
      controller.particles[(cantor(entity.id, i))].stop() //Need to make this right
      delete controller.particles[(cantor(entity.id, i))];
   }
