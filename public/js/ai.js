@@ -349,6 +349,7 @@ function attackableEntities(entity, entitiesMap){
     }
     if(!found){
       toDelete[entity.nearbyEntities[j].id] = true;
+    }
   }
   for(var i in toDelete){
      controller.particles[cantor(entity.id, i)].stop() //Need to make this right
