@@ -358,7 +358,7 @@ function attackableEntities(entity, entitiesMap){
     console.log('id: ' + entity.id);
 
     var cantorNum = cantor(entity.id, i);
-    console.log('heeeyo: ' + cantorNum));
+    console.log('heeeyo: ' + cantorNum);
     if(controller.particles[cantorNum]){
      controller.particles[cantorNum].stop() //Need to make this right
      delete controller.particles[cantorNum];
