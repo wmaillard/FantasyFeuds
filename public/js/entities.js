@@ -12,6 +12,8 @@ function Entity(xyStart, health, type, playerId, color) {
     this.heading.x = this.x;
     this.heading.y = this.y;
     this.action = 'defending'; //attacking, defending
+    this.gore = {};
+    this.movedCount = 0;
     this.walking = true;
     this.walkingState = '0';
 /*    this.alreadyBeen = [];

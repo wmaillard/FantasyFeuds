@@ -12,7 +12,7 @@ canvas, #shop {
 }
 
 #info{
-	z-index: 2;
+	z-index: 3;
 	display: inline;
 }
 #foreground {
@@ -20,6 +20,9 @@ canvas, #shop {
 }
 #background {
   z-index: 0;
+}
+#explosions{
+  z-index: 2;
 }
 #menu-toggle {
   z-index: 3;

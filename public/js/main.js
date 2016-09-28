@@ -48,16 +48,19 @@ $(function() {
         $('#signedInNav div').text('Signed in as ' + Cookies.get('userName'));
 
     }
-
-    $("#background").attr("height", window.innerHeight);
+    $("#background").attr("height", window.innerHeight);  //innerWidth may not be right...
     $("#background").attr("width", window.innerWidth);
     $("#foreground").attr("height", window.innerHeight);
     $("#foreground").attr("width", window.innerWidth);
     $("#info").attr("height", window.innerHeight);
     $("#info").attr("width", window.innerWidth);   
+    $("#explosions").attr("height", window.innerHeight);
+    $("#explosions").attr("width", window.innerWidth);  
     ctxF = $("#foreground")[0].getContext("2d");
     ctxB = $("#background")[0].getContext("2d");
     ctxI = $("#info")[0].getContext("2d");
+
+
 
 
     socket = io();

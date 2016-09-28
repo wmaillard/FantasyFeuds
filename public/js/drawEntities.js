@@ -32,7 +32,7 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
         
-        setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
+        entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
         attackableEntities(entities[entity], entitiesMap);
 
         
@@ -163,11 +163,14 @@ function setNodeXY(entity, entitiesMap,  entitiesLastNode){
 
                 }
             }
+            return true; //moved
         }
+        return false; //didn't move
     }
     else{
         entitiesLastNode[entity.id] = {x: newX, y: newY};
         entitiesMap[newX][newY].push(entity);
+        return false;
     }
 
 }
