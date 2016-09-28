@@ -389,5 +389,5 @@ function attackableEntities(entity, entitiesMap){
 }
 
 function cantor(a, b){
-  return 1 / 2 * (a+b) * (a+b+1) + b;
+  return ~~(1 / 2 * (a+b) * (a+b+1)) + b;
 }
