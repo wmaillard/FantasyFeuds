@@ -136,25 +136,18 @@ function clickGameContainer(e){
        		}
        	}
 
-       	else{
+       	
 
-
-        var entity;
-        if (Math.floor(Math.random() * 2) === 0) { //50 50 chance
+        else if(boughtEntity){
+            var entity;
             entity = new Entity({
                 'x': x,
                 'y': y
-            }, 90, 'giant', playerId, playerColor);
+            }, 90, boughtEntity, playerId, playerColor);
 
-        } else {
-            entity = new Entity({
-                'x': x,
-                'y': y
-            }, 90, 'soldier', playerId, playerColor);
-            entity.isHero = true;
-        }
-        //travelSouth(entity);
-        entities.push(entity);
+
+            entities.push(entity);
+            boughtEntity = null;
     }
 
     }

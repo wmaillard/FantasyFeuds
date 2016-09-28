@@ -17,7 +17,7 @@ function Entity(xyStart, health, type, playerId, color) {
 /*    this.alreadyBeen = [];
     this.alreadyBeen[this.x] = [];
     this.alreadyBeen[this.x][this.y] = true;*/
-    this.size = 150;
+    this.size = characterImages[this.type].height / 4;
 
     this.loaded = true; //Need to check if relavent
     this.team = 'red'; // red or blue

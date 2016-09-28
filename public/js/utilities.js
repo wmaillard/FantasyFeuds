@@ -45,3 +45,25 @@ function testAttackRange(){
         attackableEntities(entities[e], entitiesMap)
     }
 }
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function isBlocked(x, y) {
+    return blockingTerrain[~~(x / 32)][~~(y / 32)];
+}
+function onlyPlayerEntities(entities, playerId){
+    var playerEntities = [];
+    for(var entity in entities){
+        if(entities[entity].playerId === playerId){
+            playerEntities.push(entities[entity]);
+        }
+    }
+    return playerEntities;
+}

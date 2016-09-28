@@ -5,6 +5,7 @@ var attacks = [];
 var baseNHealth = 1000;
 var baseSHealth = 1000;  //this will be moved when bases are turned into entities
 var blockingTerrain = [];  //Things that you can't walk over
+var boughtEntity = null;
 var canvasWidth; 
 var canvasHeight;
 var characterImages = {};
@@ -39,17 +40,32 @@ var socket;
 var useMin = true; //use minimized images
 var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
-var zoom = 1; //starting zoom of map
+var zoom = 1.5; //starting zoom of map
 var zoomHappened = false;
 
+var entityNames = {
+	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},
+	'elfFemale' : {'name' : 'Elf Female', 'image' : 'elfFemaleStore_nrmwwu.png', 'cost' : 75},
+	'humanSoldier' : {'name' : 'Human Soldier', 'image'  : 'humanSoldierStore_y97ypo.png', 'cost' : 120},
+	'orcPeon' : {'name' : 'Orc', 'image' : 'orcPeonStore_dp53w5.png', 'cost' : 150}
+}
+
+//  http://res.cloudinary.com/ochemaster/image/upload/w_241,c_scale/v1475040587/orcPeonStore_dp53w5.png
+//Load up entity images
+for(var entity in entityNames){
+	entityNames[entity].image = 'http://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1475040587/' + entityNames[entity].image;
+	characterImages[entity] = new Image();
+	characterImages[entity].src = 'img/characters/' + entity + '/' + entity + '.png';
+	characterImages[entity + 'Pose'] = new Image();
+	characterImages[entity + 'Pose'].src = 'img/characters/' + entity + '/' + entity+ 'Pose.png';
 
 
+}
+
+//Blank image for the wall, but you should get rid of this
 characterImages.blank = new Image();
 characterImages.blank.src = 'img/characters/blank.png';
-characterImages.giant = new Image();
-characterImages.giant.src = 'img/characters/giant.png';
-characterImages.soldier = new Image();
-characterImages.soldier.src = 'img/characters/soldier.png';
+
 
 
 CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight){
