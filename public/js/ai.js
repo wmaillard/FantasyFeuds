@@ -345,6 +345,7 @@ function attackableEntities(entity, entitiesMap){
       if(entity.nearbyEntities[j].id === nearbyEntities[i]){
         found = true;
         break;
+      }
     }
     if(!found){
       toDelete[entity.nearbyEntities[j].id] = true;
@@ -353,6 +354,7 @@ function attackableEntities(entity, entitiesMap){
      controller.particles[cantor(entity.id, i)].stop() //Need to make this right
      delete controller.particles[(cantor(entity.id, i))];
   }
+  entity.nearbyEntities = nearbyEntities;
 
   for(var i in nearbyEntities){
 
