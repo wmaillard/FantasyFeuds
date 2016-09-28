@@ -342,7 +342,7 @@ function attackableEntities(entity, entitiesMap){
   }
   for(var j in entity.nearbyEntities){
     for(var i in nearbyEntities){
-      if(entity.nearbyEntities[j].id === nearbyEntities[i]){
+      if(entity.nearbyEntities[j].id === nearbyEntities[i].id){
         found = true;
         break;
       }
@@ -352,6 +352,7 @@ function attackableEntities(entity, entitiesMap){
     }
   }
   for(var i in toDelete){
+    console.log('heeeyo: ' + cantor(entity.id, i);
      controller.particles[(cantor(entity.id, i))].stop() //Need to make this right
      delete controller.particles[(cantor(entity.id, i))];
   }
