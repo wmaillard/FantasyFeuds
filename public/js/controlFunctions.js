@@ -153,7 +153,7 @@ function clickGameContainer(e){
 
     }else{
 	$('gameContainer').css( 'cursor', 'not-allowed' );
-	setTimeout($('gameContainer').css( 'cursor', 'default' ); }, 500);
+	setTimeout(function(){$('gameContainer').css( 'cursor', 'default' ); }, 500);
     }
     click = true;
 
