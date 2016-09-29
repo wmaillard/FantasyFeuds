@@ -1,4 +1,7 @@
 
+// enable vibration support
+navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
 
 var backgroundOffset = {
         "x": 0,
@@ -153,7 +156,10 @@ function clickGameContainer(e){
 
     }else{
 	$('#gameContainer').css( 'cursor', 'not-allowed' );
-	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 500);
+	if (navigator.vibrate) {
+		navigator.vibrate(250);
+	}
+	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 250);
     }
     click = true;
 
