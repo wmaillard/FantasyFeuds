@@ -152,8 +152,8 @@ function clickGameContainer(e){
 
 
     }else{
-	$('gameContainer').css( 'cursor', 'not-allowed' );
-	setTimeout(function(){$('gameContainer').css( 'cursor', 'default' ); }, 500);
+	$('#gameContainer').css( 'cursor', 'not-allowed' );
+	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 500);
     }
     click = true;
 
