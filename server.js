@@ -1,5 +1,6 @@
 'use strict';
 
+
 const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
@@ -28,12 +29,12 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
   socket.on('clientEntities', (data) => {
     var entities = data.entities;
-    attacks = data.attacks;
+    attacks.push(data.attacks);  
 
     
   	change = true;
   	userEntities[convertId(socket.id)] = entities;
-  	console.log('client ' + convertId(socket.id) + ' just sent me something');
+  	//console.log('client ' + convertId(socket.id) + ' just sent me something');
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
 });
@@ -47,6 +48,7 @@ setInterval(() => {
 		for(var userId in userEntities){
 			allEntities = allEntities.concat(userEntities[userId]);
 		}
+    //console.log(attacks);
     applyAttacks(attacks, allEntities);
 
     if(moveCount === moveSpeed){
@@ -66,19 +68,23 @@ function applyAttacks(attacks, entities){
   //check to make sure attack is ok
   //customize attacks for different kinds of entities
   //check if health = 0 and set dead.
-  var attack;
-  while(attack = attacks.pop()){
-    for(var j in entities){
-      if(entities[j].id === attack.victim.id && entities[j].health > 0){
-        entities[j].health -= 5;
-        entities[j].health < 0 ? entities[j].health = 0 : null;
-        if(!entities[j].health){
-          entities[j].dead = true;
+  var attackList;
+  while(attackList = attacks.shift()){
+    for(var a in attackList)
+      var attack = attackList[a];
+      if(attack){
+        for(var j in entities){ //change this to use userEntities?
+          if(entities[j].id === attack.victim.id && entities[j].health > 0){
+            entities[j].health -= 5;
+            entities[j].health < 0 ? entities[j].health = 0 : null;
+            if(!entities[j].health){
+              entities[j].dead = true;
+            }
+          }
         }
       }
     }
   }
-}
 
 function convertId(oldId){
 	return oldId.slice(2);
