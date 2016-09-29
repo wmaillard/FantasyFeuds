@@ -333,7 +333,7 @@ function attackableEntities(entity, entitiesMap){
   }
 /*  console.log('nearbyEntities: ');
   console.log(nearbyEntities);*/
-  entity.betweenVictims = [];
+/*  entity.betweenVictims = [];
   entity.gore = {};
   var toDelete = {};
   var found = false;
@@ -358,7 +358,7 @@ function attackableEntities(entity, entitiesMap){
     console.log('id: ' + entity.id);
 
     var cantorNum = cantor(entity.id, i);
-    console.log('heeeyo: ' + cantor(entity.id, i));
+   console.log('heeeyo: ' + cantor(entity.id, i));
     console.log('wtf: ' + cantor(0, 1));
     if(controller.particles[cantorNum]){
      controller.particles[cantorNum].stop() //Need to make this right
@@ -366,11 +366,11 @@ function attackableEntities(entity, entitiesMap){
     }
   }
   entity.nearbyEntities = nearbyEntities;
-
+*/
   for(var i in nearbyEntities){
 
     var victim = nearbyEntities[i];
-    var betweenFighters = {x : (entity.x + nearbyEntities[i].x) / 2, 
+   /* var betweenFighters = {x : (entity.x + nearbyEntities[i].x) / 2, 
                                 y : (entity.y + nearbyEntities[i].y) / 2};
    // entity.betweenVictims.push(betweenFighters);
     if(!controller.particles[(cantor(entity.id, victim.id))]){
@@ -385,20 +385,29 @@ function attackableEntities(entity, entitiesMap){
       entity.movedCount = 0;
     }else if(entity.moved){
       entity.movedCount++;
+    }*/
+
+
+    if(!attackEffects[(cantor(entity.id, victim.id))]){
+      attackEffects[(cantor(entity.id, victim.id))] = controller.init(victim.x, victim.y);
     }
-    
-    attacks.push({attacker: entity, victim: nearbyEntities[i]});
+    attackEffects[(cantor(entity.id, victim.id))].alive = true;
+    if(entity.playerId === playerId){
+      attacks.push({attacker: entity, victim: victim});
+    }
 
 
 
   }
+  for(effect in attackEffects){
+    if(attackEffects[effect].alive  === true){
+      attackEffects[effect].alive = false;
+    }else{
+      attackEffects[effect].stop();
+      delete attackEffects[effect];
+    }
+  }
 
 
   
-}
-
-function cantor(a, b){
-  a = Number(a);
-  b = Number(b);
-  return ~~(1 / 2 * (a+b) * (a+b+1)) + b;
 }

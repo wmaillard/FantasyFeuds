@@ -13,10 +13,14 @@ const server = express()
 
 const io = socketIO(server);
 
+var tickRate = 60; // in hz
+
 var allEntities = [];
 var userEntities = {};
 var change = false;
 var attacks = [];
+var moveCount = 0;
+var moveSpeed = 1;
 
 io.on('connection', (socket) => {
 	change = true;
@@ -45,13 +49,17 @@ setInterval(() => {
 		}
     applyAttacks(attacks, allEntities);
 
-		moveEntities(allEntities);
-		
+    if(moveCount === moveSpeed){
+      moveCount = 0;   
+      moveEntities(allEntities);
+    }else{
+      moveCount++;
+		}
 		io.emit('allEntities', allEntities)
 		change = false;
 }
 
-}, 250);
+}, 1000 / tickRate);
 
 function applyAttacks(attacks, entities){
   //make this faster by indexing entities by id
@@ -62,8 +70,11 @@ function applyAttacks(attacks, entities){
   while(attack = attacks.pop()){
     for(var j in entities){
       if(entities[j].id === attack.victim.id && entities[j].health > 0){
-        entities[j].health -= 20;
+        entities[j].health -= 5;
         entities[j].health < 0 ? entities[j].health = 0 : null;
+        if(!entities[j].health){
+          entities[j].dead = true;
+        }
       }
     }
   }

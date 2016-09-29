@@ -1,3 +1,6 @@
+
+
+
 function drawEntities(entities, ctx, lock, clear) { 
     //Lets just do this if there was a change, or does it matter.  There probably will always be a change...
 
@@ -37,7 +40,7 @@ function drawEntities(entities, ctx, lock, clear) {
 
         
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
-            cutOutCharacter(newCan, 'blank', img_x, img_y, entities[entity].width, entities[entity].height, entities[entity]);
+            cutOutCharacter(newCan, characterImages.blank, img_x, img_y, entities[entity].width, entities[entity].height, entities[entity]);
 
         } else {
 

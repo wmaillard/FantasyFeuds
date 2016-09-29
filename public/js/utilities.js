@@ -67,3 +67,10 @@ function onlyPlayerEntities(entities, playerId){
     }
     return playerEntities;
 }
+
+
+function cantor(a, b){
+  a = Number(a);
+  b = Number(b);
+  return ~~(1 / 2 * (a+b) * (a+b+1)) + b;
+}

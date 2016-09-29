@@ -96,7 +96,7 @@ $(function() {
             //console.log(onlyPlayerEntities(entities, playerId));
         }
 
-    }, 50)
+    }, 1000 / tickRate)
     
 /*    setInterval(function(){
     	moveEntities();

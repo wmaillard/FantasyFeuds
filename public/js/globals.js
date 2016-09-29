@@ -43,6 +43,8 @@ var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
 var zoom = 1; //starting zoom of map
 var zoomHappened = true;
+var tickRate = 60;  //hz
+var attackEffects = {};
 
 var entityNames = {
 	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},

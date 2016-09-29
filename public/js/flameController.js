@@ -6,9 +6,10 @@
 			particles : {},
 
 			init : function(x, y, id){
-				if(this.particles[id]){
+			/*	if(this.particles[id]){
 					return
-				}
+				}*/
+				this.particles = {};
 				console.log('yooooooooooo')
 				this.canvas = document.getElementById( "explosions" );
 				this.context = this.canvas.getContext( "2d" );
@@ -39,12 +40,13 @@
 					p2.init();
 					//p3.init();
 				//	this.particles.push(part);
-					this.particles[id] = p2;
+					this.particles[0] = p2;
 				//	this.particles.push(p3);
 
 				
 
 				this.main();
+				return p2;
 			},
 
 			main : function(){
