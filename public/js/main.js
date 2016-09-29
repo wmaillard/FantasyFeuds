@@ -81,13 +81,17 @@ $(function() {
     socket.on('connect', function(){
     	playerId = socket.id;
     })
-    var oldEntities = JSON.stringify(entities);
+    var oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
     setInterval(function(){
-        if(serverSentChange){
+        /*if(serverSentChange){
             serverSentChange = false;
         }
-        else if(JSON.stringify(entities) !== oldEntities || attacks.length > 0){
-            oldEntities = JSON.stringify(entities);
+
+else*/ 
+        var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
+        if(newOldEntities !== oldEntities || attacks.length > 0){
+            oldEntities = newOldEntities;
+            //can I send oldEntities instead of onlyPlayerEntities
             socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
             attacks = [];
             //console.log('Sent the server some info');
