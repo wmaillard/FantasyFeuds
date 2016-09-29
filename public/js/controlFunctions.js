@@ -157,7 +157,7 @@ function clickGameContainer(e){
     }else{
 	$('#gameContainer').css( 'cursor', 'not-allowed' );
 	if (navigator.vibrate) {
-		navigator.vibrate(250);
+		navigator.vibrate(125);
 	}
 	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 250);
     }
