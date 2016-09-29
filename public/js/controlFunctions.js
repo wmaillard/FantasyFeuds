@@ -159,7 +159,7 @@ function clickGameContainer(e){
 	if (navigator.vibrate) {
 		navigator.vibrate(125);
 	}
-	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 250);
+	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 125);
     }
     click = true;
 
