@@ -145,12 +145,15 @@ function clickGameContainer(e){
        			}
        			//console.log(selectedEntities[i].path);
        		}
-       	}
+       		}
 
        	
 
 
 
+    }else{
+	$('gameContainer').css( 'cursor', 'not-allowed' );
+	setTimeout($('gameContainer').css( 'cursor', 'default' ); }, 500);
     }
     click = true;
 
