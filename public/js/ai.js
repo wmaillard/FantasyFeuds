@@ -389,9 +389,8 @@ function attackableEntities(entity, entitiesMap){
 
 
     if(!attackEffects[(cantor(entity.id, victim.id))]){
-      attackEffects[(cantor(entity.id, victim.id))] = controller.init(victim.x, victim.y);
+      controller.init(victim.x, victim.y, entity.id, victim.id);
     }
-    attackEffects[(cantor(entity.id, victim.id))].alive = true;
     if(entity.playerId === playerId){
       attacks.push({attacker: entity, victim: victim});
     }
@@ -399,14 +398,30 @@ function attackableEntities(entity, entitiesMap){
 
 
   }
-  for(effect in attackEffects){
+
+ /* for(var effect in attackEffects){
+    var goodEffect = false;
+    for(var attack in attacks){
+      if(effect == cantor(attacks[attack].attacker.id, attacks[attack].victim.id)){
+        console.log('goodEffect');
+        goodEffect = true;
+        break;  //attack exists for an effect
+      }
+    }
+    if(!goodEffect){
+      console.log('badEffect');
+      attackEffects[effect].stop();
+      delete attackEffects[effect];
+    }
+  }*/
+ /* for(effect in attackEffects){
     if(attackEffects[effect].alive  === true){
       attackEffects[effect].alive = false;
     }else{
       attackEffects[effect].stop();
       delete attackEffects[effect];
     }
-  }
+  }*/
 
 
   

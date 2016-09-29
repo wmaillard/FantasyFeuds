@@ -18,6 +18,12 @@ function drawEntities(entities, ctx, lock, clear) {
     scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
     scratchCanvas.canvas.width = levelWidth * 32 ;*/
     
+   for(var a in attackEffects){
+      if(!attackEffects[a].active){
+        delete attackEffects[a];
+      }
+    }
+
 
     for (var entity in entities) {
         
