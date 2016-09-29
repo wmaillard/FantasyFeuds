@@ -14,7 +14,7 @@ const server = express()
 
 const io = socketIO(server);
 
-var tickRate = 60; // in hz
+var tickRate = 20; // in hz
 
 var allEntities = [];
 var userEntities = {};
