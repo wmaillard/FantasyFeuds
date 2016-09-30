@@ -73,7 +73,7 @@ $(function() {
             }
 
         }
-        
+
         entities = serverEntities;
 
     })
@@ -108,7 +108,7 @@ else*/
     	moveEntities();
     }, 250);*/
     
-    startGame('theNorth');
+    startGame('dorne');
 
 
     // ************End Login

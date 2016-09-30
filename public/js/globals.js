@@ -24,7 +24,7 @@ var entitySize = .5;
 var firstLoad = true;  //If true then all the images will be loaded up and cached
 var fps = 5//This is just for panning
 var fullOnPanning = false;  //Is the mouse held down and has it moved over 5px?
-var level = 0;
+var level = 1;
 var levelHeight;
 var levels = ['theNeck', 'theNorth', 'dorne'];
 var levelsWon = ['theNeck'];  //put this into player probably or just store server side eventually
@@ -44,7 +44,7 @@ var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
 var zoom = 1; //starting zoom of map
 var zoomHappened = true;
-var tickRate = 20;  //hz
+var tickRate = 20;  //hz  !!!This effects how sensitive clicks are because my server is slowwww
 var attackEffects = {};
 
 var entityNames = {
