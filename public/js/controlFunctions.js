@@ -136,6 +136,7 @@ function clickGameContainer(e){
        	if(selectedEntities.length > 0){
        		//console.log('there is a selected entity');
        		for(var i = 0; i < selectedEntities.length; i++){
+                selectedEntities[i].path = []; //kill path early
        			/*console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
        			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));*/
        			selectedEntities[i].walking = true;
