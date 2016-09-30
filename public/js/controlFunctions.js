@@ -15,7 +15,7 @@ var currentCoords = {
  
 
  function mapMove(e, mobile) {
-        e = switchEventToMobile(e);
+    e = switchEventToMobile(e);
 
     var changeX = Math.abs(e.clientX - currentCoords.x);
     var changeY = Math.abs(e.clientY - currentCoords.y);
@@ -54,9 +54,32 @@ var currentCoords = {
     }
 
 }
+function createVector(panTime){
+    console.log('old: ')
+    console.log(oldBackgroundOffset);
+    console.log('new: ');
+    console.log(backgroundOffset);
+    var newBackgroundOffset = backgroundOffset;
+    var length = Math.sqrt(Math.pow(oldBackgroundOffset.x - newBackgroundOffset.x, 2) + Math.pow(oldBackgroundOffset.y - newBackgroundOffset.y, 2));
+    console.log('length: ', length)
+
+}
+var oldBackgroundOffset = backgroundOffset;
+var lockOldBO = false;
 
 function releasePressMap(e, mobile) {
-        e = switchEventToMobile(e);
+    console.log("on release: ");
+    console.log(backgroundOffset);
+    lockOldBO = false;
+
+    var d = new Date;
+    panTime = d.getTime() - panTime;
+
+    createVector(panTime, oldBackgroundOffset, backgroundOffset);
+
+
+    console.log('panTime', panTime);
+    e = switchEventToMobile(e);
 
     panning = false;
     fullOnPanning = false;
@@ -76,6 +99,14 @@ function releasePressMap(e, mobile) {
 }
 
 function pressMap(e, mobile) {
+    console.log("on Press: ");
+    console.log(backgroundOffset);
+    oldBackgroundOffset = backgroundOffset;
+
+    var d = new Date;
+    panTime = d.getTime();
+    
+
     e = switchEventToMobile(e);
 
     currentCoords.x = e.clientX ;
@@ -111,6 +142,7 @@ function entityIsSelected(){
 	return selectedEntities;
 }
 function clickGameContainer(e){
+
     console.time('clickGameContainer');
       var x = ~~(e.clientX / zoom -  backgroundOffset.x);  //size/2 shifts everything from top left corner to center
       var y = ~~(e.clientY / zoom -  backgroundOffset.y);

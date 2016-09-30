@@ -46,6 +46,9 @@ var zoom = 1; //starting zoom of map
 var zoomHappened = true;
 var tickRate = 20;  //hz  !!!This effects how sensitive clicks are because my server is slowwww
 var attackEffects = {};
+var panTime = 0;
+
+var oldBackgroundOffset = {x: 0, y: 0};
 
 var entityNames = {
 	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},
