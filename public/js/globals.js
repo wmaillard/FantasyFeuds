@@ -44,7 +44,7 @@ var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
 var zoom = 1; //starting zoom of map
 var zoomHappened = true;
-var tickRate = 60;  //hz
+var tickRate = 20;  //hz
 var attackEffects = {};
 
 var entityNames = {
