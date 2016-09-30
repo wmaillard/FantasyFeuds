@@ -54,14 +54,13 @@ var currentCoords = {
     }
 
 }
-function createVector(panTime){
+function createVector(panTime, oldCoords, newCoords){
     console.log('old: ')
-    console.log(oldBackgroundOffset);
+    console.log(oldCoords);
     console.log('new: ');
-    console.log(backgroundOffset);
-    var newBackgroundOffset = backgroundOffset;
-    var length = Math.sqrt(Math.pow(oldBackgroundOffset.x - newBackgroundOffset.x, 2) + Math.pow(oldBackgroundOffset.y - newBackgroundOffset.y, 2));
-    console.log('length: ', length)
+    console.log(newCoords);
+    var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
+    alert('length: ' + length + ' time: ' + panTime + 'ms')
 
 }
 var oldBackgroundOffset = {};
@@ -81,7 +80,7 @@ function releasePressMap(e, mobile) {
     oldBackgroundOffset.y = backgroundOffset.y;
 
 
-    console.log('panTime', panTime);
+
     e = switchEventToMobile(e);
 
     panning = false;
