@@ -64,8 +64,9 @@ function createVector(panTime){
     console.log('length: ', length)
 
 }
-var oldBackgroundOffset = backgroundOffset;
-var lockOldBO = false;
+var oldBackgroundOffset = {};
+oldBackgroundOffset.x =    backgroundOffset.x;
+oldBackgroundOffset.y = backgroundOffset.y;
 
 function releasePressMap(e, mobile) {
     console.log("on release: ");
@@ -76,6 +77,8 @@ function releasePressMap(e, mobile) {
     panTime = d.getTime() - panTime;
 
     createVector(panTime, oldBackgroundOffset, backgroundOffset);
+    oldBackgroundOffset.x = backgroundOffset.x;
+    oldBackgroundOffset.y = backgroundOffset.y;
 
 
     console.log('panTime', panTime);
@@ -101,7 +104,6 @@ function releasePressMap(e, mobile) {
 function pressMap(e, mobile) {
     console.log("on Press: ");
     console.log(backgroundOffset);
-    oldBackgroundOffset = backgroundOffset;
 
     var d = new Date;
     panTime = d.getTime();
