@@ -1,4 +1,4 @@
-
+var swipeRatio = 0.9;
 // enable vibration support
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
@@ -60,7 +60,7 @@ function createVector(panTime, oldCoords, newCoords){
     console.log('new: ');
     console.log(newCoords);
     var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
-	if(length / panTime > 1){
+	if(length / panTime > swipeRatio){
     		alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
 	}
 
