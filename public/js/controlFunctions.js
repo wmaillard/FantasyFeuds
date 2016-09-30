@@ -22,6 +22,7 @@ var currentCoords = {
 
     if (fullOnPanning && !panning) {
         fullOnPanning = false;
+        scene.load(level, ctxB, zoom);  //Reload, possible fix dragging bug
     }
 
     if ((panning && (changeY > 3 || changeX > 3)) || fullOnPanning) {
@@ -59,6 +60,7 @@ function releasePressMap(e, mobile) {
 
     panning = false;
     fullOnPanning = false;
+    scene.load(level, ctxB, zoom);  //Reload, possible fix dragging bug
 
     $('#gameContainer').css('cursor', 'auto');
     
