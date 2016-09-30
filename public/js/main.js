@@ -191,8 +191,8 @@ function startLevel() {
 	    	                    
             backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
             backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
-            $('#gameContainer').width() - backgroundOffset.x > levelWidth * size ? backgroundOffset.x = $('#gameContainer').width() - levelWidth * size  : null;
-            $('#gameContainer').height() - backgroundOffset.y > levelHeight * size ? backgroundOffset.y = $('#gameContainer').height() - levelHeight * size  : null;
+            $('#gameContainer').width() - backgroundOffset.x > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() - levelWidth * size * zoom : null;
+            $('#gameContainer').height() - backgroundOffset.y > levelHeight * size * zoom? backgroundOffset.y = $('#gameContainer').height() - levelHeight * size * zoom : null;
 	        entityTrack++;
 	        // limitBackgroundOffset();
 	        if (fullOnPanning || zoomHappened) {
