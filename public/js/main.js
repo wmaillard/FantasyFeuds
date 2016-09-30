@@ -23,6 +23,7 @@ function buildStore(){
 }
 
 $(function() {
+    $( window ).on( "swipe", function( event ) { alert('swipe') } )
 	buildStore();
     playerColor = getRandomColor();
     BindButtons.bindAll();
@@ -187,7 +188,11 @@ function startLevel() {
 
 
     	mapInterval = setInterval(function() {
-	    	
+	    	                    
+            backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
+            backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
+            $('#gameContainer').width() - backgroundOffset.x > levelWidth * size ? backgroundOffset.x = $('#gameContainer').width() - levelWidth * size  : null;
+            $('#gameContainer').height() - backgroundOffset.y > levelHeight * size ? backgroundOffset.y = $('#gameContainer').height() - levelHeight * size  : null;
 	        entityTrack++;
 	        // limitBackgroundOffset();
 	        if (fullOnPanning || zoomHappened) {
@@ -201,10 +206,9 @@ function startLevel() {
 
 
 
+
                     drawEntities(entities, ctxF, true);
 
-                    backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
-                     backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
 
 
 

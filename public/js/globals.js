@@ -22,7 +22,7 @@ var entitiesMap = []; //nodes that all the entities are on, currently only 15kB
 var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
 var entitySize = .5;
 var firstLoad = true;  //If true then all the images will be loaded up and cached
-var fps = 5//This is just for panning
+var fps = 20//This is just for panning
 var fullOnPanning = false;  //Is the mouse held down and has it moved over 5px?
 var level = 1;
 var levelHeight;
