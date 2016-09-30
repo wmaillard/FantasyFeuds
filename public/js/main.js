@@ -23,7 +23,28 @@ function buildStore(){
 }
 
 $(function() {
-    $( window ).on( "swipe", function( event ) { alert('swipe') } )
+	
+	var sum = 0;
+for(var j = 0; j < 1000; j++){
+	var n = performance.now();
+	var p; 
+	for(var i = 0; i < 100000; i++){p *= p * p};
+	n = performance.now() - n;
+	sum += n;
+}
+console.log(sum / 1000);
+	
+var sum = 0;
+for(var j = 0; j < 5000; j++){
+	var n = performance.now();
+	var p; 
+	for(var i = 0; i < 100000; i++){p *= p * p};
+	n = performance.now() - n;
+	sum += n;
+}
+alert('Your performance: ' + sum / 5000);
+	
+	
 	buildStore();
     playerColor = getRandomColor();
     BindButtons.bindAll();
