@@ -60,7 +60,9 @@ function createVector(panTime, oldCoords, newCoords){
     console.log('new: ');
     console.log(newCoords);
     var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
-    alert('length: ' + length + ' time: ' + panTime + 'ms')
+	if(length / panTime > 1){
+    		alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
+	}
 
 }
 var oldBackgroundOffset = {};
