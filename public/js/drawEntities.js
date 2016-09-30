@@ -32,7 +32,7 @@ function drawEntities(entities, ctx, lock, clear) {
         
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
-        animateEntity(entities[entity]);
+        //animateEntity(entities[entity]);
 
 
         var x, y, nodeX, nodeY;
@@ -183,21 +183,7 @@ function setNodeXY(entity, entitiesMap,  entitiesLastNode){
     }
 
 }
-function animateEntity(entity){
-    if(!entity.walkingSlowDown){
-      entity.walkingSlowDown = 1;
-    }else if(entity.walking){
-      entity.walkingSlowDown++;
-      console.log(entity.walkingSlowDown)
-    }
-    if (entity.walking && entity.walkingSlowDown === 2){  
-          entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
-          entity.walkingSlowDown = 0;
-      }
-    else if(!entity.walking){
-        entity.walkingState = 1;  
-    }
-}
+
 
 function drawHighlight(entity, canvas){
 

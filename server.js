@@ -94,6 +94,7 @@ function moveEntities(entities) {
 
     for(var entity in entities){
       entity = entities[entity];
+      animateEntity(entity);
 
         if(entity.walking === true){
           if(!entity.nextNode){
@@ -126,4 +127,17 @@ function moveEntities(entities) {
 }
 
 
-  
+function animateEntity(entity){
+    if(!entity.walkingSlowDown){
+      entity.walkingSlowDown = 1;
+    }else if(entity.walking){
+      entity.walkingSlowDown++;
+    }
+    if (entity.walking && entity.walkingSlowDown === 3){  
+          entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
+          entity.walkingSlowDown = 0;
+      }
+    else if(!entity.walking){
+        entity.walkingState = 1;  
+    }
+}
