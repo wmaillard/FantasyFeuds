@@ -27,7 +27,7 @@ var currentCoords = {
     if ((panning && (changeY > 3 || changeX > 3)) || fullOnPanning) {
 
         if(e.ctrlKey){
-            console.log('ctrl down');
+            //console.log('ctrl down');
             selectMulti(e.clientX, e.clientY, currentCoords.x, currentCoords.y);
             wasCtrl = true;
         }
@@ -132,9 +132,9 @@ function clickGameContainer(e){
     }
       else if(!entityIsBlocked(x, y)){ 
       	var selectedEntities = entityIsSelected();
-      	console.log('spot is free');
+      	//console.log('spot is free');
        	if(selectedEntities.length > 0){
-       		console.log('there is a selected entity');
+       		//console.log('there is a selected entity');
        		for(var i = 0; i < selectedEntities.length; i++){
        			/*console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
        			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));*/
@@ -184,8 +184,8 @@ function entityIsThere(x, y, rangeX, rangeY){
         for(var i = 0; i < entities.length; i++){
             var entX = entities[i].x - entities[i].width * entitySize * .2;
             var entY = entities[i].y;
-            console.log('entX:', entX, 'x:', x);
-            console.log('enty:', entY, 'y:', y);
+           /* console.log('entX:', entX, 'x:', x);
+            console.log('enty:', entY, 'y:', y);*/
             if(x  >= entX - 16 && x <= entX + 16 && y >= entY - 16 && y <= entY + 16){
                 return entities[i];
             }
