@@ -163,9 +163,13 @@ function clickGameContainer(e){
 	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 125);
     }
     click = true;
-    console.timeEnd("clickGameContainer");
+
   
-          
+    oldEntities = newOldEntities;
+    //can I send oldEntities instead of onlyPlayerEntities
+    socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
+    attacks = [];
+        console.timeEnd("clickGameContainer");
 
   
    
