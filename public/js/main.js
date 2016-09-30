@@ -71,7 +71,9 @@ $(function() {
             if(serverEntities[entity].selected === true && serverEntities[entity].playerId !== playerId){
                 serverEntities[entity].selected = false;
             }
+
         }
+        
         entities = serverEntities;
 
     })

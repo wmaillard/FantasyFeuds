@@ -14,14 +14,14 @@ const server = express()
 
 const io = socketIO(server);
 
-var tickRate = 20; // in hz
+var tickRate = 8; // in hz
 
 var allEntities = [];
 var userEntities = {};
 var change = false;
 var attacks = [];
 var moveCount = 0;
-var moveSpeed = 1;
+var moveSpeed = 0;
 
 io.on('connection', (socket) => {
 	change = true;
