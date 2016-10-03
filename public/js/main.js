@@ -95,8 +95,9 @@ alert('Your performance: ' + sum / 5000);
             }
 
         }
-
+        oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
         entities = serverEntities;
+
 
     })
     socket.on('ping', function(response){
@@ -107,21 +108,12 @@ alert('Your performance: ' + sum / 5000);
     })
     var oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
     setInterval(function(){
-        /*if(serverSentChange){
-            serverSentChange = false;
-        }
-
-else*/ 
         var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
         if(newOldEntities !== oldEntities || attacks.length > 0){
             oldEntities = newOldEntities;
-            //can I send oldEntities instead of onlyPlayerEntities
             socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
             attacks = [];
-            //console.log('Sent the server some info');
-            //console.log('attacks: ');
-            //console.log(attacks);
-            //console.log(onlyPlayerEntities(entities, playerId));
+
         }
 
     }, 1000 / tickRate)
