@@ -14,7 +14,7 @@ const server = express()
 
 const io = socketIO(server);
 
-var tickRate = 8; // in hz
+var tickRate = 4; // in hz
 
 var allEntities = [];
 var userEntities = {};
@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
     attacks.push(data.attacks);  
 
     
-  	change = true;
+
   	userEntities[convertId(socket.id)] = entities;
   	//console.log('client ' + convertId(socket.id) + ' just sent me something');
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
 });
 
 setInterval(() => {
-	if(change){
+	if(true){  //can check if there has been a change and only emit if so, but fine for now
 		allEntities = [];
 		/*console.log('User Entities: ');
 		console.log(userEntities);*/
