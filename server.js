@@ -26,17 +26,38 @@ var moveSpeed = 0;
 io.on('connection', (socket) => {
 	change = true;
   console.log('Client connected');
+	
   socket.on('disconnect', () => console.log('Client disconnected'));
+	
   socket.on('clientEntities', (data) => {
     var entities = data.entities;
     attacks.push(data.attacks);  
-
-    
 
   	userEntities[convertId(socket.id)] = entities;
   	//console.log('client ' + convertId(socket.id) + ' just sent me something');
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
+  socket.on('entityPath', (data) => {
+	var entities = userEntities[convertId(socket.id];
+	for(var e in entities){
+		if(data.id === entities[e].id){
+			entities[e].path = data.path;
+			break;
+		}
+  });
+			
+			
+	socket.on('attacks', (data) => {
+	 attacks.push(data.attacks);
+  });
+	
+	socket.on('addEntity', (data) => {
+		if(!userEntities[convertId(socket.id]){
+			userEntities[convertId(socket.id)] = [];
+		   }
+		   userEntities[convertId(socket.id].push(data.entity);
+	});
+		   
 });
 
 setInterval(() => {
