@@ -183,6 +183,8 @@ function clickGameContainer(e){
        			else{
        				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
                     changeToSendToServer = true;
+					sendToServer();
+
 
        			}
        			//console.log(selectedEntities[i].path);
