@@ -21,7 +21,7 @@ var userEntities = {};
 var change = false;
 var attacks = [];
 var moveCount = 0;
-var moveSpeed = 4;
+var moveSpeed = 2;
 
 io.on('connection', (socket) => {
 	change = true;
@@ -117,7 +117,7 @@ function applyAttacks(attacks, entities){
 function convertId(oldId){
 	return oldId.slice(2);
 }
-
+var microMove = 4;
 function moveEntities(entities) {
 	var more = false;
     for(var entity in entities){
@@ -132,14 +132,14 @@ function moveEntities(entities) {
 			  more = true;
 
             if(~~(entity.x / 32) > entity.nextNode.x){
-              entity.x -= 10;
+              entity.x -= microMove;
             }else if (~~(entity.x / 32) < entity.nextNode.x){
-              entity.x += 10;
+              entity.x += microMove;
             }
             if(~~(entity.y / 32) > entity.nextNode.y){
-              entity.y -= 10;
+              entity.y -= microMove;
             }else if(~~(entity.y / 32) < entity.nextNode.y){
-              entity.y += 10
+              entity.y += microMove;
             }
           }else{
 			more = true;
