@@ -213,10 +213,6 @@ function startLevel() {
 
     scene.load(level, ctxB, zoom);
 
-    var entityTrack = 0;
-    var entityOnBackground = false;
-    var clearedF = false;
-
 
     var checkAttacks = setInterval(function(){for(entity in entities){
         attackableEntities(entities[entity], entitiesMap)};
@@ -227,18 +223,23 @@ function startLevel() {
     }, 1000 / 4);
 
 
-    if(!mapInterval){
+   	window.requestAnimationFrame(drawFrame);
 
 
-    	mapInterval = setInterval(function() {
-	    	                    
-            backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
+}
+
+var clearedF = false;
+var frameCount = 0;
+var entitiesChanged = true;
+
+function drawFrame() {
+ 	                    
+            backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Move this to where backgroundOffset is set?
             backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
             $('#gameContainer').width() - backgroundOffset.x > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() - levelWidth * size * zoom : null;
             $('#gameContainer').height() - backgroundOffset.y > levelHeight * size * zoom? backgroundOffset.y = $('#gameContainer').height() - levelHeight * size * zoom : null;
-	        entityTrack++;
 	        // limitBackgroundOffset();
-	        if (fullOnPanning || zoomHappened) {
+
 	            if (fullOnPanning) {
 	                if (!clearedF) {
 	                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
@@ -246,42 +247,41 @@ function startLevel() {
 	                }
 
 	                scene.load(level, ctxB, zoom);  //drawing all layers, could flatten, bug
+                   	   if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+                            drawEntities(entities, ctxF, true);
+                        }
 
-
-
-
-                    drawEntities(entities, ctxF, true);
-
-
-
-
-
-
-
-                    if(debugPathfinding){
-                        AI.drawTestDots(blockingTerrain, ctxI);
-                    }
+        			 if(debugPathfinding){
+        				AI.drawTestDots(blockingTerrain, ctxI);
+        			 }
+        			 window.requestAnimationFrame(drawFrame);   
+        			 return true;
 	                //drawEntities(entities, ctxB, true, true);
 
 	            } else if (zoomHappened) {
 	                scene.load(level, ctxB, zoom);
-	                drawEntities(entities, ctxF, true);
+                   if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+                            drawEntities(entities, ctxF, true);
+                        }
 	                zoomHappened = false;
-                    if(debugPathfinding){
-                        AI.drawTestDots(blockingTerrain, ctxI);
-                    }
-	            }
+                   	 if(debugPathfinding){
+                       		 AI.drawTestDots(blockingTerrain, ctxI);
+                   	 }
+        			window.requestAnimationFrame(drawFrame);   
+        			return true;
 
-	        } 
-	        else {
-			drawEntities(entities, ctxF);
-	         //drawEntities(entities, ctxF);
-	         }
+	            }else{
+                    if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+                            drawEntities(entities, ctxF, true);
+                    }
+                window.requestAnimationFrame(drawFrame); 
+            }
+
+	   
+	
 	        
 
-	    }, 1000 / fps);
-	}
-}
+   }
 
 
 
