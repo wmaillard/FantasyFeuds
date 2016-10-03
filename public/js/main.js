@@ -89,15 +89,21 @@ alert('Your performance: ' + sum / 5000);
     
     socket.on('allEntities', function(serverEntities){
         serverSentChange = true;
+        var selected = selectedEntities();
+        var objSelected = {};  //urg got to change entities to an obj
+        for(var i in selected){
+            objSelected[selected[i].id] = true;
+        }
         for(var entity in serverEntities){
-            if(serverEntities[entity].selected === true && serverEntities[entity].playerId !== playerId){
+            if(objSelected[serverEntities[entity].id] ===  true;){
+                serverEntities[entity].selected = true;
+            }else{
                 serverEntities[entity].selected = false;
             }
 
         }
         oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
         entities = serverEntities;
-
 
     })
     socket.on('ping', function(response){
