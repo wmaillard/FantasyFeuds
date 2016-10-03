@@ -79,9 +79,8 @@ setInterval(() => {
 
 		if(moveCount === moveSpeed){ //Silly thing to base entity movement off server speed, not very smart
 		  moveCount = 0;   
-		  if(moveEntities(allEntities)){
-			change = true;
-		  }
+		  change = moveEntities(allEntities);
+
 		  io.emit('allEntities', allEntities)
 		}else{
 		  moveCount++;
@@ -125,11 +124,11 @@ function moveEntities(entities) {
       animateEntity(entity);
 	  setDirectionFacing(entity);
         if(entity.walking === true){
+			more = true;
           if(!entity.nextNode){
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
             entity.walking = false;
           }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
-			  more = true;
 
             if(~~(entity.x / 32) > entity.nextNode.x){
               entity.x -= microMove;
@@ -142,7 +141,6 @@ function moveEntities(entities) {
               entity.y += microMove;
             }
           }else{
-			more = true;
             entity.nextNode = entity.path.pop();
 
         }
