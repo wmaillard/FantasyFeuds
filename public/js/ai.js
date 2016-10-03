@@ -105,7 +105,7 @@ var AI = {
       this.closedSet.push(cNode);
 
       if(cNode.x === eNode.x && cNode.y === eNode.y){
-        console.log('found end');
+        //console.log('found end');
         var path = this.drawPath(cNode, startNode);
         return path;
       }
@@ -269,9 +269,9 @@ function moveEntities() {
 
     for(var entity in entities){
       entity = entities[entity];
-      console.log('************************************');
+      //console.log('************************************');
         if(entity.walking === true){
-          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+          //console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
           if(!entity.nextNode){
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
             entity.walking = false;

@@ -117,9 +117,9 @@ alert('Your performance: ' + sum / 5000);*/
         var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));  // are these in a sorted order???!
 
         if(changeToSendToServer){
-            console.log('new: ', newOldEntities);
+           /* console.log('new: ', newOldEntities);
             console.log('old: ', oldEntities);
-            console.log('sent');
+            console.log('sent');*/
             oldEntities = newOldEntities;
             socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
             attacks = [];

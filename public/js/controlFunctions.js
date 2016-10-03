@@ -146,7 +146,7 @@ function entityIsSelected(){
 }
 function clickGameContainer(e){
 
-    console.time('clickGameContainer');
+   // console.time('clickGameContainer');
       var x = ~~(e.clientX / zoom -  backgroundOffset.x);  //size/2 shifts everything from top left corner to center
       var y = ~~(e.clientY / zoom -  backgroundOffset.y);
 
@@ -207,7 +207,7 @@ function clickGameContainer(e){
     //can I send oldEntities instead of onlyPlayerEntities
     socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
     attacks = [];
-        console.timeEnd("clickGameContainer");
+        //console.timeEnd("clickGameContainer");
 
   
    
