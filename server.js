@@ -21,7 +21,7 @@ var userEntities = {};
 var change = false;
 var attacks = [];
 var moveCount = 0;
-var moveSpeed = 0;
+var moveSpeed = 2;
 
 io.on('connection', (socket) => {
 	change = true;
