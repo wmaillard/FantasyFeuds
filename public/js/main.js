@@ -24,7 +24,7 @@ function buildStore(){
 
 $(function() {
 	
-	var sum = 0;
+/*	var sum = 0;
 for(var j = 0; j < 1000; j++){
 	var n = performance.now();
 	var p; 
@@ -42,7 +42,7 @@ for(var j = 0; j < 5000; j++){
 	n = performance.now() - n;
 	sum += n;
 }
-alert('Your performance: ' + sum / 5000);
+alert('Your performance: ' + sum / 5000);*/
 	
 	
 	buildStore();
@@ -89,13 +89,13 @@ alert('Your performance: ' + sum / 5000);
     
     socket.on('allEntities', function(serverEntities){
         serverSentChange = true;
-        var selected = selectedEntities();
+        var selected = entityIsSelected();
         var objSelected = {};  //urg got to change entities to an obj
         for(var i in selected){
             objSelected[selected[i].id] = true;
         }
         for(var entity in serverEntities){
-            if(objSelected[serverEntities[entity].id] ===  true;){
+            if(objSelected[serverEntities[entity].id] ===  true){
                 serverEntities[entity].selected = true;
             }else{
                 serverEntities[entity].selected = false;
@@ -114,11 +114,16 @@ alert('Your performance: ' + sum / 5000);
     })
     var oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
     setInterval(function(){
-        var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
-        if(newOldEntities !== oldEntities || attacks.length > 0){
+        var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));  // are these in a sorted order???!
+
+        if(changeToSendToServer){
+            console.log('new: ', newOldEntities);
+            console.log('old: ', oldEntities);
+            console.log('sent');
             oldEntities = newOldEntities;
             socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
             attacks = [];
+            changeToSendToServer = false;
 
         }
 
@@ -203,6 +208,16 @@ function startLevel() {
     var entityTrack = 0;
     var entityOnBackground = false;
     var clearedF = false;
+
+
+    var checkAttacks = setInterval(function(){for(entity in entities){
+        attackableEntities(entities[entity], entitiesMap)};
+        if(attacks.length > 0){
+            changeToSendToServer = true;
+        }
+    }, 1000 / 4);
+
+
     if(!mapInterval){
 
 

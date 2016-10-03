@@ -55,10 +55,10 @@ var currentCoords = {
 
 }
 function createVector(panTime, oldCoords, newCoords){
-    console.log('old: ')
+    /*console.log('old: ')
     console.log(oldCoords);
     console.log('new: ');
-    console.log(newCoords);
+    console.log(newCoords);*/
     var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
 	if(length / panTime > swipeRatio){
     		alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
@@ -70,8 +70,8 @@ oldBackgroundOffset.x =    backgroundOffset.x;
 oldBackgroundOffset.y = backgroundOffset.y;
 
 function releasePressMap(e, mobile) {
-    console.log("on release: ");
-    console.log(backgroundOffset);
+    /*console.log("on release: ");
+    console.log(backgroundOffset);*/
     lockOldBO = false;
 
     var d = new Date;
@@ -103,8 +103,8 @@ function releasePressMap(e, mobile) {
 }
 
 function pressMap(e, mobile) {
-    console.log("on Press: ");
-    console.log(backgroundOffset);
+   /* console.log("on Press: ");
+    console.log(backgroundOffset);*/
 
     var d = new Date;
     panTime = d.getTime();
@@ -182,7 +182,8 @@ function clickGameContainer(e){
        			}
        			else{
        				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
-                    
+                    changeToSendToServer = true;
+
        			}
        			//console.log(selectedEntities[i].path);
        		}

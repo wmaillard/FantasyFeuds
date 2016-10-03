@@ -42,7 +42,8 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeY = ~~(y / size);
         
         entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
-        attackableEntities(entities[entity], entitiesMap);
+        
+
 
         
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {

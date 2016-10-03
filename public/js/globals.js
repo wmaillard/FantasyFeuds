@@ -44,9 +44,10 @@ var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
 var zoom = 1; //starting zoom of map
 var zoomHappened = true;
-var tickRate = 20;  //hz  !!!This effects how sensitive clicks are because my server is slowwww
+var tickRate = 60;  //hz  !!!This effects how sensitive clicks are because my server is slowwww
 var attackEffects = {};
 var panTime = 0;
+var changeToSendToServer = true; //set to true everytime a change happens that needs to be sent out
 
 var oldBackgroundOffset = {x: 0, y: 0};
 

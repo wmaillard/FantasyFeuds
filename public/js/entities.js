@@ -41,11 +41,7 @@ function Entity(xyStart, health, type, playerId, color) {
     this.path = [];
     
 
-    for (var i = 0; i < 1000; i++) {
-        if (!entities[i]) {
-            this.id = i;
-            break;
-        }
-    }
+    this.id = Date.now();
+    changeToSendToServer = true;
 
 };
