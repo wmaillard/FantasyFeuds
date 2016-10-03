@@ -123,7 +123,7 @@ function moveEntities(entities) {
       entity = entities[entity];
       animateEntity(entity);
 	  setDirectionFacing(entity);
-        if(entity.walking)){
+        if(entity.path.length > 0){
 	  more = true;
           if(!entity.nextNode){
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
