@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
   socket.on('entityPath', (data) => {
-	var entities = userEntities[convertId(socket.id];
+	var entities = userEntities[convertId(socket.id)];
 	for(var e in entities){
 		if(data.id === entities[e].id){
 			entities[e].path = data.path;
@@ -52,10 +52,10 @@ io.on('connection', (socket) => {
   });
 	
 	socket.on('addEntity', (data) => {
-		if(!userEntities[convertId(socket.id]){
+		if(!userEntities[convertId(socket.id)]){
 			userEntities[convertId(socket.id)] = [];
 		   }
-		   userEntities[convertId(socket.id].push(data.entity);
+		   userEntities[convertId(socket.id)].push(data.entity);
 	});
 		   
 });
