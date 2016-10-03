@@ -47,7 +47,7 @@ var zoomHappened = true;
 var tickRate = 30;  //hz  !!!This effects how sensitive clicks are because my server is slowwww
 var attackEffects = {};
 var panTime = 0;
-var changeToSendToServer = true; //set to true everytime a change happens that needs to be sent out
+var changeToSendToServer = false; //set to true everytime a change happens that needs to be sent out, now using a function, this is just for debugging
 
 var oldBackgroundOffset = {x: 0, y: 0};
 
