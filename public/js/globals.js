@@ -48,7 +48,9 @@ var tickRate = 30;  //hz  !!!This effects how sensitive clicks are because my se
 var attackEffects = {};
 var panTime = 0;
 var changeToSendToServer = false; //set to true everytime a change happens that needs to be sent out, now using a function, this is just for debugging
-
+var sTime = 0;
+var cTime = 0;
+var waiting = false;
 var oldBackgroundOffset = {x: 0, y: 0};
 
 var entityNames = {
