@@ -42,6 +42,8 @@ function Entity(xyStart, health, type, playerId, color) {
     
 
     this.id = Date.now();
-    changeToSendToServer = true;
+    changeToSendToServer = true;  //This stuff shouldn't be here, put it somewhere else
+     sendToServer();
+
 
 };
