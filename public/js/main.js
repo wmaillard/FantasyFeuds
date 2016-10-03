@@ -113,21 +113,7 @@ alert('Your performance: ' + sum / 5000);*/
     	playerId = socket.id;
     })
     var oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
-    setInterval(function(){
-        var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));  // are these in a sorted order???!
-
-        if(changeToSendToServer){
-           /* console.log('new: ', newOldEntities);
-            console.log('old: ', oldEntities);
-            console.log('sent');*/
-            oldEntities = newOldEntities;
-            socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
-            attacks = [];
-            changeToSendToServer = false;
-
-        }
-
-    }, 1000 / tickRate)
+    setTimeout(sendToServer, 1000 / tickRate);
     
 /*    setInterval(function(){
     	moveEntities();
@@ -145,6 +131,25 @@ alert('Your performance: ' + sum / 5000);*/
 
 // End Login functions
 
+
+function sendToServer(){
+        var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));  // are these in a sorted order???!
+
+        if(changeToSendToServer){
+           /* console.log('new: ', newOldEntities);
+            console.log('old: ', oldEntities);
+            console.log('sent');*/
+            oldEntities = newOldEntities;
+            socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
+            attacks = [];
+            changeToSendToServer = false;
+
+        }
+	setTimeout(sendToServer, 1000 / tickRate);
+
+    }
+ 
+ 
 function startGame(userLevel, overRide) {
 	level = userLevel;
 
