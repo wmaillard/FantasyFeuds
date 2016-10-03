@@ -121,10 +121,11 @@ function moveEntities(entities) {
 	var more = false;
     for(var entity in entities){
       entity = entities[entity];
-      animateEntity(entity);
-	  setDirectionFacing(entity);
-        if(entity.path.length > 0){
-	  more = true;
+
+        if(entity.path.length > 0 || (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
+		animateEntity(entity);
+	  	setDirectionFacing(entity);
+	 	 more = true;
           if(!entity.nextNode){
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
             entity.walking = false;
