@@ -164,8 +164,10 @@ function clickGameContainer(e){
 
             //shift left a bit
             entity.x += entity.width * .20;
+
+  		 	socket.emit('addEntity', {entity: entity});
             entities.push(entity);
-            boughtEntity = null;
+            boughtEntity = false;
     }
       else if(!entityIsBlocked(x, y)){ 
       	var selectedEntities = entityIsSelected();
