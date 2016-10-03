@@ -88,6 +88,9 @@ alert('Your performance: ' + sum / 5000);*/
     socket = io();
     
     socket.on('allEntities', function(serverEntities){
+	if(changeToSendToServer){
+		console.log('missed a change');
+	}
         serverSentChange = true;
         var selected = entityIsSelected();
         var objSelected = {};  //urg got to change entities to an obj
