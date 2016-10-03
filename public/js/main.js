@@ -217,8 +217,7 @@ function startLevel() {
     var checkAttacks = setInterval(function(){for(entity in entities){
         attackableEntities(entities[entity], entitiesMap)};
         if(attacks.length > 0){
-            changeToSendToServer = true;
-	   		sendToServer();
+            socket.emit('attacks', {attacks: attacks});
         }
     }, 1000 / 4);
 
