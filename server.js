@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
   socket.on('entityPath', (data) => {
+	  change = true;
 	var entities = userEntities[convertId(socket.id)];
 	for(var e in entities){
 		if(data.id === entities[e].id){
@@ -49,10 +50,12 @@ io.on('connection', (socket) => {
 			
 			
 	socket.on('attacks', (data) => {
+	change = true;
 	 attacks.push(data.attacks);
   });
 	
 	socket.on('addEntity', (data) => {
+		change = true;
 		if(!userEntities[convertId(socket.id)]){
 			userEntities[convertId(socket.id)] = [];
 		   }
@@ -62,7 +65,8 @@ io.on('connection', (socket) => {
 });
 
 setInterval(() => {
-	if(true){  //can check if there has been a change and only emit if so, but fine for now
+	if(change){  
+		change = false;
 		allEntities = [];
 		/*console.log('User Entities: ');
 		console.log(userEntities);*/
@@ -70,18 +74,20 @@ setInterval(() => {
 		for(var userId in userEntities){
 			allEntities = allEntities.concat(userEntities[userId]);
 		}
-    //console.log(attacks);
-    applyAttacks(attacks, allEntities);
+		//console.log(attacks);
+		applyAttacks(attacks, allEntities);
 
-    if(moveCount === moveSpeed){
-      moveCount = 0;   
-      moveEntities(allEntities);
-    }else{
-      moveCount++;
+		if(moveCount === moveSpeed){ //Silly thing to base entity movement off server speed, not very smart
+		  moveCount = 0;   
+		  if(moveEntities(allEntities)){
+			change = true;
+		  }
+		  io.emit('allEntities', allEntities)
+		}else{
+		  moveCount++;
+		  change = true;
 		}
-		io.emit('allEntities', allEntities)
-		change = false;
-}
+	}
 
 }, 1000 / tickRate);
 
@@ -113,7 +119,7 @@ function convertId(oldId){
 }
 
 function moveEntities(entities) {
-
+	var more = false;
     for(var entity in entities){
       entity = entities[entity];
       animateEntity(entity);
@@ -123,11 +129,8 @@ function moveEntities(entities) {
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
             entity.walking = false;
           }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
-          	
-          	
+			  more = true;
 
-          
-          
             if(~~(entity.x / 32) > entity.nextNode.x){
               entity.x -= 10;
             }else if (~~(entity.x / 32) < entity.nextNode.x){
@@ -139,12 +142,13 @@ function moveEntities(entities) {
               entity.y += 10
             }
           }else{
-
+			more = true;
             entity.nextNode = entity.path.pop();
 
         }
       }
     }
+	return more;
 
 }
 
