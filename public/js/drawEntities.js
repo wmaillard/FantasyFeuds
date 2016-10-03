@@ -28,7 +28,7 @@ function drawEntities(entities, ctx, lock, clear) {
     for (var entity in entities) {
         
 
-        setDirectionFacing(entities[entity]);
+      //  setDirectionFacing(entities[entity]);
         
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
@@ -214,52 +214,4 @@ function drawHealthBar(entity, canvas){
   ctx.fillRect((1 - health / 100) * canvas.width, 0, (health / 100) * canvas.width, canvas.height / 15);
 
     }
-//Move this to the client
-function setDirectionFacing(entity){
-    var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-	var nextNode = entity.nextNode;
-	if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
-		if(currentNode.x === nextNode.x){
-			if(currentNode.y < nextNode.y){
-				entity.directionPointing = 'S';
-			}else{
-				entity.directionPointing = 'N'
-			}
-		}else{
-			if(currentNode.x < nextNode.x){
-				entity.directionPointing = 'E'
-			}else{
-				entity.directionPointing = 'W';
-			}
-		}
-	}
-/* Keep this for a more fluid testing
-	if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
 
-		var bPos = currentNode.y - currentNode.x;
-		var bNeg = currentNode.y + currentNode.x;
-		var yOnPos = nextNode.x + bPos;
-		var yOnNeg = -nextNode.x + bNeg;
-		if(nextNode.x < currentNode.x){
-			if(nextNode.y < yOnPos && nextNode.y > yOnNeg){
-				entity.directionPointing = 'W';
-			}
-			else if(nextNode.y < yOnNeg){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}else{
-			if(nextNode.y > yOnPos && nextNode.y < yOnNeg){
-				entity.directionPointing = 'E';
-			}			
-			else if(nextNode.y < yOnPos){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}
-	}*/
-}
