@@ -116,7 +116,7 @@ alert('Your performance: ' + sum / 5000);*/
     	playerId = socket.id;
     })
     var oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
-    setTimeout(sendToServer, 1000 / tickRate);
+   // setTimeout(sendToServer, 1000 / tickRate);
     
 /*    setInterval(function(){
     	moveEntities();
@@ -148,7 +148,7 @@ function sendToServer(){
             changeToSendToServer = false;
 
         }
-	setTimeout(sendToServer, 1000 / tickRate);
+	//setTimeout(sendToServer, 1000 / tickRate);
 
     }
  
@@ -222,6 +222,7 @@ function startLevel() {
         attackableEntities(entities[entity], entitiesMap)};
         if(attacks.length > 0){
             changeToSendToServer = true;
+	   		sendToServer();
         }
     }, 1000 / 4);
 
