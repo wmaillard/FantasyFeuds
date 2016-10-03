@@ -14,7 +14,7 @@ const server = express()
 
 const io = socketIO(server);
 
-var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
+var tickRate = 60; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
 
 var allEntities = [];
 var userEntities = {};
