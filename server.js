@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
 			entities[e].path = data.path;
 			break;
 		}
+  	}
   });
 			
 			
