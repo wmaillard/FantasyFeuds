@@ -98,7 +98,7 @@ alert('Your performance: ' + sum / 5000);*/
             objSelected[selected[i].id] = true;
         }
         for(var entity in serverEntities){
-            if(objSelected[serverEntities[entity].id] ===  true){
+            if(!serverEntities[entity].dead && objSelected[serverEntities[entity].id] ===  true){
                 serverEntities[entity].selected = true;
             }else{
                 serverEntities[entity].selected = false;
