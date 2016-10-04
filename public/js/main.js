@@ -44,7 +44,7 @@ for(var j = 0; j < 5000; j++){
 }
 alert('Your performance: ' + sum / 5000);*/
 	
-	
+	$('#shop').hide();
 	buildStore();
     playerColor = getRandomColor();
     BindButtons.bindAll();
