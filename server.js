@@ -188,12 +188,21 @@ function moveEntities(entities) {
 
 
 function animateEntity(entity){
-
+	if(entity.dead){
+		entity.walkingState = 2;
+		return;
+	}
+	if(entity.attacking && walkingSlowDown > gapStep){
+		entity.walkingState === 0 ? entity.walkingState = 1 : entity.walkingState = 0;
+		return;
+	}
+	
+	
     if (entity.walking && walkingSlowDown > gapStep){  
           entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
           walkingSlowDown = 0;
     }
-    else if(!entity.walking){
+    else if(!entity.walking){  
         entity.walkingState = 1;  
     }
 }
