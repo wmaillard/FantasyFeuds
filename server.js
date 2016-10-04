@@ -115,7 +115,14 @@ function applyAttacks(attacks, entities){
             if(!entities[j].health){
               entities[j].dead = true;
             }
-          }
+			animateEntity(entities[j]); //animate victim
+          }else if(entities[j].id === attack.attacker.id){
+			  entities[j].attacking = true;
+			  animateEntity(entities[j]); //animate attacker
+		  }else{
+			  entities[j].attacking = false; //set all others to false
+		  }
+			
         }
       }
     }
