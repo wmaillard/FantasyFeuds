@@ -106,6 +106,10 @@ function applyAttacks(attacks, entities){
   //check to make sure attack is ok
   //customize attacks for different kinds of entities
   //check if health = 0 and set dead.
+
+  for(var e in entities){
+	entities[e].attacking = false; // clear attacks
+  }
   var attackList;
   while(attackList = attacks.shift()){
     for(var a in attackList)
@@ -122,9 +126,7 @@ function applyAttacks(attacks, entities){
           }else if(entities[j].id === attack.attacker.id){
 			  entities[j].attacking = true;
 			  animateEntity(entities[j]); //animate attacker
-			  change = true; // need to keep updating until attack is turned off
-		  }else{
-			  entities[j].attacking = false; //set all others to false
+			  change = true; // need to keep updating until attack list is empty
 		  }
 			
         }
