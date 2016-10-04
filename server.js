@@ -46,7 +46,7 @@ io.on('connection', (socket) => {
 	for(var e in entities){
 		if(data.id === entities[e].id){
 			entities[e].path = data.path;
-      entities[e].heading = data.heading;
+     		entities[e].heading = data.heading;
 			break;
 		}
   	}
@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
 			
 			
 	socket.on('attacks', (data) => {
-	change = true;
+	 change = true;
 	 attacks.push(data.attacks);
   });
 	
@@ -84,7 +84,10 @@ setInterval(() => {
 		applyAttacks(attacks, allEntities);
 
   
-		change = moveEntities(allEntities);
+		var maybeChange = moveEntities(allEntities);
+		if(!change){
+			change = maybeChange;
+		}
 		io.emit('allEntities', allEntities)
 
 	}
@@ -108,7 +111,7 @@ function applyAttacks(attacks, entities){
     for(var a in attackList)
       var attack = attackList[a];
       if(attack){
-        for(var j in entities){ //change this to use userEntities?
+        for(var j in entities){ 
           if(entities[j].id === attack.victim.id && entities[j].health > 0){
             entities[j].health -= entityStats[attack.attacker.type].attack;
             entities[j].health < 0 ? entities[j].health = 0 : null;
@@ -119,6 +122,7 @@ function applyAttacks(attacks, entities){
           }else if(entities[j].id === attack.attacker.id){
 			  entities[j].attacking = true;
 			  animateEntity(entities[j]); //animate attacker
+			  change = true; // need to keep updating until attack is turned off
 		  }else{
 			  entities[j].attacking = false; //set all others to false
 		  }
