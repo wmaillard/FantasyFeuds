@@ -50,12 +50,15 @@ function drawEntities(entities, ctx, lock, clear) {
             cutOutCharacter(newCan, characterImages.blank, img_x, img_y, entities[entity].width, entities[entity].height, entities[entity]);
 
         } else {
-
-
-
+			var whichImage = entities[entity].type;
+			if(entities[entity].dead || entities[entity].attacking){
+				whichImage += 'Pose';
+			}
           
-          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
-          drawHealthBar(entities[entity], newCan);
+         	cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
+			if(!entities[entity].dead){  
+				drawHealthBar(entities[entity], newCan);
+			}
 
         // scaleDown(newCan, 32, 32);
           ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height,  x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
