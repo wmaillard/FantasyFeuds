@@ -163,8 +163,8 @@ function clickGameContainer(e){
             }, 90, boughtEntity, playerId, playerColor);
 
             //shift left a bit
-            entity.x += entity.width * .20;
-
+            entity.x += zoom * entity.width * .1;
+            entity.y -= (zoom - 1) * entity.width * .4;
   		 	socket.emit('addEntity', {entity: entity});
             entities.push(entity);
             boughtEntity = false;
@@ -182,13 +182,16 @@ function clickGameContainer(e){
        			entity.walking = true;
                 entity.heading = {};
                 entity.heading.x = x;
+                entity.heading.x += entity.width * .1;
                 entity.heading.y = y;
+                entity.heading.y -= (zoom - 1) * entity.width * .4;
+                
        			if(debugPathfinding){
 					selectedEntities[i].path = AI.drawTestDots({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
        			}
        			else{
        				entity.path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
-				socket.emit('entityPath', {id : entity.id, path : entity.path, heading : entity.heading});
+				    socket.emit('entityPath', {id : entity.id, path : entity.path, heading : entity.heading});
 
 
 
