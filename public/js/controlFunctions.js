@@ -151,7 +151,7 @@ function clickGameContainer(e){
       var y = ~~(e.clientY / zoom -  backgroundOffset.y);
 
     var entityAtClick = entityIsThere(x, y);
-    if(entityAtClick && entityAtClick.playerId === playerId){ 
+    if(entityAtClick && !entityAtClick.dead && entityAtClick.playerId === playerId){ 
         deselectAllEntities();
         entityAtClick.selected = true;
       }
