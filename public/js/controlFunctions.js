@@ -157,10 +157,14 @@ function clickGameContainer(e){
       }
     else if(boughtEntity){
             var entity;
+	    var health = 90;
+	    if(boughtEntity === 'orcPeon'){
+		    health = 1000;
+	    }
             entity = new Entity({
                 'x': x,
                 'y': y
-            }, 90, boughtEntity, playerId, playerColor);
+            }, health, boughtEntity, playerId, playerColor);
 
             //shift left a bit
             entity.x += zoom * entity.width * .1;
