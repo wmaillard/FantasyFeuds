@@ -1,0 +1,15 @@
+//Stress test!
+
+for(var i = 0; i < 1000; i++){
+      var entity;
+      boughtEntity = 'orcPeon';
+	    var health = 100;
+      var x = ~~((Math.random() * levelWidth * size - 1) + 0);
+      var y = ~~((Math.random() * levelHeight * size - 1) + 0);
+      entity = new Entity({
+          'x': x,
+          'y': y
+      }, health, boughtEntity, playerId, playerColor);
+      socket.emit('addEntity', {entity: entity});
+      entities.push(entity);
+      boughtEntity = false;}
