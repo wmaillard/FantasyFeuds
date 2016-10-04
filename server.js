@@ -14,14 +14,16 @@ const server = express()
 
 const io = socketIO(server);
 
-var tickRate = 60; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
+var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
 
 var allEntities = [];
 var userEntities = {};
 var change = false;
 var attacks = [];
 var moveCount = 0;
-var moveSpeed = 2;
+var moveSpeed = 1;
+var walkingSlowDown = 0; // tracker for gaps
+var gapStep = 6; //gaps between steps;
 
 io.on('connection', (socket) => {
 	change = true;
@@ -43,6 +45,7 @@ io.on('connection', (socket) => {
 	for(var e in entities){
 		if(data.id === entities[e].id){
 			entities[e].path = data.path;
+      entities[e].heading = data.heading;
 			break;
 		}
   	}
@@ -63,9 +66,11 @@ io.on('connection', (socket) => {
 	});
 		   
 });
-
+//var counter = 0;
 setInterval(() => {
-	if(change){  
+	if(change){ 
+    /*console.log(counter + '. ' +process.hrtime());
+    counter++;*/
 		change = false;
 		allEntities = [];
 		/*console.log('User Entities: ');
@@ -77,15 +82,10 @@ setInterval(() => {
 		//console.log(attacks);
 		applyAttacks(attacks, allEntities);
 
-		if(moveCount === moveSpeed){ //Silly thing to base entity movement off server speed, not very smart
-		  moveCount = 0;   
-		  change = moveEntities(allEntities);
+  
+		change = moveEntities(allEntities);
+		io.emit('allEntities', allEntities)
 
-		  io.emit('allEntities', allEntities)
-		}else{
-		  moveCount++;
-		  change = true;
-		}
 	}
 
 }, 1000 / tickRate);
@@ -119,17 +119,28 @@ function convertId(oldId){
 var microMove = 4;
 function moveEntities(entities) {
 	var more = false;
+  walkingSlowDown++;
     for(var entity in entities){
       entity = entities[entity];
+      var wasWalking = entity.walking;
 
-        if(entity.path.length > 0 || (entity.nextNode && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)))){
-		animateEntity(entity);
-	  	setDirectionFacing(entity);
-	 	 more = true;
+
+
+
+      entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
+      if(entity.path.length > 0){
+        entity.walking = true;
+      };
+
+
+        if(entity.walking || wasWalking){
+          
+		      animateEntity(entity);
+	  	    setDirectionFacing(entity);
+	 	       more = true;
           if(!entity.nextNode){
             entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-            entity.walking = false;
-          }else if(entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32)){
+          }else if(entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
 
             if(~~(entity.x / 32) > entity.nextNode.x){
               entity.x -= microMove;
@@ -141,10 +152,26 @@ function moveEntities(entities) {
             }else if(~~(entity.y / 32) < entity.nextNode.y){
               entity.y += microMove;
             }
-          }else{
+          }else if(entity.path.length > 0){
             entity.nextNode = entity.path.pop();
 
-        }
+          }else if(Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6){
+
+            var xTooBig = Math.abs(entity.heading.x - entity.x) > 6;
+            var yTooBig = Math.abs(entity.heading.y - entity.y) > 6;
+            if(xTooBig && entity.x > entity.heading.x){
+              entity.x -= microMove;
+            }else if (xTooBig && entity.x < entity.heading.x){
+              entity.x += microMove;
+            }
+            if(yTooBig && entity.y > entity.heading.y){
+              entity.y -= microMove;
+            }else if(yTooBig && entity.y < entity.heading.y){
+              entity.y += microMove;
+            }
+
+
+          }
       }
     }
 	return more;
@@ -153,15 +180,11 @@ function moveEntities(entities) {
 
 
 function animateEntity(entity){
-    if(!entity.walkingSlowDown){
-      entity.walkingSlowDown = 1;
-    }else if(entity.walking){
-      entity.walkingSlowDown++;
-    }
-    if (entity.walking && entity.walkingSlowDown === 3){  
+
+    if (entity.walking && walkingSlowDown > gapStep){  
           entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
-          entity.walkingSlowDown = 0;
-      }
+          walkingSlowDown = 0;
+    }
     else if(!entity.walking){
         entity.walkingState = 1;  
     }
