@@ -126,7 +126,7 @@ function applyAttacks(attacks, entities){
           }else if(entities[j].id === attack.attacker.id){
 			  entities[j].attacking = true;
 			  animateEntity(entities[j]); //animate attacker
-			  change = true; // need to keep updating until attack list is empty
+			  //change = true; // need to keep updating until attack list is empty
 		  }
 			
         }
