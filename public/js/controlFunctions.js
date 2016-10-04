@@ -216,8 +216,8 @@ function clickGameContainer(e){
   
     oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
     //can I send oldEntities instead of onlyPlayerEntities
-    socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
-    attacks = [];
+    /*socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
+    attacks = [];*/
         //console.timeEnd("clickGameContainer");
 
   

@@ -32,6 +32,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
 	
   socket.on('clientEntities', (data) => {
+    return;
     var entities = data.entities;
     attacks.push(data.attacks);  
 
@@ -90,6 +91,13 @@ setInterval(() => {
 
 }, 1000 / tickRate);
 
+
+var entityStats = {
+  'dwarfSoldier': {'attack': 10, 'cost' : 50},
+  'elfFemale' : {'attack' : 12, 'cost' : 75},
+  'humanSoldier' : {'attack' : 15, 'cost' : 120},
+  'orcPeon' : {'attack' : 20, 'cost' : 150}
+}
 function applyAttacks(attacks, entities){
   //make this faster by indexing entities by id
   //check to make sure attack is ok
@@ -102,7 +110,7 @@ function applyAttacks(attacks, entities){
       if(attack){
         for(var j in entities){ //change this to use userEntities?
           if(entities[j].id === attack.victim.id && entities[j].health > 0){
-            entities[j].health -= 5;
+            entities[j].health -= entityStats[attack.attacker.type].attack;
             entities[j].health < 0 ? entities[j].health = 0 : null;
             if(!entities[j].health){
               entities[j].dead = true;

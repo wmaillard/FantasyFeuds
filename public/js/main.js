@@ -219,7 +219,7 @@ function startLevel() {
         if(attacks.length > 0){
             socket.emit('attacks', {attacks: attacks});
         }
-    }, 1000 / 4);
+    }, 1000 / attackRate);
 
 
    	window.requestAnimationFrame(drawFrame);
