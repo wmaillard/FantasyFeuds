@@ -157,10 +157,10 @@ function clickGameContainer(e){
       }
     else if(boughtEntity){
             var entity;
-	    var health = 90;
-	    if(boughtEntity === 'orcPeon'){
+	    var health = 100;
+/*	    if(boughtEntity === 'orcPeon'){
 		    health = 1000;
-	    }
+	    }*/
             entity = new Entity({
                 'x': x,
                 'y': y
