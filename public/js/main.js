@@ -214,11 +214,15 @@ function startLevel() {
     scene.load(level, ctxB, zoom);
 
 
-    var checkAttacks = setInterval(function(){for(entity in entities){
-        attackableEntities(entities[entity], entitiesMap)};
-        if(attacks.length > 0){
-            socket.emit('attacks', {attacks: attacks});
-        }
+    var checkAttacks = setInterval(function(){
+		var onlyPlayer = onlyPlayerEntities(entities, playerId);
+	    for(entity in onlyPlayer){
+			if(!onlyPlayer[entity].dead){
+				attackableEntities(onlyPlayer[entity], entitiesMap)};
+				if(attacks.length > 0){
+					socket.emit('attacks', {attacks: attacks});
+				}
+		}
     }, 1000 / attackRate);
 
 
