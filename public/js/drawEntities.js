@@ -28,7 +28,7 @@ function drawEntities(entities, ctx, lock, clear) {
     for (var entity in entities) {
         
 
-        setDirectionFacing(entities[entity]);
+      //  setDirectionFacing(entities[entity]);
         
         var img_x = entities[entity].walkingState * entities[entity].size;
         var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
@@ -42,19 +42,23 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeY = ~~(y / size);
         
         entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
-        attackableEntities(entities[entity], entitiesMap);
+        
+
 
         
         if (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall') {
             cutOutCharacter(newCan, characterImages.blank, img_x, img_y, entities[entity].width, entities[entity].height, entities[entity]);
 
         } else {
-
-
-
+			var whichImage = entities[entity].type;
+			if(entities[entity].dead || entities[entity].attacking){
+				whichImage += 'Pose';
+			}
           
-          cutOutCharacter(newCan, characterImages[entities[entity].type], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
-          drawHealthBar(entities[entity], newCan);
+         	cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
+			if(!entities[entity].dead){  
+				drawHealthBar(entities[entity], newCan);
+			}
 
         // scaleDown(newCan, 32, 32);
           ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height,  x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
@@ -213,52 +217,4 @@ function drawHealthBar(entity, canvas){
   ctx.fillRect((1 - health / 100) * canvas.width, 0, (health / 100) * canvas.width, canvas.height / 15);
 
     }
-//Move this to the client
-function setDirectionFacing(entity){
-    var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-	var nextNode = entity.nextNode;
-	if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
-		if(currentNode.x === nextNode.x){
-			if(currentNode.y < nextNode.y){
-				entity.directionPointing = 'S';
-			}else{
-				entity.directionPointing = 'N'
-			}
-		}else{
-			if(currentNode.x < nextNode.x){
-				entity.directionPointing = 'E'
-			}else{
-				entity.directionPointing = 'W';
-			}
-		}
-	}
-/* Keep this for a more fluid testing
-	if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
 
-		var bPos = currentNode.y - currentNode.x;
-		var bNeg = currentNode.y + currentNode.x;
-		var yOnPos = nextNode.x + bPos;
-		var yOnNeg = -nextNode.x + bNeg;
-		if(nextNode.x < currentNode.x){
-			if(nextNode.y < yOnPos && nextNode.y > yOnNeg){
-				entity.directionPointing = 'W';
-			}
-			else if(nextNode.y < yOnNeg){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}else{
-			if(nextNode.y > yOnPos && nextNode.y < yOnNeg){
-				entity.directionPointing = 'E';
-			}			
-			else if(nextNode.y < yOnPos){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}
-	}*/
-}

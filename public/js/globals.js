@@ -44,11 +44,15 @@ var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
 var zoom = 1; //starting zoom of map
 var zoomHappened = true;
-var tickRate = 20;  //hz  !!!This effects how sensitive clicks are because my server is slowwww
+var tickRate = 30;  //hz  !!!This effects how sensitive clicks are because my server is slowwww
 var attackEffects = {};
 var panTime = 0;
-
+var changeToSendToServer = false; //set to true everytime a change happens that needs to be sent out, now using a function, this is just for debugging
+var sTime = 0;
+var cTime = 0;
+var waiting = false;
 var oldBackgroundOffset = {x: 0, y: 0};
+var attackRate = 1; //attacks checked per second
 
 var entityNames = {
 	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},

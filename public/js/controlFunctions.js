@@ -55,10 +55,10 @@ var currentCoords = {
 
 }
 function createVector(panTime, oldCoords, newCoords){
-    console.log('old: ')
+    /*console.log('old: ')
     console.log(oldCoords);
     console.log('new: ');
-    console.log(newCoords);
+    console.log(newCoords);*/
     var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
 	if(length / panTime > swipeRatio){
     		alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
@@ -70,8 +70,8 @@ oldBackgroundOffset.x =    backgroundOffset.x;
 oldBackgroundOffset.y = backgroundOffset.y;
 
 function releasePressMap(e, mobile) {
-    console.log("on release: ");
-    console.log(backgroundOffset);
+    /*console.log("on release: ");
+    console.log(backgroundOffset);*/
     lockOldBO = false;
 
     var d = new Date;
@@ -103,8 +103,8 @@ function releasePressMap(e, mobile) {
 }
 
 function pressMap(e, mobile) {
-    console.log("on Press: ");
-    console.log(backgroundOffset);
+   /* console.log("on Press: ");
+    console.log(backgroundOffset);*/
 
     var d = new Date;
     panTime = d.getTime();
@@ -146,26 +146,32 @@ function entityIsSelected(){
 }
 function clickGameContainer(e){
 
-    console.time('clickGameContainer');
+   // console.time('clickGameContainer');
       var x = ~~(e.clientX / zoom -  backgroundOffset.x);  //size/2 shifts everything from top left corner to center
       var y = ~~(e.clientY / zoom -  backgroundOffset.y);
 
     var entityAtClick = entityIsThere(x, y);
-    if(entityAtClick && entityAtClick.playerId === playerId){ 
+    if(entityAtClick && !entityAtClick.dead && entityAtClick.playerId === playerId){ 
         deselectAllEntities();
         entityAtClick.selected = true;
       }
     else if(boughtEntity){
             var entity;
+	    var health = 90;
+	    if(boughtEntity === 'orcPeon'){
+		    health = 1000;
+	    }
             entity = new Entity({
                 'x': x,
                 'y': y
-            }, 90, boughtEntity, playerId, playerColor);
+            }, health, boughtEntity, playerId, playerColor);
 
             //shift left a bit
-            entity.x += entity.width * .20;
+            entity.x += zoom * entity.width * .1;
+            entity.y -= (zoom - 1) * entity.width * .4;
+  		 	socket.emit('addEntity', {entity: entity});
             entities.push(entity);
-            boughtEntity = null;
+            boughtEntity = false;
     }
       else if(!entityIsBlocked(x, y)){ 
       	var selectedEntities = entityIsSelected();
@@ -173,16 +179,26 @@ function clickGameContainer(e){
        	if(selectedEntities.length > 0){
        		//console.log('there is a selected entity');
        		for(var i = 0; i < selectedEntities.length; i++){
-                selectedEntities[i].path = []; //kill path early
+                var entity = selectedEntities[i];
+                entity.path = []; //kill path early
        			/*console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
        			console.log('y:', ~~(y / 32), 'ey', ~~(selectedEntities[i].y / 32));*/
-       			selectedEntities[i].walking = true;
+       			entity.walking = true;
+                entity.heading = {};
+                entity.heading.x = x;
+                entity.heading.x += entity.width * .1;
+                entity.heading.y = y;
+                entity.heading.y -= (zoom - 1) * entity.width * .4;
+                
        			if(debugPathfinding){
 					selectedEntities[i].path = AI.drawTestDots({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
        			}
        			else{
-       				selectedEntities[i].path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
-                    
+       				entity.path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
+				    socket.emit('entityPath', {id : entity.id, path : entity.path, heading : entity.heading});
+
+
+
        			}
        			//console.log(selectedEntities[i].path);
        		}
@@ -204,9 +220,9 @@ function clickGameContainer(e){
   
     oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
     //can I send oldEntities instead of onlyPlayerEntities
-    socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
-    attacks = [];
-        console.timeEnd("clickGameContainer");
+    /*socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
+    attacks = [];*/
+        //console.timeEnd("clickGameContainer");
 
   
    

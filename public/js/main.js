@@ -24,7 +24,7 @@ function buildStore(){
 
 $(function() {
 	
-	var sum = 0;
+/*	var sum = 0;
 for(var j = 0; j < 1000; j++){
 	var n = performance.now();
 	var p; 
@@ -42,7 +42,7 @@ for(var j = 0; j < 5000; j++){
 	n = performance.now() - n;
 	sum += n;
 }
-alert('Your performance: ' + sum / 5000);
+alert('Your performance: ' + sum / 5000);*/
 	
 	
 	buildStore();
@@ -88,14 +88,24 @@ alert('Your performance: ' + sum / 5000);
     socket = io();
     
     socket.on('allEntities', function(serverEntities){
+	if(changeToSendToServer){
+		console.log('missed a change');
+	}
         serverSentChange = true;
+        var selected = entityIsSelected();
+        var objSelected = {};  //urg got to change entities to an obj
+        for(var i in selected){
+            objSelected[selected[i].id] = true;
+        }
         for(var entity in serverEntities){
-            if(serverEntities[entity].selected === true && serverEntities[entity].playerId !== playerId){
+            if(!serverEntities[entity].dead && objSelected[serverEntities[entity].id] ===  true){
+                serverEntities[entity].selected = true;
+            }else{
                 serverEntities[entity].selected = false;
             }
 
         }
-
+        oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
         entities = serverEntities;
 
     })
@@ -106,25 +116,7 @@ alert('Your performance: ' + sum / 5000);
     	playerId = socket.id;
     })
     var oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
-    setInterval(function(){
-        /*if(serverSentChange){
-            serverSentChange = false;
-        }
-
-else*/ 
-        var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
-        if(newOldEntities !== oldEntities || attacks.length > 0){
-            oldEntities = newOldEntities;
-            //can I send oldEntities instead of onlyPlayerEntities
-            socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
-            attacks = [];
-            //console.log('Sent the server some info');
-            //console.log('attacks: ');
-            //console.log(attacks);
-            //console.log(onlyPlayerEntities(entities, playerId));
-        }
-
-    }, 1000 / tickRate)
+   // setTimeout(sendToServer, 1000 / tickRate);
     
 /*    setInterval(function(){
     	moveEntities();
@@ -142,6 +134,25 @@ else*/
 
 // End Login functions
 
+
+function sendToServer(){
+        //var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));  // are these in a sorted order???!
+
+        if(changeToSendToServer){
+           /* console.log('new: ', newOldEntities);
+            console.log('old: ', oldEntities);*/
+            console.log('sent');
+            //oldEntities = newOldEntities;
+            socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
+            attacks = [];
+            changeToSendToServer = false;
+
+        }
+	//setTimeout(sendToServer, 1000 / tickRate);
+
+    }
+ 
+ 
 function startGame(userLevel, overRide) {
 	level = userLevel;
 
@@ -202,21 +213,39 @@ function startLevel() {
 
     scene.load(level, ctxB, zoom);
 
-    var entityTrack = 0;
-    var entityOnBackground = false;
-    var clearedF = false;
-    if(!mapInterval){
+
+    var checkAttacks = setInterval(function(){
+		var onlyPlayer = onlyPlayerEntities(entities, playerId);
+	    for(entity in onlyPlayer){
+			if(!onlyPlayer[entity].dead){
+				attackableEntities(onlyPlayer[entity], entitiesMap)
+			};
+		}
+		if(attacks.length > 0){
+			socket.emit('attacks', {attacks: attacks});
+			attacks = [];
+		}
+
+    }, 1000 / attackRate);
 
 
-    	mapInterval = setInterval(function() {
-	    	                    
-            backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
+   	window.requestAnimationFrame(drawFrame);
+
+
+}
+
+var clearedF = false;
+var frameCount = 0;
+var entitiesChanged = true;
+
+function drawFrame() {
+ 	                    
+            backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Move this to where backgroundOffset is set?
             backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
             $('#gameContainer').width() - backgroundOffset.x > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() - levelWidth * size * zoom : null;
             $('#gameContainer').height() - backgroundOffset.y > levelHeight * size * zoom? backgroundOffset.y = $('#gameContainer').height() - levelHeight * size * zoom : null;
-	        entityTrack++;
 	        // limitBackgroundOffset();
-	        if (fullOnPanning || zoomHappened) {
+
 	            if (fullOnPanning) {
 	                if (!clearedF) {
 	                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
@@ -224,42 +253,41 @@ function startLevel() {
 	                }
 
 	                scene.load(level, ctxB, zoom);  //drawing all layers, could flatten, bug
+                   	   if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+                            drawEntities(entities, ctxF, true);
+                        }
 
-
-
-
-                    drawEntities(entities, ctxF, true);
-
-
-
-
-
-
-
-                    if(debugPathfinding){
-                        AI.drawTestDots(blockingTerrain, ctxI);
-                    }
+        			 if(debugPathfinding){
+        				AI.drawTestDots(blockingTerrain, ctxI);
+        			 }
+        			 window.requestAnimationFrame(drawFrame);   
+        			 return true;
 	                //drawEntities(entities, ctxB, true, true);
 
 	            } else if (zoomHappened) {
 	                scene.load(level, ctxB, zoom);
-	                drawEntities(entities, ctxF, true);
+                   if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+                            drawEntities(entities, ctxF, true);
+                        }
 	                zoomHappened = false;
-                    if(debugPathfinding){
-                        AI.drawTestDots(blockingTerrain, ctxI);
-                    }
-	            }
+                   	 if(debugPathfinding){
+                       		 AI.drawTestDots(blockingTerrain, ctxI);
+                   	 }
+        			window.requestAnimationFrame(drawFrame);   
+        			return true;
 
-	        } 
-	        else {
-			drawEntities(entities, ctxF);
-	         //drawEntities(entities, ctxF);
-	         }
+	            }else{
+                    if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+                            drawEntities(entities, ctxF, true);
+                    }
+                window.requestAnimationFrame(drawFrame); 
+            }
+
+	   
+	
 	        
 
-	    }, 1000 / fps);
-	}
-}
+   }
 
 
 

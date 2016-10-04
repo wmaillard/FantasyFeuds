@@ -65,7 +65,7 @@ function onlyPlayerEntities(entities, playerId){
             playerEntities.push(entities[entity]);
         }
     }
-    return playerEntities;
+    return playerEntities.sort(compare);
 }
 
 
@@ -82,4 +82,13 @@ function hexToRgb(hex) {
         parseInt(result[3], 16), 
         1
     ] : null;
+}
+function compare(a, b){
+    if(a.id < b.id){
+        return -1;
+    }
+    if(a.id > b.id){
+        return 1;
+    }
+    return 0;
 }
