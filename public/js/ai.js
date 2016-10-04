@@ -322,7 +322,7 @@ function attackableEntities(entity, entitiesMap){
           var entitiesAtNode = entitiesMap[i][j]
           for(var e in entitiesAtNode){
             //console.log('d')
-            if(entitiesAtNode[e].playerId !== entity.playerId){
+            if(!entitiesAtNode[e].dead && entitiesAtNode[e].playerId !== entity.playerId){ //don't attack yourself, could use this logic to heal
               nearbyEntities.push(entitiesAtNode[e]);
               //console.log('e')
             }
