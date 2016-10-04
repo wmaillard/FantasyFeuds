@@ -41,7 +41,7 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
         
-        entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);
+        entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);  //need to store last node and need to run this every time we get new entities with if(lastNode !== currentNode)
         
 
 
