@@ -17,8 +17,8 @@ function metaStartGame(overRide){
 	} 
 }
 function buildStore(){
-    var navHeight = $('nav').height();
-    $('#shop').css({'margin-top':navHeight * 1.5});
+    var navHeight = $('nav').outerHeight();
+    $('#shop').css({'margin-top':navHeight});
     for (var entity in entityNames){
         $('#shop > .card-deck').append('<div class="card text-xs-center" id = ' + entity + '><img class="card-img-top" src="' + entityNames[entity].image + '" alt="Card image cap"><div class="card-block text-xs-center"><h4 class="card-title">' + entityNames[entity].name + '</h4><p class="card-text">Soldiers a strong attackers and defenders.  They are weak against magic and dragons</p><p class="card-text"><small class="text-muted">' + entityNames[entity].cost + ' Gold Pieces</p><button type="button" class="btn btn-success buy">Buy</button><button type="button" class="btn btn-info stats">Stats</button></div>')
     }
