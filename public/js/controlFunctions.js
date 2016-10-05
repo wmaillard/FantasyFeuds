@@ -170,7 +170,7 @@ function clickGameContainer(e){
             entity.x += zoom * entity.width * .1;
             entity.y -= (zoom - 1) * entity.width * .4;
   		 	socket.emit('addEntity', {entity: entity});
-            entities.push(entity);
+            //entities.push(entity);
             boughtEntity = false;
     }
       else if(!entityIsBlocked(x, y)){ 
