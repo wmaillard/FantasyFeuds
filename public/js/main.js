@@ -54,9 +54,13 @@ alert('Your performance: ' + sum / 5000);*/
     //add this to bindbutton eventually
     $('.buy').each(function(){
         $(this).click(function(){
-            console.log('hey');
+
             boughtEntity = this.closest('.card').id;
-            $('#shop').hide();
+            if(entityNames[boughtEntity].cost > playerGold){
+                $("#playerGold").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+            }else{
+                $('#shop').hide();
+            }
             return false;
         })
     })
@@ -88,6 +92,7 @@ alert('Your performance: ' + sum / 5000);*/
 
     socket.on('playerInfo', function(data){
         console.log(data);
+        playerGold = data[playerId].gold;
         $('#playerGold').html('<img src="http://res.cloudinary.com/ochemaster/image/upload/c_scale,h_50/v1475689538/11-512_naajvi.png">' + " " + data[playerId].gold)
     });
     socket.on('allEntities', function(serverEntities){
