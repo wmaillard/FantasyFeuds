@@ -27,122 +27,24 @@
 </head>
 
 <body> <!-- oncontextmenu="return false;" -->
+<div class="container">
+    <nav class="navbar navbar-fixed-top navbar-light bg-faded">
+      <div class="nav navbar-nav">
+        <div class="nav-item nav-link pull-xs-left" id = 'playerGold'><img src="http://res.cloudinary.com/ochemaster/image/upload/c_scale,h_50/v1475689538/11-512_naajvi.png"> 200 </div>
+        <a class="nav-item nav-link pull-xs-right" id = 'showShop' href=""><img src="http://res.cloudinary.com/ochemaster/image/upload/c_scale,h_50/v1475689345/loghome-512_ywu3fy.png"></a>
 
-    <!-- Navigation-->
-    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
-    <nav id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
-            <li class="sidebar-brand">
-                <a href="#top" onclick=$ ( "#menu-close").click();>GOT RTS</a>
-            </li>
-            <li id = 'signedInNav'>
-                <div href="">Signed in as </div>
-                <a id = 'signOut' href="">Sign Out</a>
-            </li>
-            <li id = 'showShop'>
-                <a href="">shop</a>
-            </li>
-            <li>
-                <a href="" id = "zoomIn">Zoom In</a>
-            </li>
-            <li>
-                <a href="" id = "zoomOut">Zoom Out</a>
-            </li>
-            <li>
-                <a href="" id = "saveGame">Save Game</a>
-             
-                <div id="saveAlertBad" style="color:red" >Could not save your game ;(</div>
-                <div id="saveAlertGood" style="color:green" >Game Saved!</div>
-            </li>
-            <li>
-                <a href="" id = "levelSelect">Level Select</a>
-            </li>
-            <!--li>
-                <a href="#services" onclick=$ ( "#menu-close").click();>Services</a>
-            </li>
-
-            <li>
-                <a href="#contact" onclick=$ ( "#menu-close").click();>Contact</a>
-            </li>-->
-        </ul>
+      </div>
     </nav>
+</div>
+
+   
 
     <!-- Header -->
  
     <div id="gameContainer" class="header">
  
         
-        <div id = 'signInBox' class="text-vertical-center">
-            <h1>Game of Thrones RTS</h1>
-            <div  id = 'initialDescription' class = "col-xs-8 col-xs-offset-2">
-            <p>Winter is coming. Get ready to take on your enemies from Game of Thrones! This game allows you to go head-to-head with fearsome enemies as you defend your base against their terror. Create an account so you can login and save your games! If it gets to be too much, just logout and when you’re ready again, pick up where you left off. Can you defeat your enemies in all three levels?</p>
-           </div>
-            <br>
-            <div class = "col-xs-8 col-xs-offset-2">
-            <h2 id = 'prompt' class="form-signin-heading">Login</h2>
-            <div class = 'col-xs-8 col-xs-offset-2' id = "levelButtons"> 
-                <a id = "theNeck" class="btn btn-primary" onclick="startGame('theNeck')">The Neck</a>
-                <a id = "theNorth" class="btn btn-primary" onclick="startGame('theNorth')">The North</a>
-                <a id = "dorne" class="btn btn-primary" onclick="startGame('dorne')">Dorne</a>
-                <a id = "cancelLevel" class="btn btn-danger">Cancel</a>
-            </div>
-            <form id = "signInForm" class="form-horizontal"><!-- form framework from here http://jsfiddle.net/rtglenn/VwPaR/ -->
-                <div class="form-group has-feedback">
-                    <label class="control-label col-md-12"></label>
-                    <div class = 'col-md-12'>
-                        <input type="text" id="userName" class="form-control" placeholder="Username" />
-                        <span class="glyphicon form-control-feedback"></span>
-                   </div>
-                </div>
-                <div class="form-group has-feedback">
-                    <label class="control-label col-md-12"></label>
-                    <div id = 'warningBelow' class = 'col-md-12'>
-                        <input id = "oldPassword" type="password" class="form-control" placeholder="Password" />
-                        <span class="glyphicon form-control-feedback"></span>
-                    </div>
-                </div>  
-                <button id = 'signIn' type="submit" class="btn btn-primary">Sign In</button>
-                <button id = "signUp" type="button" class="btn btn-primary">Create a New Account</button>
-            </form>
-            <form id = "signUpForm" class="form-horizontal"><!-- form framework from here http://jsfiddle.net/rtglenn/VwPaR/ -->
-                <div class="form-group has-feedback">
-                    <labelclass="control-label col-md-12"></label>
-                    <div class = 'col-md-12'>
-                        <input id = "newUserName" type="text" class="form-control" placeholder="Username" />
-                        <span class="glyphicon form-control-feedback" ></span>
-                   </div>
-                </div>
-                <div class="form-group has-feedback">
-                    <labelclass="control-label col-md-12"></label>
-                    <div class = 'col-md-12'>
-                        <input id = "newEmail" type="text"  class="form-control" placeholder="Email" />
-                        <span class="glyphicon form-control-feedback" ></span>
-                   </div>
-                </div>
-                <div class="form-group has-feedback">
-                    <label class="control-label col-md-12"></label>
-                    <div class = 'col-md-12'>
-                        <input id = "newPassword" type="password" class="form-control" placeholder="Password" />
-                        <span class="glyphicon form-control-feedback"></span>
-                    </div>
-                </div>  
-                <div class="form-group has-feedback">
-                    <label for="lname" class="control-label col-md-12"></label>
-                    <div id = 'inputWarningBelow' class = 'col-md-12'>
-                        <input id='newPasswordAgain' type="password" class="form-control" placeholder="Password Again" />
-                        <span class="glyphicon form-control-feedback"></span>
-                    </div>
-                </div>  
-                <button id = "signUpSubmit" type="submit" class="btn btn-primary">Submit</button>
-            </form>
-            <br>
-            <button id = "skip" class="btn btn-primary btn-warning">Skip Login</button>
-            <button id = "cancel" class="btn btn-primary btn-danger">Cancel</button>
-
-            </div>
-
-        </div>
+ 
 
       <canvas id="background" ></canvas>
       <canvas id="foreground"></canvas>

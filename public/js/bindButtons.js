@@ -1,5 +1,13 @@
 var BindButtons = { 
  bindAll: function(){
+ 	$('#showShop').click(function(){
+ 		if($('#shop').is(":visible")){
+ 			$('#shop').hide();
+ 		}
+        else $('#shop').show();
+        return false;
+    });
+
   	$('#signOut').click(function() {
   		$('#saveGame').hide();
   	    logOut();

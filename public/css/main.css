@@ -7,8 +7,8 @@ canvas, #shop {
 }
 
 #shop{
-  overflow: scroll;
-  height: ;
+  overflow: auto;
+
 }
 
 #info{
@@ -28,7 +28,7 @@ canvas, #shop {
   z-index: 3;
 }
 
-#signUpForm, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{
+#signUpForm, #shop, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{
 	display: none;
 }
 #signInBox {
@@ -46,4 +46,18 @@ body {
 #gameContainer{
     position:fixed;
     overflow:hidden;
+}
+.bg-faded {
+    background-color: rgba(255, 255, 255, 0.3); /*nav background color and opacity*/
+  }
+
+  .navbar-light .navbar-nav .nav-link {/*nav text color*/
+      color:  #262626;
+    padding-right: 5%;
+    padding-left: 5%;
+}
+nav {
+  font-size: 30px;
+
+  color:  #262626;
 }
