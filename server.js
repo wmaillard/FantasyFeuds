@@ -1,4 +1,3 @@
-'use strict';
 
 
 const express = require('express');
@@ -24,8 +23,22 @@ var moveCount = 0;
 var moveSpeed = 1;
 var walkingSlowDown = 0; // tracker for gaps
 var gapStep = 6; //gaps between steps;
+var playerInfo = {};
+var playerInfoChange = false;
+
+var entityStats = {
+  'dwarfSoldier': {'attack': 10, 'cost' : 50, 'value' : 25},
+  'elfFemale' : {'attack' : 12, 'cost' : 75, 'value' : 35},
+  'humanSoldier' : {'attack' : 15, 'cost' : 120, 'value' : 60},
+  'orcPeon' : {'attack' : 20, 'cost' : 150, 'value' : 75}
+}
 
 io.on('connection', (socket) => {
+	if(!playerInfo[convertId(socket.id)]){
+		playerInfo[convertId(socket.id)] = {};
+	}
+  playerInfo[convertId(socket.id)].gold = 200;
+
 	change = true;
   console.log('Client connected');
 	
@@ -60,16 +73,31 @@ io.on('connection', (socket) => {
 	
 	socket.on('addEntity', (data) => {
 		change = true;
+    if(playerInfo[convertId(socket.id)].gold >= entityStats[data.entity.type].cost){
+
+        playerInfo[convertId(socket.id)].gold -= entityStats[data.entity.type].cost;
+        playerInfoChange = true;
+        //console.log(playerInfo[convertId(socket.id)].gold);
+
+
 		if(!userEntities[convertId(socket.id)]){
 			userEntities[convertId(socket.id)] = [];
-		   }
-		   userEntities[convertId(socket.id)].push(data.entity);
-	});
+		}
+		userEntities[convertId(socket.id)].push(data.entity);
+
+	}
+
+  });
+
+  
 		   
 });
 //var counter = 0;
 setInterval(() => {
 	if(change){ 
+		/*for(var i in playerInfo){
+			console.log(i + ': ' + playerInfo[i].gold + ' gold')
+		}*/
     /*console.log(counter + '. ' +process.hrtime());
     counter++;*/
 		change = false;
@@ -89,18 +117,16 @@ setInterval(() => {
 			change = maybeChange;
 		}
 		io.emit('allEntities', allEntities)
+		if(playerInfoChange){
+			io.emit('playerInfo', playerInfo);
+		}
 
 	}
 
 }, 1000 / tickRate);
 
 
-var entityStats = {
-  'dwarfSoldier': {'attack': 10, 'cost' : 50},
-  'elfFemale' : {'attack' : 12, 'cost' : 75},
-  'humanSoldier' : {'attack' : 15, 'cost' : 120},
-  'orcPeon' : {'attack' : 20, 'cost' : 150}
-}
+
 function applyAttacks(attacks, entities){
   //make this faster by indexing entities by id
   //check to make sure attack is ok
@@ -121,6 +147,8 @@ function applyAttacks(attacks, entities){
             entities[j].health < 0 ? entities[j].health = 0 : null;
             if(!entities[j].health){
               entities[j].dead = true;
+              playerInfo[attack.attacker.playerId].gold += entityStats[entities[j].type].value;
+              playerInfoChange = true;
             }
 			animateEntity(entities[j]); //animate victim
           }else if(entities[j].id === attack.attacker.id){
