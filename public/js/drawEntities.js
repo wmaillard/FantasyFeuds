@@ -24,7 +24,7 @@ function drawEntities(entities, ctx, lock, clear) {
       }
     }
     var animate = false;
-    if(Date.now() > lastAnimation + 500){
+    if(Date.now() > lastAnimation + 250){
         lastAnimation = Date.now();
         animate = true;
     }

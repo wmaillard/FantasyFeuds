@@ -325,6 +325,9 @@ function attackableEntities(entity, entitiesMap){
             if(!entitiesAtNode[e].dead && entitiesAtNode[e].playerId !== entity.playerId){ //don't attack yourself, could use this logic to heal
               nearbyEntities.push(entitiesAtNode[e]);
               //console.log('e')
+              if(!entity.attacking){
+                entity.attacking = true;
+              }
             }
           }
         }

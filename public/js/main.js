@@ -244,10 +244,11 @@ function startLevel() {
 
 
     var checkAttacks = setInterval(function(){
-		var onlyPlayer = onlyPlayerEntities(entities, playerId);
-	    for(entity in onlyPlayer){
-			if(!onlyPlayer[entity].dead){
-				attackableEntities(onlyPlayer[entity], entitiesMap)
+		//var onlyPlayer = onlyPlayerEntities(entities, playerId);
+	    for(entity in entities){
+            entities[entity].attacking = false;
+			if(!entities[entity].dead){
+				attackableEntities(entities[entity], entitiesMap)
 			};
 		}
 		if(attacks.length > 0){

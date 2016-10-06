@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
 	if(!playerInfo[convertId(socket.id)]){
 		playerInfo[convertId(socket.id)] = {};
 	}
-  playerInfo[convertId(socket.id)].gold = 200;
+  playerInfo[convertId(socket.id)].gold = 2000000000;
 
 	change = true;
   console.log('Client connected');
@@ -274,7 +274,10 @@ function moveEntities(entities) {
 
 	        if(entity.walking || wasWalking){
 	          entity.attacking = false;
-	          	setChange(entity.id, 'attacking', false)
+	          	//setChange(entity.id, 'attacking', false)
+
+
+
 			     // animateEntity(entity);
 		  	    //setDirectionFacing(entity);
 		 	       more = true;
