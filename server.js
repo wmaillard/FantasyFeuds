@@ -27,6 +27,7 @@ var playerInfo = {};
 var playerInfoChange = false;
 var levelWidth = 1600;
 var levelHeight = 2400;
+var changes = {};
 
 var entityStats = {
   'quarry': {'attack': 0, 'cost': 0, 'value': 100, 'object': true},
@@ -88,6 +89,7 @@ io.on('connection', (socket) => {
 			userEntities[convertId(socket.id)] = [];
 		}
 		userEntities[convertId(socket.id)].push(data.entity);
+		changes[data.entity.id] = data.entity;
 
 	}
 
@@ -113,7 +115,11 @@ for(var i = 0; i < 20; i++){
 }
 //var counter = 0;
 var lastAttacks = Date.now();
+var lastFullState = Date.now();
 setInterval(() => {
+
+
+
 	if(change){ 
 		  	walkingSlowDown++;
 
@@ -137,7 +143,7 @@ setInterval(() => {
 			
 		}
 		if(Date.now() > lastAttacks + 1000){
-			console.log('clearing');
+			//console.log('clearing');
 		
 			lastAttacks = Date.now();
 
@@ -158,12 +164,22 @@ setInterval(() => {
 		if(!change){
 			change = maybeChange;
 		}
-		io.emit('allEntities', allEntities)
+
+
+		if(changes.length > 0){
+			io.emit('changes', changes);
+		}
+		changes = {};
+
 		if(playerInfoChange){
 			io.emit('playerInfo', playerInfo);
 		}
 
 	}
+	if(lastFullState < Date.now() + 1000 * 60){
+		io.emit('allEntities', allEntities);
+	}
+
 	if(walkingSlowDown > gapStep){ 
     		walkingSlowDown = 0;
    	}
@@ -177,7 +193,12 @@ function clearAttacks(entities){
 	entities[e].attacking = false; // clear attacks
   }
 }
-
+function setChange(entityId, key, value){
+	if(!changes[entityId]){
+		changes[entityId] = {};
+	}
+	changes[entityId][key] = value;
+}
 
 function applyAttacks(attacks, entities){
   //make this faster by indexing entities by id
@@ -195,14 +216,18 @@ function applyAttacks(attacks, entities){
           if(entities[j].id === attack.victim.id && entities[j].health > 0){
             entities[j].health -= entityStats[attack.attacker.type].attack;
             entities[j].health < 0 ? entities[j].health = 0 : null;
+            setChange(entities[j].id, 'health', entities[j].health)
             if(!entities[j].health){
               entities[j].dead = true;
+              setChange(entities[j].id, 'dead', true)
               playerInfo[attack.attacker.playerId].gold += entityStats[entities[j].type].value;
               playerInfoChange = true;
             }
 			animateEntity(entities[j]); //animate victim
+
           }else if(entities[j].id === attack.attacker.id){
 			  entities[j].attacking = true;
+
 			  animateEntity(entities[j]); //animate attacker
 			  //change = true; // need to keep updating until attack list is empty
 		  }
@@ -245,11 +270,13 @@ function moveEntities(entities) {
 
 	        if(entity.walking || wasWalking){
 	          entity.attacking = false;
+	          			  setChange(entity.id, 'attacking', false)
 			      animateEntity(entity);
 		  	    setDirectionFacing(entity);
 		 	       more = true;
 	          if(!entity.nextNode){
 	            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+	            setChange(entity.id, 'nextNode', entity.nextNode)
 	          }else if(entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
 
 	            if(~~(entity.x / 32) > entity.nextNode.x){
@@ -262,8 +289,14 @@ function moveEntities(entities) {
 	            }else if(~~(entity.y / 32) < entity.nextNode.y){
 	              entity.y += microMove;
 	            }
+
+	            setChange(entity.id, 'x', entity.x);
+	            setChange(entity.id, 'y', entity.y);
+
 	          }else if(entity.path.length > 0){
 	            entity.nextNode = entity.path.pop();
+	            setChange(entity.id, 'nextNode', entity.nextNode)
+
 
 	          }else if(Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6){
 
@@ -279,7 +312,8 @@ function moveEntities(entities) {
 	            }else if(yTooBig && entity.y < entity.heading.y){
 	              entity.y += microMove;
 	            }
-
+	            setChange(entity.id, 'x', entity.x);
+	            setChange(entity.id, 'y', entity.y);
 
           	}
      	 }
@@ -297,6 +331,7 @@ function animateEntity(entity){
 	console.log(entity.attacking);*/
 	if(entity.dead){
 		entity.walkingState = 2;
+		setChange(entity.id, 'walkingState', entity.walkingState);
 		return;
 	}
 
@@ -313,6 +348,7 @@ function animateEntity(entity){
     else if(!entity.walking && !entity.attacking){  
         entity.walkingState = 1;  
     }
+    setChange(entity.id, 'walkingState', entity.walkingState);
 }
 
 function setDirectionFacing(entity){
@@ -333,6 +369,10 @@ function setDirectionFacing(entity){
 			}
 		}
 	}
+
+
+
+	setChange(entity.id, 'directionPointing', entity.directionPointing);
 /* Keep this for a more fluid testing
 	if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
 

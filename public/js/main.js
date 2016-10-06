@@ -97,6 +97,21 @@ alert('Your performance: ' + sum / 5000);*/
         playerGold = data[playerId].gold;
         $('#playerGold').html('<img src="http://res.cloudinary.com/ochemaster/image/upload/c_scale,h_50/v1475689538/11-512_naajvi.png">' + " " + data[playerId].gold)
     });
+
+    socket.on('changes', function(changes){
+        for(var e in entities){
+            if(changes[entities[e].id]){
+                console.log('its working')
+                for(var i in changes[entities[e].id]){
+                    entities[e][i] = changes[entities[e].id][i];
+                }
+            }
+        }
+    })
+
+
+
+
     socket.on('allEntities', function(serverEntities){
 	if(changeToSendToServer){
 		console.log('missed a change');
