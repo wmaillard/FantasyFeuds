@@ -57,12 +57,13 @@ io.on('connection', (socket) => {
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })
   socket.on('entityPath', (data) => {
-	  change = true;
+	change = true;
 	var entities = userEntities[convertId(socket.id)];
 	for(var e in entities){
 		if(data.id === entities[e].id){
 			entities[e].path = data.path;
      		entities[e].heading = data.heading;
+     		entities[e].attacking = false;
 			break;
 		}
   	}
@@ -111,8 +112,11 @@ for(var i = 0; i < 20; i++){
 
 }
 //var counter = 0;
+var lastAttacks = Date.now();
 setInterval(() => {
 	if(change){ 
+		  	walkingSlowDown++;
+
 		/*for(var i in playerInfo){
 			console.log(i + ': ' + playerInfo[i].gold + ' gold')
 		}*/
@@ -127,7 +131,27 @@ setInterval(() => {
 			allEntities = allEntities.concat(userEntities[userId]);
 		}
 		//console.log(attacks);
-		applyAttacks(attacks, allEntities);
+
+		if(attacks.length > 0){
+			applyAttacks(attacks, allEntities);
+			
+		}
+		if(Date.now() > lastAttacks + 1000){
+			console.log('clearing');
+		
+			lastAttacks = Date.now();
+
+		}else{
+			change = true;
+			for(var e in allEntities){
+				if(allEntities[e].attacking){
+					animateEntity(allEntities[e]);
+				}
+			}
+			
+		}
+
+
 
   
 		var maybeChange = moveEntities(allEntities);
@@ -140,9 +164,19 @@ setInterval(() => {
 		}
 
 	}
+	if(walkingSlowDown > gapStep){ 
+    		walkingSlowDown = 0;
+   	}
+
 
 }, 1000 / tickRate);
 
+
+function clearAttacks(entities){
+  for(var e in entities){
+	entities[e].attacking = false; // clear attacks
+  }
+}
 
 
 function applyAttacks(attacks, entities){
@@ -151,9 +185,7 @@ function applyAttacks(attacks, entities){
   //customize attacks for different kinds of entities
   //check if health = 0 and set dead.
 
-  for(var e in entities){
-	entities[e].attacking = false; // clear attacks
-  }
+
   var attackList;
   while(attackList = attacks.shift()){
     for(var a in attackList)
@@ -186,7 +218,7 @@ function convertId(oldId){
 var microMove = 4;
 function moveEntities(entities) {
 	var more = false;
-  	walkingSlowDown++;
+
   	//console.log(entities.length);
 
     for(var e in entities){
@@ -212,7 +244,7 @@ function moveEntities(entities) {
 
 
 	        if(entity.walking || wasWalking){
-	          
+	          entity.attacking = false;
 			      animateEntity(entity);
 		  	    setDirectionFacing(entity);
 		 	       more = true;
@@ -253,9 +285,7 @@ function moveEntities(entities) {
      	 }
 		}
     }
-    if(walkingSlowDown > gapStep){
-    	walkingSlowDown = 0;
-    }
+
 	return more;
 
 	
@@ -263,12 +293,15 @@ function moveEntities(entities) {
 
 
 function animateEntity(entity){
-
+	/*console.log(entity.id);
+	console.log(entity.attacking);*/
 	if(entity.dead){
 		entity.walkingState = 2;
 		return;
 	}
+
 	if(entity.attacking && walkingSlowDown > gapStep){
+		
 		entity.walkingState === 0 ? entity.walkingState = 1 : entity.walkingState = 0;
 		return;
 	}
