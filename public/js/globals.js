@@ -56,6 +56,7 @@ var attackRate = 1; //attacks checked per second
 var playerGold = 1000;
 
 var entityNames = {
+	'quarry': {'object': true},
 	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},
 	'elfFemale' : {'name' : 'Elf Female', 'image' : 'elfFemaleStore_nrmwwu.png', 'cost' : 75},
 	'humanSoldier' : {'name' : 'Human Soldier', 'image'  : 'humanSoldierStore_y97ypo.png', 'cost' : 120},
@@ -65,7 +66,10 @@ var entityNames = {
 //  http://res.cloudinary.com/ochemaster/image/upload/w_241,c_scale/v1475040587/orcPeonStore_dp53w5.png
 //Load up entity images
 for(var entity in entityNames){
-	entityNames[entity].image = 'http://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1475040587/' + entityNames[entity].image;
+	if(!entityNames[entity].object){
+		entityNames[entity].image = 'http://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1475040587/' + entityNames[entity].image;
+	}
+	
 	characterImages[entity] = new Image();
 	characterImages[entity].src = 'img/characters/' + entity + '/' + entity + '.png';
 	characterImages[entity + 'Pose'] = new Image();

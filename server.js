@@ -17,7 +17,7 @@ var tickRate = 30; // in hz, having trouble. Client sends [], server returns [],
 
 var allEntities = [];
 var userEntities = {};
-var change = false;
+var change = true;
 var attacks = [];
 var moveCount = 0;
 var moveSpeed = 1;
@@ -25,8 +25,11 @@ var walkingSlowDown = 0; // tracker for gaps
 var gapStep = 6; //gaps between steps;
 var playerInfo = {};
 var playerInfoChange = false;
+var levelWidth = 1600;
+var levelHeight = 2400;
 
 var entityStats = {
+  'quarry': {'attack': 0, 'cost': 0, 'value': 100, 'object': true},
   'dwarfSoldier': {'attack': 10, 'cost' : 50, 'value' : 25},
   'elfFemale' : {'attack' : 12, 'cost' : 75, 'value' : 35},
   'humanSoldier' : {'attack' : 15, 'cost' : 120, 'value' : 60},
@@ -92,6 +95,21 @@ io.on('connection', (socket) => {
   
 		   
 });
+var quar = {"attackType":"none","color":"#808080","playerId":"-1","type":"quarry","x":300,"y":487,"health":100,"directionPointing":"S","heading":{"x":292,"y":487},"attacking":false,"gore":{},"movedCount":0,"walking":true,"walkingState":0,"size":70,"height":70,"width":70,"loaded":true,"team":"red","ai":false,"selected":false,"fighting":false,"pathStart":{"x":0,"y":0},"dest":[],"pathDist":0,"path":[],"id":1475712082519,"nextNode":{"x":9,"y":15},"moved":false}
+quar = JSON.stringify(quar);
+userEntities[-1] = [];
+for(var i = 0; i < 20; i++){
+
+	var newQuar = JSON.parse(quar);
+	newQuar.x = ~~(Math.random() * levelWidth);
+	newQuar.y = ~~(Math.random() * levelHeight);
+	newQuar.heading.x = newQuar.x;
+	newQuar.heading.y = newQuar.y;
+	newQuar.id = Date.now() + i * 200;
+	userEntities[-1].push(newQuar);
+
+
+}
 //var counter = 0;
 setInterval(() => {
 	if(change){ 
@@ -168,67 +186,84 @@ function convertId(oldId){
 var microMove = 4;
 function moveEntities(entities) {
 	var more = false;
-  walkingSlowDown++;
-    for(var entity in entities){
-      entity = entities[entity];
-      var wasWalking = entity.walking;
+  	walkingSlowDown++;
+  	//console.log(entities.length);
+
+    for(var e in entities){
+    	
+    	var entity = entities[e];
+    	
+    	if(entity.type === 'quarry' ){
+		
+    		if(!entity.dead){
+	    		entity.walking = true;
+	    		animateEntity(entity);
+	    		more = true;
+	    	}
+    	}else{
+		      
+
+		      var wasWalking = entity.walking;
+
+		      entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
+		      if(entity.path.length > 0){
+		        entity.walking = true;
+		      };
 
 
+	        if(entity.walking || wasWalking){
+	          
+			      animateEntity(entity);
+		  	    setDirectionFacing(entity);
+		 	       more = true;
+	          if(!entity.nextNode){
+	            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+	          }else if(entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
+
+	            if(~~(entity.x / 32) > entity.nextNode.x){
+	              entity.x -= microMove;
+	            }else if (~~(entity.x / 32) < entity.nextNode.x){
+	              entity.x += microMove;
+	            }
+	            if(~~(entity.y / 32) > entity.nextNode.y){
+	              entity.y -= microMove;
+	            }else if(~~(entity.y / 32) < entity.nextNode.y){
+	              entity.y += microMove;
+	            }
+	          }else if(entity.path.length > 0){
+	            entity.nextNode = entity.path.pop();
+
+	          }else if(Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6){
+
+	            var xTooBig = Math.abs(entity.heading.x - entity.x) > 6;
+	            var yTooBig = Math.abs(entity.heading.y - entity.y) > 6;
+	            if(xTooBig && entity.x > entity.heading.x){
+	              entity.x -= microMove;
+	            }else if (xTooBig && entity.x < entity.heading.x){
+	              entity.x += microMove;
+	            }
+	            if(yTooBig && entity.y > entity.heading.y){
+	              entity.y -= microMove;
+	            }else if(yTooBig && entity.y < entity.heading.y){
+	              entity.y += microMove;
+	            }
 
 
-      entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
-      if(entity.path.length > 0){
-        entity.walking = true;
-      };
-
-
-        if(entity.walking || wasWalking){
-          
-		      animateEntity(entity);
-	  	    setDirectionFacing(entity);
-	 	       more = true;
-          if(!entity.nextNode){
-            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-          }else if(entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
-
-            if(~~(entity.x / 32) > entity.nextNode.x){
-              entity.x -= microMove;
-            }else if (~~(entity.x / 32) < entity.nextNode.x){
-              entity.x += microMove;
-            }
-            if(~~(entity.y / 32) > entity.nextNode.y){
-              entity.y -= microMove;
-            }else if(~~(entity.y / 32) < entity.nextNode.y){
-              entity.y += microMove;
-            }
-          }else if(entity.path.length > 0){
-            entity.nextNode = entity.path.pop();
-
-          }else if(Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6){
-
-            var xTooBig = Math.abs(entity.heading.x - entity.x) > 6;
-            var yTooBig = Math.abs(entity.heading.y - entity.y) > 6;
-            if(xTooBig && entity.x > entity.heading.x){
-              entity.x -= microMove;
-            }else if (xTooBig && entity.x < entity.heading.x){
-              entity.x += microMove;
-            }
-            if(yTooBig && entity.y > entity.heading.y){
-              entity.y -= microMove;
-            }else if(yTooBig && entity.y < entity.heading.y){
-              entity.y += microMove;
-            }
-
-
-          }
-      }
+          	}
+     	 }
+		}
+    }
+    if(walkingSlowDown > gapStep){
+    	walkingSlowDown = 0;
     }
 	return more;
 
+	
 }
 
 
 function animateEntity(entity){
+
 	if(entity.dead){
 		entity.walkingState = 2;
 		return;
@@ -241,7 +276,7 @@ function animateEntity(entity){
 	
     if (entity.walking && walkingSlowDown > gapStep){  
           entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
-          walkingSlowDown = 0;
+          
     }
     else if(!entity.walking){  
         entity.walkingState = 1;  
