@@ -45,6 +45,9 @@ io.on('connection', (socket) => {
 
 	change = true;
   console.log('Client connected');
+
+
+		lastFullState = Date.now() - 1000 * 10 + 500;
 	
   socket.on('disconnect', () => console.log('Client disconnected'));
 	
@@ -115,7 +118,7 @@ for(var i = 0; i < 20; i++){
 }
 //var counter = 0;
 var lastAttacks = Date.now();
-var lastFullState = Date.now();
+var lastFullState = 0;
 setInterval(() => {
 
 
@@ -149,11 +152,11 @@ setInterval(() => {
 
 		}else{
 			change = true;
-			for(var e in allEntities){
+			/*for(var e in allEntities){
 				if(allEntities[e].attacking){
 					animateEntity(allEntities[e]);
 				}
-			}
+			}*/
 			
 		}
 
@@ -166,8 +169,9 @@ setInterval(() => {
 		}
 
 
-		if(changes.length > 0){
+		if(!(Object.keys(changes).length === 0 && changes.constructor === Object)){
 			io.emit('changes', changes);
+
 		}
 		changes = {};
 
@@ -176,8 +180,10 @@ setInterval(() => {
 		}
 
 	}
-	if(lastFullState < Date.now() + 1000 * 60){
+	if(Date.now() > lastFullState + 1000 * 10){
 		io.emit('allEntities', allEntities);
+		console.log('full state')
+		lastFullState = Date.now();
 	}
 
 	if(walkingSlowDown > gapStep){ 
@@ -223,12 +229,12 @@ function applyAttacks(attacks, entities){
               playerInfo[attack.attacker.playerId].gold += entityStats[entities[j].type].value;
               playerInfoChange = true;
             }
-			animateEntity(entities[j]); //animate victim
+			//animateEntity(entities[j]); //animate victim
 
           }else if(entities[j].id === attack.attacker.id){
 			  entities[j].attacking = true;
 
-			  animateEntity(entities[j]); //animate attacker
+			  //animateEntity(entities[j]); //animate attacker
 			  //change = true; // need to keep updating until attack list is empty
 		  }
 			
@@ -250,14 +256,7 @@ function moveEntities(entities) {
     	
     	var entity = entities[e];
     	
-    	if(entity.type === 'quarry' ){
-		
-    		if(!entity.dead){
-	    		entity.walking = true;
-	    		animateEntity(entity);
-	    		more = true;
-	    	}
-    	}else{
+
 		      
 
 		      var wasWalking = entity.walking;
@@ -265,14 +264,19 @@ function moveEntities(entities) {
 		      entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
 		      if(entity.path.length > 0){
 		        entity.walking = true;
+
 		      };
+
+		      if(wasWalking !== entity.walking){
+		      	setChange(entity.id, 'walking', entity.walking)
+		  		}
 
 
 	        if(entity.walking || wasWalking){
 	          entity.attacking = false;
-	          			  setChange(entity.id, 'attacking', false)
-			      animateEntity(entity);
-		  	    setDirectionFacing(entity);
+	          	setChange(entity.id, 'attacking', false)
+			     // animateEntity(entity);
+		  	    //setDirectionFacing(entity);
 		 	       more = true;
 	          if(!entity.nextNode){
 	            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
@@ -317,7 +321,7 @@ function moveEntities(entities) {
 
           	}
      	 }
-		}
+		
     }
 
 	return more;
@@ -326,80 +330,6 @@ function moveEntities(entities) {
 }
 
 
-function animateEntity(entity){
-	/*console.log(entity.id);
-	console.log(entity.attacking);*/
-	if(entity.dead){
-		entity.walkingState = 2;
-		setChange(entity.id, 'walkingState', entity.walkingState);
-		return;
-	}
-
-	if(entity.attacking && walkingSlowDown > gapStep){
-		
-		entity.walkingState === 0 ? entity.walkingState = 1 : entity.walkingState = 0;
-		return;
-	}
-	
-    else if (entity.walking && walkingSlowDown > gapStep){  
-          entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
-          
-    }
-    else if(!entity.walking && !entity.attacking){  
-        entity.walkingState = 1;  
-    }
-    setChange(entity.id, 'walkingState', entity.walkingState);
-}
-
-function setDirectionFacing(entity){
-    var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-	var nextNode = entity.nextNode;
-	if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
-		if(currentNode.x === nextNode.x){
-			if(currentNode.y < nextNode.y){
-				entity.directionPointing = 'S';
-			}else{
-				entity.directionPointing = 'N'
-			}
-		}else{
-			if(currentNode.x < nextNode.x){
-				entity.directionPointing = 'E'
-			}else{
-				entity.directionPointing = 'W';
-			}
-		}
-	}
 
 
 
-	setChange(entity.id, 'directionPointing', entity.directionPointing);
-/* Keep this for a more fluid testing
-	if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
-
-		var bPos = currentNode.y - currentNode.x;
-		var bNeg = currentNode.y + currentNode.x;
-		var yOnPos = nextNode.x + bPos;
-		var yOnNeg = -nextNode.x + bNeg;
-		if(nextNode.x < currentNode.x){
-			if(nextNode.y < yOnPos && nextNode.y > yOnNeg){
-				entity.directionPointing = 'W';
-			}
-			else if(nextNode.y < yOnNeg){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}else{
-			if(nextNode.y > yOnPos && nextNode.y < yOnNeg){
-				entity.directionPointing = 'E';
-			}			
-			else if(nextNode.y < yOnPos){
-				entity.directionPointing = 'N';
-			}
-			else{
-				entity.directionPointing = 'S'
-			}
-		}
-	}*/
-}

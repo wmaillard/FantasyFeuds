@@ -54,6 +54,7 @@ var waiting = false;
 var oldBackgroundOffset = {x: 0, y: 0};
 var attackRate = 1; //attacks checked per second
 var playerGold = 1000;
+var lastAnimation = Date.now();
 
 var entityNames = {
 	'quarry': {'object': true},
