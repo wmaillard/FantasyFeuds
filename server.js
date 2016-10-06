@@ -262,7 +262,7 @@ function moveEntities(entities) {
 		      var wasWalking = entity.walking;
 
 		      entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
-		      if(entity.path.length > 0){
+		      if(entity.path && entity.path.length > 0){
 		        entity.walking = true;
 
 		      };
@@ -284,7 +284,7 @@ function moveEntities(entities) {
 	          if(!entity.nextNode){
 	            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
 	            setChange(entity.id, 'nextNode', entity.nextNode)
-	          }else if(entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
+	          }else if(entity.path && entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
 
 	            if(~~(entity.x / 32) > entity.nextNode.x){
 	              entity.x -= microMove;
@@ -300,7 +300,7 @@ function moveEntities(entities) {
 	            setChange(entity.id, 'x', entity.x);
 	            setChange(entity.id, 'y', entity.y);
 
-	          }else if(entity.path.length > 0){
+	          }else if(entity.path && entity.path.length > 0){
 	            entity.nextNode = entity.path.pop();
 	            setChange(entity.id, 'nextNode', entity.nextNode)
 
