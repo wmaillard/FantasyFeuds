@@ -105,7 +105,11 @@ alert('Your performance: ' + sum / 5000);*/
                 for(var i in changes[entities[e].id]){
                     entities[e][i] = changes[entities[e].id][i];
                 }
+                delete changes[entities[e].id];
             }
+        } 
+        for(var c in changes){
+            entities.push(changes[c]);
         }
     })
 
