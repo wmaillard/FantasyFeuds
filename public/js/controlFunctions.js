@@ -195,7 +195,7 @@ function clickGameContainer(e){
        			else{
        				entity.path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
 				    socket.emit('entityPath', {id : entity.id, path : entity.path, heading : entity.heading});
-                    if(entity.path.length > 0){
+                    if(entity.path && entity.path.length > 0){
                         entity.walking = true;
                     }
 
@@ -230,13 +230,15 @@ function clickGameContainer(e){
    
 }
 
-function entityIsThere(x, y, rangeX, rangeY){
+function entityIsThere(x, y, rangeX, rangeY){ //This does testing if something is there and selecting, separate yo!
     if(rangeX && rangeY){
         for(var i = 0; i < entities.length; i++){
             var entX = entities[i].x;
             var entY = entities[i].y;
             if(x >= entX && x <= entX + rangeX && y >= entY && y <= entY + rangeY){
-                entities[i].selected = true;
+                    if(entities[i].playerId === playerId){
+                        entities[i].selected = true;
+                    }
             }
         }
     }

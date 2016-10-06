@@ -101,7 +101,7 @@ alert('Your performance: ' + sum / 5000);*/
     socket.on('changes', function(changes){
         for(var e in entities){
             if(changes[entities[e].id]){
-                console.log('its working')
+               // console.log('its working')
                 for(var i in changes[entities[e].id]){
                     entities[e][i] = changes[entities[e].id][i];
                 }

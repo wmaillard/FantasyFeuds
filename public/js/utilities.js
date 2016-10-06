@@ -63,6 +63,9 @@ function getRandomColor() {
 }
 
 function isBlocked(x, y) {
+    if(!blockingTerrain[~~(x / 32)] || !blockingTerrain[~~(x / 32)][~~(y / 32)]){
+        return false;
+    }
     return blockingTerrain[~~(x / 32)][~~(y / 32)];
 }
 function onlyPlayerEntities(entities, playerId){
