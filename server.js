@@ -273,12 +273,11 @@ function animateEntity(entity){
 		return;
 	}
 	
-	
-    if (entity.walking && walkingSlowDown > gapStep){  
+    else if (entity.walking && walkingSlowDown > gapStep){  
           entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
           
     }
-    else if(!entity.walking){  
+    else if(!entity.walking && !entity.attacking){  
         entity.walkingState = 1;  
     }
 }
