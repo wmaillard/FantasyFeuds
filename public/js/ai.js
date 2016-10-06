@@ -314,8 +314,12 @@ function attackableEntities(entity, entitiesMap){
     var nodeY = ~~(entity.y / 32);
 
     for(var i = nodeX - 1; i <= nodeX + 1; i++){
+
       //console.log('a')
       for(var j = nodeY - 1; j <= nodeY + 1; j++){
+        if(!getEntitiesMap(i, j)){
+          continue;
+        }
               //console.log('b')
         if(entitiesMap[i][j].length > 0){
            //console.log('c')

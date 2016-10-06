@@ -1,3 +1,10 @@
+function getEntitiesMap(x, y){
+    if(x <= entitiesMap.length - 1 && x >= 0 && y <= entitiesMap[x].length - 1 && y >= 0){
+        return true;
+    }else return false;
+}
+
+
 function deepCloneArray(array){
   var newArray = $.extend(true, [], array);
   newArray.shift().shift();

@@ -238,7 +238,7 @@ function startLevel() {
 
 
     var i = 0;
-    ctxB.imageSmoothingEnabled = false; //supposedly this should optimize graphics
+    //ctxB.imageSmoothingEnabled = false; //supposedly this should optimize graphics
 
     scene.load(level, ctxB, zoom);
 
