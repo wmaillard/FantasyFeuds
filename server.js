@@ -15,7 +15,7 @@ const io = socketIO(server);
 
 var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
 
-var allEntities = [];
+var allEntities = {};
 var userEntities = {};
 var change = true;
 var attacks = [];
@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
 	
   socket.on('disconnect', () => console.log('Client disconnected'));
 	
-  socket.on('clientEntities', (data) => {
+ /* socket.on('clientEntities', (data) => {
     return;
     var entities = data.entities;
     attacks.push(data.attacks);  
@@ -59,18 +59,15 @@ io.on('connection', (socket) => {
   	userEntities[convertId(socket.id)] = entities;
   	//console.log('client ' + convertId(socket.id) + ' just sent me something');
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
-  })
+  })*/
   socket.on('entityPath', (data) => {
 	change = true;
-	var entities = userEntities[convertId(socket.id)];
-	for(var e in entities){
-		if(data.id === entities[e].id){
-			entities[e].path = data.path;
-     		entities[e].heading = data.heading;
-     		entities[e].attacking = false;
-			break;
-		}
-  	}
+	if(allEntities[data.id]){
+		allEntities[data.id].path = data.path;
+		allEntities[data.id].heading = data.heading;
+		allEntities[data.id].attacking = false;
+	}else console.log(data.id + '. No such entity');
+			
   });
 			
 			
@@ -88,10 +85,7 @@ io.on('connection', (socket) => {
         //console.log(playerInfo[convertId(socket.id)].gold);
 
 
-		if(!userEntities[convertId(socket.id)]){
-			userEntities[convertId(socket.id)] = [];
-		}
-		userEntities[convertId(socket.id)].push(data.entity);
+		allEntities[data.entity.id] = data.entity;
 		changes[data.entity.id] = data.entity;
 
 	}
@@ -103,7 +97,7 @@ io.on('connection', (socket) => {
 });
 var quar = {"attackType":"none","color":"#808080","playerId":"-1","type":"quarry","x":300,"y":487,"health":100,"directionPointing":"S","heading":{"x":292,"y":487},"attacking":false,"gore":{},"movedCount":0,"walking":true,"walkingState":0,"size":70,"height":70,"width":70,"loaded":true,"team":"red","ai":false,"selected":false,"fighting":false,"pathStart":{"x":0,"y":0},"dest":[],"pathDist":0,"path":[],"id":1475712082519,"nextNode":{"x":9,"y":15},"moved":false}
 quar = JSON.stringify(quar);
-userEntities[-1] = [];
+
 for(var i = 0; i < 20; i++){
 
 	var newQuar = JSON.parse(quar);
@@ -112,7 +106,7 @@ for(var i = 0; i < 20; i++){
 	newQuar.heading.x = newQuar.x;
 	newQuar.heading.y = newQuar.y;
 	newQuar.id = Date.now() + i * 200;
-	userEntities[-1].push(newQuar);
+	allEntities[newQuar.id] = newQuar;
 
 
 }
@@ -132,13 +126,11 @@ setInterval(() => {
     /*console.log(counter + '. ' +process.hrtime());
     counter++;*/
 		change = false;
-		allEntities = [];
+
 		/*console.log('User Entities: ');
 		console.log(userEntities);*/
 
-		for(var userId in userEntities){
-			allEntities = allEntities.concat(userEntities[userId]);
-		}
+
 		//console.log(attacks);
 
 		if(attacks.length > 0){
@@ -215,30 +207,37 @@ function applyAttacks(attacks, entities){
 
   var attackList;
   while(attackList = attacks.shift()){
-    for(var a in attackList)
+    for(var a in attackList){
       var attack = attackList[a];
-      if(attack){
-        for(var j in entities){ 
-          if(entities[j].id === attack.victim.id && entities[j].health > 0){
-            entities[j].health -= entityStats[attack.attacker.type].attack;
-            entities[j].health < 0 ? entities[j].health = 0 : null;
-            setChange(entities[j].id, 'health', entities[j].health)
-            if(!entities[j].health){
-              entities[j].dead = true;
-              setChange(entities[j].id, 'dead', true)
-              playerInfo[attack.attacker.playerId].gold += entityStats[entities[j].type].value;
-              playerInfoChange = true;
-            }
-			//animateEntity(entities[j]); //animate victim
+      /*console.log(attackList[a]);
+      console.log('***************************')*/
+      
+        var j = attack.victim.id;
+        var k = attack.attacker.id;
+        if(allEntities[j] && allEntities[k]){
+	        allEntities[k].attacking = true;
+	        if(allEntities[j].health > 0){
+	            allEntities[j].health -= entityStats[allEntities[k].type].attack;
+	            allEntities[j].health < 0 ? allEntities[j].health = 0 : null;
+	            setChange(j, 'health', allEntities[j].health)
+	            if(!allEntities[j].health){
+	              allEntities[j].dead = true;
+	              setChange(j, 'dead', true)
+	              playerInfo[attack.attacker.playerId].gold += entityStats[allEntities[j].type].value;
+	              playerInfoChange = true;
+	            }
+				//animateEntity(entities[j]); //animate victim
 
-          }else if(entities[j].id === attack.attacker.id){
-			  entities[j].attacking = true;
+	          }
 
-			  //animateEntity(entities[j]); //animate attacker
-			  //change = true; // need to keep updating until attack list is empty
-		  }
+                  }
+
+
+
+
+		  
 			
-        }
+        
       }
     }
   }

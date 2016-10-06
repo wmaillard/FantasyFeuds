@@ -16,7 +16,7 @@ var ctxB;  //Foreground, background, and info context
 var ctxF;
 var ctxI;
 var debugPathfinding = false;
-var entities = [];
+var entities = {};
 var entitiesLastNode = {};
 var entitiesMap = []; //nodes that all the entities are on, currently only 15kB
 var entitySpeed = fps * 2 / 5; // Walking speed of entities, probably change this at some point
