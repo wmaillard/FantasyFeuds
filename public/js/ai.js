@@ -399,7 +399,12 @@ function attackableEntities(entity, entitiesMap){
       controller.init(victim.x, victim.y, entity.id, victim.id);
     }
     if(entity.playerId === playerId){
-      attacks.push({attacker: entity, victim: victim});
+      var attack = {attacker: {id: entity.id, playerId : entity.playerId},
+                  victim: {id : victim.id, playerId : victim.playerId}};
+
+
+
+      attacks.push(attack);
     }
 
 

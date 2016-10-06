@@ -137,7 +137,7 @@ function kill(){ //Incase the program is out of control
 }
 function entityIsSelected(){
 	var selectedEntities = [];
-	for(var i = 0; i < entities.length; i++){
+	for(var i in entities){
 		if(entities[i].selected === true){
 			selectedEntities.push(entities[i])
 		}
@@ -232,7 +232,7 @@ function clickGameContainer(e){
 
 function entityIsThere(x, y, rangeX, rangeY){ //This does testing if something is there and selecting, separate yo!
     if(rangeX && rangeY){
-        for(var i = 0; i < entities.length; i++){
+        for(var i in entities){
             var entX = entities[i].x;
             var entY = entities[i].y;
             if(x >= entX && x <= entX + rangeX && y >= entY && y <= entY + rangeY){
@@ -243,7 +243,7 @@ function entityIsThere(x, y, rangeX, rangeY){ //This does testing if something i
         }
     }
     else{
-        for(var i = 0; i < entities.length; i++){
+        for(var i in entities){
             var entX = entities[i].x - entities[i].width * entitySize * .2;
             var entY = entities[i].y;
            /* console.log('entX:', entX, 'x:', x);
@@ -257,7 +257,7 @@ function entityIsThere(x, y, rangeX, rangeY){ //This does testing if something i
 }
 
 function deselectAllEntities(){
-    for(var i = 0; i < entities.length; i++){
+    for(var i in entities){
         entities[i].selected = false;
     }
 }
