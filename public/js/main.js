@@ -66,7 +66,19 @@ alert('Your performance: ' + sum / 5000);*/
 	// subscribe to events
 	mc.on('pinch', function(e) {
 	    // do something cool
-	    alert(JSON.stringify(e));
+		var center = e.center;
+		var scale = e.scale;
+		
+		zoom *= scale;
+		zoomHappened = true;
+		
+	    if(e.additionalEvent === 'pinchin'){
+	    	
+		    
+	    }else if(e.additionalEvent === 'pinchout'){
+	    
+	    
+	    }
 	});
 
 	
