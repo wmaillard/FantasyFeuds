@@ -78,7 +78,7 @@ alert('Your performance: ' + sum / 5000);*/
 		    
 	    }else if(e.additionalEvent === 'pinchout'){
 
-	    alert(timesFired);
+	   // alert(timesFired);
 	    }
 	});
 
