@@ -69,14 +69,14 @@ alert('Your performance: ' + sum / 5000);*/
 		var center = e.center;
 		var scale = e.scale;
 		
-		zoom *= 1 / scale;
+		zoom += (1 - scale) ;
 		zoomHappened = true;
 		
 	    if(e.additionalEvent === 'pinchin'){
 	    	
 		    
 	    }else if(e.additionalEvent === 'pinchout'){
-	    	alert(e);
+
 	    
 	    }
 	});
