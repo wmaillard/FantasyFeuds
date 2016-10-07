@@ -283,7 +283,7 @@ function selectEntities(x, y, oldX, oldY){
     entityIsThere(x, y, x + oldX, y + oldY)
 }
 function switchEventToMobile(e){
-        if(e.originalEvent.changedTouches){
+        if(e.originalEvent.changedTouches && e.originalEvent.changedTouches.length === 1){
                 e = e.originalEvent.changedTouches[0];
         }
         return e;
