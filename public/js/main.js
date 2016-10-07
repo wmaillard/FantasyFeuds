@@ -70,7 +70,7 @@ alert('Your performance: ' + sum / 5000);*/
 		var center = e.center;
 		var scale = e.scale;
 		
-		zoom += (1 - scale) ;
+		zoom += (1 - scale) * .25 ;
 		zoomHappened = true;
 		timesFired++;
 	    if(e.additionalEvent === 'pinchin'){
