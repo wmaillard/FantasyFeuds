@@ -49,12 +49,27 @@ for(var j = 0; j < 5000; j++){
 }
 alert('Your performance: ' + sum / 5000);*/
 	
-	var hammerTime = new hammer($('#gameContainer'), {event : 'pinch', pointers : '2', 'threshold' : 0});
-	hammerTime.get('pinch').set({ enable: true });
-	hammerTime.on('pinch'){function(ev){
-		alert(ev);
-	}};
+	// get a reference to an element
+	var stage = document.getElementById('gameContainer');
 
+	// create a manager for that element
+	var mc = new Hammer.Manager(stage);
+
+	// create a recognizer
+	var pinch = new Hammer.Pinch();
+
+	// add the recognizer
+	mc.add(pinch);
+	
+	mc.get('pinch').set({ enable: true });
+
+	// subscribe to events
+	mc.on('pinch', function(e) {
+	    // do something cool
+	    alert(e);
+	});
+
+	
 	buildStore();
     playerColor = getRandomColor();
     BindButtons.bindAll();
