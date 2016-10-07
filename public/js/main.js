@@ -72,8 +72,12 @@ alert('Your performance: ' + sum / 5000);*/
 	    // do something cool
 		var center = e.center;
 		var scale = e.scale;
+
+		zoom += (1 - scale) * zoomSpeed;
+		if(zoom <= 0){
+			zoom = .0001;
+		}
 		
-		zoom += (1 - scale) * zoomSpeed ;
 		zoomHappened = true;
 		timesFired++;
 	    if(e.additionalEvent === 'pinchin'){
