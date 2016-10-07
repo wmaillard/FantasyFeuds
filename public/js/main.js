@@ -27,6 +27,9 @@ function buildStore(){
     }
 }
 
+
+var zoomSpeed = .05
+
 $(function() {
 	
 /*	var sum = 0;
@@ -70,7 +73,7 @@ alert('Your performance: ' + sum / 5000);*/
 		var center = e.center;
 		var scale = e.scale;
 		
-		zoom += (1 - scale) * .25 ;
+		zoom += (1 - scale) * zoomSpeed ;
 		zoomHappened = true;
 		timesFired++;
 	    if(e.additionalEvent === 'pinchin'){
