@@ -64,6 +64,7 @@ alert('Your performance: ' + sum / 5000);*/
 	mc.get('pinch').set({ enable: true });
 
 	// subscribe to events
+	var timesFired = 0;
 	mc.on('pinch', function(e) {
 	    // do something cool
 		var center = e.center;
@@ -71,13 +72,13 @@ alert('Your performance: ' + sum / 5000);*/
 		
 		zoom += (1 - scale) ;
 		zoomHappened = true;
-		
+		timesFired++;
 	    if(e.additionalEvent === 'pinchin'){
 	    	
 		    
 	    }else if(e.additionalEvent === 'pinchout'){
 
-	    
+	    alert(timesFired);
 	    }
 	});
 
