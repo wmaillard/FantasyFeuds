@@ -66,7 +66,7 @@ alert('Your performance: ' + sum / 5000);*/
 	// subscribe to events
 	mc.on('pinch', function(e) {
 	    // do something cool
-	    alert(e);
+	    alert(JSON.stringify(e));
 	});
 
 	
