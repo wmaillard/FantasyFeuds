@@ -49,6 +49,11 @@ for(var j = 0; j < 5000; j++){
 }
 alert('Your performance: ' + sum / 5000);*/
 	
+	var hammerTime = new hammer($('#gameContainer'), {event : 'pinch', pointers : '2', 'threshold' : 0});
+	hammerTime.get('pinch').set({ enable: true });
+	hammerTime.on('pinch'){function(ev){
+		alert(ev);
+	}};
 
 	buildStore();
     playerColor = getRandomColor();
