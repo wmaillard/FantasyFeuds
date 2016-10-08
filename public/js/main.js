@@ -78,7 +78,7 @@ alert('Your performance: ' + sum / 5000);*/
 			zoom = .0001;
 		}
 		
-		zoomHappened = true;
+		drawFrame();
 		timesFired++;
 	    if(e.additionalEvent === 'pinchin'){
 	    	
@@ -338,15 +338,7 @@ function drawFrame() {
 	                //drawEntities(entities, ctxB, true, true);
 
 	            } else if (zoomHappened) {
-	                scene.load(level, ctxB, zoom);
-                   if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
-                            drawEntities(entities, ctxF, true);
-                        }
-	                zoomHappened = false;
-                   	 if(debugPathfinding){
-                       		 AI.drawTestDots(blockingTerrain, ctxI);
-                   	 }
-        			window.requestAnimationFrame(drawFrame);   
+                    zoomNow();  
         			return true;
 
 	            }else{
@@ -365,7 +357,17 @@ function drawFrame() {
 
 
 
-
+function zoomNow(){
+    scene.load(level, ctxB, zoom);
+   if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+            drawEntities(entities, ctxF, true);
+        }
+    zoomHappened = false;
+     if(debugPathfinding){
+             AI.drawTestDots(blockingTerrain, ctxI);
+     }
+    window.requestAnimationFrame(drawFrame);   
+}
 
 
 
