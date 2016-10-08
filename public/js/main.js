@@ -341,7 +341,7 @@ function drawFrame() {
                     zoomNow();  
         			return true;
 
-	            }else if(false){
+	            }else{
                     if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
                             drawEntities(entities, ctxF, true);
                     }
