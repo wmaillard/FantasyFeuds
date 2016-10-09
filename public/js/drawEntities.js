@@ -59,13 +59,13 @@ function drawEntities(entities, ctx, lock, clear) {
 				whichImage += 'Pose';
 			}
           
-         	cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
+      cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
 			if(!entities[entity].dead){  
 				drawHealthBar(entities[entity], newCan);
 			}
 
         // scaleDown(newCan, 32, 32);
-          ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height,  x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
+          ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height,  x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size * zoom, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
          //ctx.drawImage(newCan, 300, 200);
         //  ctx.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 

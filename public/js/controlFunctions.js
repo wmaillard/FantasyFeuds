@@ -4,8 +4,8 @@ navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mo
 
 var pixelChangeForPan = 5;
 var backgroundOffset = {
-        "x": 0,
-        "y": 0
+        "x": -500,
+        "y": -500
     } //Default offset view of map
 
 var currentCoords = {
@@ -25,7 +25,7 @@ var currentCoords = {
         scene.load(level, ctxB, zoom);  //Reload, possible fix dragging bug
     }
 
-    if ((panning && (changeY > pixelChangeForPan || changeX > pixelChangeForPan)) || fullOnPanning) {
+    if (fullOnPanning || (panning && (changeY > pixelChangeForPan || changeX > pixelChangeForPan))) {
 
         if(e.ctrlKey){
             //console.log('ctrl down');
@@ -35,8 +35,8 @@ var currentCoords = {
 
 
         else{
-            backgroundOffset.x += e.clientX - currentCoords.x;
-            backgroundOffset.y += e.clientY - currentCoords.y;
+            backgroundOffset.x += (e.clientX - currentCoords.x) / zoom;
+            backgroundOffset.y += (e.clientY - currentCoords.y) / zoom;
 
             currentCoords.x = e.clientX;
             currentCoords.y = e.clientY;
@@ -212,9 +212,9 @@ function clickGameContainer(e){
 
     }else{
 	$('#gameContainer').css( 'cursor', 'not-allowed' );
-	if (navigator.vibrate) {
-		navigator.vibrate(125);
-	}
+	/*if (navigator.vibrate) {
+		navigator.vibrate(125); //getting called by pan
+	}*/
 	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 125);
     }
     click = true;

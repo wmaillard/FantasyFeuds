@@ -195,13 +195,26 @@ var BindButtons = {
 		    mapMove(e);
 		});
 	$("#gameContainer").on('touchstart', function(e) {
-		    pressMap(e, true)
+		console.log('touchstart')
+			if(e.originalEvent.changedTouches.length === 1){
+						console.log('touchstart')
+
+			    pressMap(e, true)
+			}
 		    return false;
 		}).on('touchend', function(e) {
-		    releasePressMap(e, true);
+			console.log('touchEnd')
+			if(e.originalEvent.changedTouches.length === 1){
+							console.log('touchEnd')
+
+			    releasePressMap(e, true);
+			}
 		    return false;
 		}).on('touchmove', function(e) {
-		    mapMove(e, true);
+			if(e.originalEvent.changedTouches.length === 1){
+				console.log('touchMove')
+		    	mapMove(e, true);
+		    }
 		    return false;
 		});
 	}

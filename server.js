@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
 	if(!playerInfo[convertId(socket.id)]){
 		playerInfo[convertId(socket.id)] = {};
 	}
-  playerInfo[convertId(socket.id)].gold = 2000000000;
+  playerInfo[convertId(socket.id)].gold = 10000;
 
 	change = true;
   console.log('Client connected');

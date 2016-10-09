@@ -28,7 +28,7 @@ function buildStore(){
 }
 
 
-var zoomSpeed = .05
+var zoomSpeed = .10;
 
 $(function() {
 	
@@ -66,20 +66,51 @@ alert('Your performance: ' + sum / 5000);*/
 	
 	mc.get('pinch').set({ enable: true });
 
-	// subscribe to events
-	var timesFired = 0;
+
+
 	mc.on('pinch', function(e) {
 	    // do something cool
-		var center = e.center;
-		var scale = e.scale;
 
-		zoom += (1 - scale) * zoomSpeed;
-		if(zoom <= 0){
-			zoom = .0001;
+
+        
+
+		var scale = e.scale;
+        var center = {};
+        center.x =  -e.center.x;
+        center.y = -e.center.y;
+        var oldZoom = zoom;
+       if(scale > 1){
+            scale = 1 - (1 - scale) * zoomSpeed // .9 becomes .95, 1.1 becomes 1.05
+        }else{
+            scale = 1 - (1 - scale) * zoomSpeed * 2
+        }
+		zoom *= scale;
+		if(zoom < .25){
+			zoom = .25;
 		}
-		
-		drawFrame();
-		timesFired++;
+
+        if(zoom > 2.25){
+            zoom = 2.25;
+        }
+
+        //zoomHappened = true;		
+
+
+      /* backgroundOffset.x -= backgroundOffset.x * zoom / oldZoom; 
+        backgroundOffset.y -= backgroundOffset.y * zoom / oldZoom;*/
+
+
+
+           
+
+            var deltaZoom = zoom - oldZoom;
+
+            backgroundOffset.x += deltaZoom * center.x / oldZoom ;
+            backgroundOffset.y += deltaZoom * center.y / oldZoom;
+            redrawBackground();
+        
+
+
 	    if(e.additionalEvent === 'pinchin'){
 	    	
 		    
@@ -315,37 +346,26 @@ function drawFrame() {
  	                    
             backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Move this to where backgroundOffset is set?
             backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
-            $('#gameContainer').width() - backgroundOffset.x > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() - levelWidth * size * zoom : null;
-            $('#gameContainer').height() - backgroundOffset.y > levelHeight * size * zoom? backgroundOffset.y = $('#gameContainer').height() - levelHeight * size * zoom : null;
+            $('#gameContainer').width() * zoom - backgroundOffset.x * zoom > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() * zoom - levelWidth * size * zoom : null;
+            $('#gameContainer').height() * zoom - backgroundOffset.y * zoom > levelHeight * size * zoom ? backgroundOffset.y = $('#gameContainer').height() * zoom - levelHeight * size * zoom : null;
 	        // limitBackgroundOffset();
 
 	            if (fullOnPanning) {
-	                if (!clearedF) {
-	                    ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
-	                    clearedF = true;
-	                }
-
-	                scene.load(level, ctxB, zoom);  //drawing all layers, could flatten, bug
-                   	   if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
-                            drawEntities(entities, ctxF, true);
-                        }
-
-        			 if(debugPathfinding){
-        				AI.drawTestDots(blockingTerrain, ctxI);
-        			 }
+                     redrawBackground();
         			 window.requestAnimationFrame(drawFrame);   
         			 return true;
 	                //drawEntities(entities, ctxB, true, true);
 
 	            } else if (zoomHappened) {
-                    zoomNow();  
+                    zoomNow(); 
+                    window.requestAnimationFrame(drawFrame);  
         			return true;
 
 	            }else{
                     if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
                             drawEntities(entities, ctxF, true);
                     }
-                window.requestAnimationFrame(drawFrame); 
+                    window.requestAnimationFrame(drawFrame); 
             }
 
 	   
@@ -366,9 +386,22 @@ function zoomNow(){
      if(debugPathfinding){
              AI.drawTestDots(blockingTerrain, ctxI);
      }
-    window.requestAnimationFrame(drawFrame);   
 }
+function redrawBackground(){
+    if (!clearedF) {
+        ctxF.clearRect(0, 0, ctxF.canvas.width, ctxF.canvas.height);
+        clearedF = true;
+    }
 
+    scene.load(level, ctxB, zoom);  //drawing all layers, could flatten, bug
+       if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+            drawEntities(entities, ctxF, true);
+        }
+
+     if(debugPathfinding){
+        AI.drawTestDots(blockingTerrain, ctxI);
+     }
+}
 
 
 
