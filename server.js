@@ -105,6 +105,9 @@ for(var i = 0; i < 20; i++){
 	newQuar.y = ~~(Math.random() * levelHeight);
 	newQuar.heading.x = newQuar.x;
 	newQuar.heading.y = newQuar.y;
+	newQuar.nextNode.x = ~~(newQuar.x / 32)
+	newQuar.nextNode.y = ~~(newQuar.y / 32)
+
 	newQuar.id = Date.now() + i * 200;
 	allEntities[newQuar.id] = newQuar;
 
@@ -169,6 +172,7 @@ setInterval(() => {
 
 		if(playerInfoChange){
 			io.emit('playerInfo', playerInfo);
+			playerInfoChange = false;
 		}
 
 	}
@@ -215,14 +219,19 @@ function applyAttacks(attacks, entities){
         var j = attack.victim.id;
         var k = attack.attacker.id;
         if(allEntities[j] && allEntities[k]){
+
 	        allEntities[k].attacking = true;
 	        if(allEntities[j].health > 0){
+	        	allEntities[k].victim = j;
+	        	setChange(k, 'victim', j);
 	            allEntities[j].health -= entityStats[allEntities[k].type].attack;
 	            allEntities[j].health < 0 ? allEntities[j].health = 0 : null;
 	            setChange(j, 'health', allEntities[j].health)
-	            if(!allEntities[j].health){
+	            if(allEntities[j].health <= 0){
 	              allEntities[j].dead = true;
-	              setChange(j, 'dead', true)
+	              setChange(j, 'dead', true);
+	              allEntities[j].walkingState = 2;
+	              setChange(j, 'walkingState', 2);
 	              playerInfo[attack.attacker.playerId].gold += entityStats[allEntities[j].type].value;
 	              playerInfoChange = true;
 	            }
@@ -320,6 +329,9 @@ function moveEntities(entities) {
 	            }
 	            setChange(entity.id, 'x', entity.x);
 	            setChange(entity.id, 'y', entity.y);
+	            if(~~(entity.x / 32) !== entity.nextNode.x || ~~(entity.y / 32) !== entity.nextNode.y){
+	            	setChange(entity.id, 'nextNode', {x: ~~(entity.x / 32), y: ~~(entity.y / 32)});
+	            }
 
           	}
      	 }

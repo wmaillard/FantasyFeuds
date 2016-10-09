@@ -197,7 +197,7 @@ var BindButtons = {
 	$("#gameContainer").on('touchstart', function(e) {
 		console.log('touchstart')
 			if(e.originalEvent.changedTouches.length === 1){
-						console.log('touchstart')
+
 
 			    pressMap(e, true)
 			}
@@ -205,14 +205,14 @@ var BindButtons = {
 		}).on('touchend', function(e) {
 			console.log('touchEnd')
 			if(e.originalEvent.changedTouches.length === 1){
-							console.log('touchEnd')
+
 
 			    releasePressMap(e, true);
 			}
 		    return false;
 		}).on('touchmove', function(e) {
 			if(e.originalEvent.changedTouches.length === 1){
-				console.log('touchMove')
+
 		    	mapMove(e, true);
 		    }
 		    return false;

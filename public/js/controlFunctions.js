@@ -74,10 +74,13 @@ function releasePressMap(e, mobile) {
     console.log(backgroundOffset);*/
     lockOldBO = false;
 
-    var d = new Date;
+/*    var d = new Date; //Swipe test is here, swipping
     panTime = d.getTime() - panTime;
 
-    createVector(panTime, oldBackgroundOffset, backgroundOffset);
+    createVector(panTime, oldBackgroundOffset, backgroundOffset);*/ 
+
+
+
     oldBackgroundOffset.x = backgroundOffset.x;
     oldBackgroundOffset.y = backgroundOffset.y;
 

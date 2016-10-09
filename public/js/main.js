@@ -26,10 +26,24 @@ function buildStore(){
         }
     }
 }
-
+function getTanDeg(deg) {
+  var rad = deg * Math.PI/180;
+  return Math.tan(rad);
+}
 
 var zoomSpeed = .10;
 
+function slideMap(slope){
+    if(slope > 0){
+        backgroundOffset.x += 10;
+        backgroundOffset.y = backgroundOffset.x * slope + backgroundOffset.x;
+    }else{
+        backgroundOffset.x -= 10;
+        backgroundOffset.y = backgroundOffset.x * slope + backgroundOffset.x;
+
+    }
+    redrawBackground();
+}
 $(function() {
 	
 /*	var sum = 0;
@@ -60,13 +74,23 @@ alert('Your performance: ' + sum / 5000);*/
 
 	// create a recognizer
 	var pinch = new Hammer.Pinch();
+    var swipe = new Hammer.Swipe();
 
 	// add the recognizer
 	mc.add(pinch);
+    mc.add(swipe);
+
+    mc.on('swipe', function(e){
+        //e.angle
+        //e.overallVelocity (- or +)
+        var slope = getTanDeg(e.angle);
+        //slideMap(slope);     
+        console.log(slope);
+    });
+
+
 	
 	mc.get('pinch').set({ enable: true });
-
-
 
 	mc.on('pinch', function(e) {
 	    // do something cool
@@ -191,6 +215,7 @@ alert('Your performance: ' + sum / 5000);*/
 
 
     socket.on('allEntities', function(serverEntities){
+    serverSentFullState = true;
 	if(changeToSendToServer){
 		console.log('missed a change');
 	}

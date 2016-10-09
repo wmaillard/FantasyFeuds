@@ -24,8 +24,9 @@ function drawEntities(entities, ctx, lock, clear) {
       }
     }
     var animate = false;
-    if(Date.now() > lastAnimation + 250){
+    if(Date.now() > lastAnimation + 250 || serverSentFullState){
         lastAnimation = Date.now();
+        serverSentFullState = false;
         animate = true;
     }
     for (var entity in entities) {
@@ -225,7 +226,6 @@ function animateEntity(entity){
   /*console.log(entity.id);
   console.log(entity.attacking);*/
 
-  setDirectionFacing(entity);
   if(entity.dead){
     entity.walkingState = 2;
 
@@ -233,33 +233,90 @@ function animateEntity(entity){
   else if(entity.attacking){
     entity.walkingState === 0 ? entity.walkingState = 1 : entity.walkingState = 0;
   }
-    else if (entity.walking || entity.type === 'quarry'){  
-          entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
-          
-    }
-    else if(!entity.walking && !entity.attacking && entity.type !== 'quarry'){  
-        entity.walkingState = 1;  
-    }
+  else if (entity.walking || entity.type === 'quarry'){  
+        entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
+        
+  }
+  else if(!entity.walking && !entity.attacking && entity.type !== 'quarry'){  
+      entity.walkingState = 1;  
+  }
+
+  setDirectionFacing(entity);
+
 }
 
 
 function setDirectionFacing(entity){
-  var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-  var nextNode = entity.nextNode;
-  if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
-    if(currentNode.x === nextNode.x){
-      if(currentNode.y < nextNode.y){
+  if(entity.attacking){
+
+    var victim = entities[entity.victim];
+    if(victim){
+      var angle = Math.atan2(victim.y - entity.y, victim.x - entity.x); //entity x, y is the origin
+      angle = angle * 360 / (2 * 3.1415); 
+      angle < 0 ? angle = 180 - angle : null;  
+      console.log(angle);
+  /*
+          90e
+   0e       victim         180e
+          270 e
+  */
+
+
+      if(angle >= 45 && angle < 135){
         entity.directionPointing = 'S';
-      }else{
-        entity.directionPointing = 'N'
-      }
-    }else{
-      if(currentNode.x < nextNode.x){
-        entity.directionPointing = 'E'
-      }else{
+      }else if(angle >= 135 && angle < 225){
         entity.directionPointing = 'W';
+      }else if(angle >= 225 && angle < 315){
+        entity.directionPointing = 'N';
+      }else if(angle >= 315 && angle < 45){
+        entity.diretionPointing = 'E';
       }
     }
+
+
+  }
+
+
+
+
+
+  else if(entity.walking){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+    var nextNode = entity.nextNode;
+    if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
+      if(currentNode.x === nextNode.x){
+        if(currentNode.y < nextNode.y){
+          entity.directionPointing = 'S';
+        }else{
+          entity.directionPointing = 'N'
+        }
+      }else{
+        if(currentNode.x < nextNode.x){
+          entity.directionPointing = 'E'
+        }else{
+          entity.directionPointing = 'W';
+        }
+      }
+    }
+  }
+  else if(!entity.dead){
+
+    entity.directionPointing = 'S';
   }
 
 
