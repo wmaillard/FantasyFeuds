@@ -250,7 +250,7 @@ alert('Your performance: ' + sum / 5000);*/
     	moveEntities();
     }, 250);*/
     
-    startGame('megaMap');
+    startGame('lessMegaMap');
 
 
     // ************End Login
