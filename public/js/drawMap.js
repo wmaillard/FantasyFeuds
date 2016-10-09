@@ -45,7 +45,7 @@ var scene = {
         }
 
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
-            console.log(layer);
+
             
             layer.data.forEach(function(tile_idx, i) {
 
