@@ -56,7 +56,7 @@ function drawEntities(entities, ctx, lock, clear) {
 
         } else {
 			var whichImage = entities[entity].type;
-			if(entities[entity].dead || entities[entity].attacking){
+			if(entities[entity].dead || (entities[entity].attacking && entities[entity].walkingState !== 2)){
 				whichImage += 'Pose';
 			}
           
@@ -172,11 +172,11 @@ function setNodeXY(entity, entitiesMap,  entitiesLastNode){
  
         if(oldX !== newX || oldY !== newY){
             for(var i in node){
-                if(node[i].id === entity.id){
+                if(node[i] === entity.id){
                   //  console.log('deleting some stuff')
                     node.splice(i, 1);
                     entitiesLastNode[entity.id] = {x: newX, y: newY};
-                    entitiesMap[newX][newY].push(entity);
+                    entitiesMap[newX][newY].push(entity.id);
 
 
                 }
@@ -187,7 +187,7 @@ function setNodeXY(entity, entitiesMap,  entitiesLastNode){
     }
     else{
         entitiesLastNode[entity.id] = {x: newX, y: newY};
-        entitiesMap[newX][newY].push(entity);
+        entitiesMap[newX][newY].push(entity.id);
         return false;
     }
 

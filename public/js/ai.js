@@ -326,8 +326,9 @@ function attackableEntities(entity, entitiesMap){
           var entitiesAtNode = entitiesMap[i][j]
           for(var e in entitiesAtNode){
             //console.log('d')
-            if(!entitiesAtNode[e].dead && entitiesAtNode[e].playerId !== entity.playerId){ //don't attack yourself, could use this logic to heal
-              nearbyEntities.push(entitiesAtNode[e]);
+            var charact = entities[entitiesAtNode[e]];
+            if(!charact.dead && charact.playerId !== entity.playerId){ //don't attack yourself, could use this logic to heal
+              nearbyEntities.push(charact);
               //console.log('e')
               if(!entity.attacking){
                 entity.attacking = true;
@@ -398,7 +399,8 @@ function attackableEntities(entity, entitiesMap){
     if(!attackEffects[(cantor(entity.id, victim.id))]){
       controller.init(victim.x, victim.y, entity.id, victim.id);
     }
-    if(entity.playerId === playerId){
+    console.log(victim);
+    if(entity.playerId === playerId && !victim.dead){
       var attack = {attacker: {id: entity.id, playerId : entity.playerId},
                   victim: {id : victim.id, playerId : victim.playerId}};
 
