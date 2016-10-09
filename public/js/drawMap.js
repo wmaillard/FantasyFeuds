@@ -22,7 +22,7 @@ var scene = {
         ////console.log(scratchCanvas.canvas.height);
         //   //console.log(scratchCanvas.canvas);
 
-        if (layer.name === 'BaseS' && firstLoad) {
+        if (layer.name === 'Bottom' && firstLoad) {
             levelWidth = layer.width;
             levelHeight = layer.height;
             //backgroundOffset.y = -levelHeight*size + $(window).height();
