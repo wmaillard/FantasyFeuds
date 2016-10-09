@@ -39,7 +39,7 @@ var playerId;
 var serverSentChange = false;
 var size = 32;  //Get rid of this magic number
 var socket;
-var useMin = true; //use minimized images
+var useMin = false; //use minimized images
 var wasCtrl = false;
 var windowResize = false;  //This hasn't been implemented yet
 var zoom = 1; //starting zoom of map
