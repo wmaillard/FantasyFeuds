@@ -280,7 +280,7 @@ function setDirectionFacing(entity){
 
 
 
-  else if(entity.walking){
+  else if(entity.walking && entity.path.length > 0){
 
 
 
