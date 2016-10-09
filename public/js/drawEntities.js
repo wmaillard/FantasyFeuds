@@ -254,7 +254,7 @@ function setDirectionFacing(entity){
       var angle = Math.atan2(victim.y - entity.y, victim.x - entity.x); //entity x, y is the origin
       angle = angle * 360 / (2 * 3.1415); 
       angle < 0 ? angle = 180 - angle : null;  
-      console.log(angle);
+    //  console.log(angle);
   /*
           90e
    0e       victim         180e
