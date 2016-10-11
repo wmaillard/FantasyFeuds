@@ -122,6 +122,9 @@ var scene = {
                 scene.layerCanvas[layer.name][coord].drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
 
             });
+		for(var i in scene.layerCanvas[layer.name]){
+			scene.layerCanvas[layer.name][i] = scene.layerCanvas[layer.name][i].toDataUrl;
+		}
 
         	drawFromArray(layer.name, rows, columns);
 
@@ -278,8 +281,12 @@ function drawFromArray(layerName, rows, columns){
 			}
 			
 			//console.log('offset', offset)
-
-			scene.context.drawImage(scene.layerCanvas[layerName][i].canvas, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+			var img = new Image;
+			img.onload = function(){
+				scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+			};
+			img.src = scene.layerCanvas[layerName][i];
+			
 			xDrawn += (colWidth - offset.x) * zoom;
 
 			//console.log('xDrawn', xDrawn)
