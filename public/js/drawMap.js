@@ -238,7 +238,7 @@ function drawFromArray(layerName, rows, columns){
 			smallUpperLeft.x = upperLeft.x % colWidth; //The x and y in the canvas cutout
 			smallUpperLeft.y = upperLeft.y % rowHeight;
 
-			if(canvasWidth / zoom > scene.layerCanvas[layerName][i].canvas.width - smallUpperLeft.x){
+		/*	if(canvasWidth / zoom > scene.layerCanvas[layerName][i].canvas.width - smallUpperLeft.x){
 				s_w = scene.layerCanvas[layerName][i].canvas.width - smallUpperLeft.x;
 				upperLeft.x += s_w;  
 				
@@ -257,7 +257,7 @@ function drawFromArray(layerName, rows, columns){
 				doneInY = true;
 				
 				
-			}
+			}*/
 			/*console.log('Drawing')
 			console.log('Canvas Number: ', i)
 			console.log(layerName);
@@ -270,11 +270,11 @@ function drawFromArray(layerName, rows, columns){
 			var offset = {x : 0, y : 0};
 
 			if(firstX){
-				offset.x = Math.abs(backgroundOffset.x) % colWidth;
+				offset.x = Math.abs(backgroundOffset.x) % colWidth;  //Start cutting the 1st column of canvas's at offset.x
 				
 			}
 			if(firstY){
-				offset.y = Math.abs(backgroundOffset.y) % rowHeight;
+				offset.y = Math.abs(backgroundOffset.y) % rowHeight; //Start cutting the top row of canvas's at offset.y
 			}
 			
 			//console.log('offset', offset)
@@ -293,25 +293,26 @@ function drawFromArray(layerName, rows, columns){
 			if(doneInX){
 				yDrawn += (rowHeight - offset.y) * zoom;
 
-				upperLeft.x = Math.abs(backgroundOffset.x);
+				//upperLeft.x = Math.abs(backgroundOffset.x);
 				
 				dest.x = 0;
-				dest.y += s_h * zoom;
+				dest.y += (rowHeight - offset.y) * zoom;
 				
 				//console.log('ydrawn', yDrawn)
 				if(yDrawn < canvasHeight){
 					upperLeft.y += rowHeight;
+					doneInX = false;
 					
 				}else{
 					doneInY = true;
 				}
 				
 				
-				doneInX = false;
+				
 				firstX = true;
 				firstY = false;
 			}else{
-				dest.x += s_w * zoom;
+				dest.x += (colWidth - offset.x) * zoom;
 				firstX = false;
 			}
 
