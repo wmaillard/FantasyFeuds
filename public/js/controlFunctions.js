@@ -1,17 +1,4 @@
-var swipeRatio = 0.9;
-// enable vibration support
-navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
-var pixelChangeForPan = 5;
-var backgroundOffset = {
-        "x": -500,
-        "y": -500
-    } //Default offset view of map
-
-var currentCoords = {
-        'x': 0,
-        'y': 0
-    } //Mouse coordinates, these are for panning
  
 
  function mapMove(e, mobile) {

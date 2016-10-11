@@ -1,4 +1,7 @@
 var newCan =  document.createElement('canvas');  //Still relevant? //This probably takes too long, keep one canvas active for this, store with character images.
+var numberOfCanvas = 32;
+var rows = 10;
+var columns = 10;
 
 //Loading tiled maps***
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
@@ -7,18 +10,15 @@ var scene = {
     tileSets: [],
     context: "",
     layers: [],
+    layerCanvas: {},
 
     renderLayer: function(layer) {
 
         if (layer.type !== 'tilelayer' || !layer.opacity) {
             //console.log("Error Loading: Not a visible tile layer");
         }
-        var scratchCanvas = scene.context.canvas.cloneNode();
-        var size = scene.data.tilewidth;
-        scratchCanvas = scratchCanvas.getContext("2d");
-        ////console.log(scratchCanvas.canvas);
-        scratchCanvas.canvas.height = layer.height * size;
-        scratchCanvas.canvas.width = layer.width * size;
+       
+
         ////console.log(scratchCanvas.canvas.height);
         //   //console.log(scratchCanvas.canvas);
 
@@ -26,9 +26,9 @@ var scene = {
             levelWidth = layer.width;
             levelHeight = layer.height;
             //backgroundOffset.y = -levelHeight*size + $(window).height();
-            if (levelWidth * size < window.innerWidth) {
+         /*   if (levelWidth * size < window.innerWidth) {
                 backgroundOffset.x = window.innerWidth - levelWidth * size
-            }; //fixes window too wide bug
+            }; //fixes window too wide bug*/
             blockingTerrain = new Array(layer.width);
             for (var i = 0; i < layer.width; i++) {
                 blockingTerrain[i] = new Array(layer.height);
@@ -44,10 +44,27 @@ var scene = {
             
         }
 
+
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
 
-            
-            layer.data.forEach(function(tile_idx, i) {
+			 scene.layerCanvas[layer.name] = [];
+
+			var size = scene.data.tilewidth;
+	        for(var i = 0; i < rows * columns; i++){
+
+				var scratchCanvas = document.createElement("canvas");;
+	        	scratchCanvas = scratchCanvas.getContext("2d");
+	        	scratchCanvas.canvas.height = layer.height * size / rows;
+	        	scratchCanvas.canvas.width = layer.width * size / columns;
+
+
+	        	scene.layerCanvas[layer.name][i] = scratchCanvas;
+
+
+	        }
+
+        
+            layer.data.forEach(function(tile_idx, i) { //draw each tile
 
                 if (tile_idx === 0) {
                     return;
@@ -63,6 +80,7 @@ var scene = {
                         break;
                     }
                 }
+
                 if (tile === -1) {
                     tile = scene.data.tilesets[tileSetIndex];
                 }
@@ -91,27 +109,41 @@ var scene = {
                     }
                 }
 
-                //  if(s_x > $('#background').width() || s_y > $('#background').height()){return;} //outside current window, don't load
 
-                scratchCanvas.drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
+                //  if(s_x > $('#background').width() || s_y > $('#background').height()){return;} //outside current window, don't load
+                var coord = ~~(s_x / (layer.width * size / columns) ) + columns * (~~(s_y / (layer.height * size / rows)));
+                //console.log('coord', coord)
+                
+                s_x %= (layer.width * size / columns);
+                s_y %= (layer.height * size / rows);
+
+
+
+
+                scene.layerCanvas[layer.name][coord].drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
 
             });
 
+        	drawFromArray(layer.name, rows, columns);
+
             //scene.layers.push(scratchCanvas.canvas.toDataURL()); //save scratch canvas for later
-            scene.layers.push(scratchCanvas.canvas);
-            scene.context.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
+           // scene.layers.push(scratchCanvas.canvas);
+            //scene.context.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
 
         } else { //if all the layers have been previously loaded, use the cache
 
-            scene.layers.forEach(function(layer) {
-                backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
+            scene.data.layers.forEach(function(layer) {
+
+
+             /*   backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
                 backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
                 (layer.width + backgroundOffset.x) / scene.zoom < canvasWidth ? backgroundOffset.x = canvasWidth * scene.zoom - layer.width : backgroundOffset.x;
                 (layer.height + backgroundOffset.y) / scene.zoom < canvasHeight ? backgroundOffset.y = canvasHeight * scene.zoom - layer.height : backgroundOffset.y;
+                */ 
                 //var i = $("<img />", {src: src})[0];
                 // //console.log(layer);
-                scene.context.drawSafeImage(layer, -backgroundOffset.x, -backgroundOffset.y, canvasWidth * scene.zoom, canvasHeight * scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
-            });
+				drawFromArray(layer.name, rows, columns);   
+	         });
         }
     },
 
@@ -169,3 +201,128 @@ var scene = {
 }
 
 
+function drawFromArray(layerName, rows, columns){
+
+
+	var upperLeft = {}
+	upperLeft.x = Math.abs(backgroundOffset.x);
+	upperLeft.y = Math.abs(backgroundOffset.y);
+
+	var doneInX = false;
+	var doneInY = false;
+	var firstX = true;
+	var firstY = true;
+	var last = false;
+
+	var dest = {};
+	var colWidth = ~~(levelWidth * size / columns);
+	var rowHeight = ~~(levelHeight * size / rows);
+	dest.x = 0;
+	dest.y = 0;
+	var yDrawn = 0;
+	var xDrawn = 0;
+
+	for(var i = 0; i <  scene.layerCanvas[layerName].length; i++){
+
+		//if, based on the offset and the amount being drawn, we should use this canvas.  Draw a piece using that canvas
+		if(doneInY && doneInX){
+			//console.log('************ double done ************')
+			break;
+		}
+
+		var option1 = ~~(upperLeft.x / colWidth) + columns * (~~(upperLeft.y / rowHeight)) === i;
+
+		if(option1){ //if our upper left x comes from the layer, use it
+
+			var s_w, s_h;
+			var smallUpperLeft = {};
+			smallUpperLeft.x = upperLeft.x % colWidth; //The x and y in the canvas cutout
+			smallUpperLeft.y = upperLeft.y % rowHeight;
+
+			if(canvasWidth / zoom > scene.layerCanvas[layerName][i].canvas.width - smallUpperLeft.x){
+				s_w = scene.layerCanvas[layerName][i].canvas.width - smallUpperLeft.x;
+				upperLeft.x += s_w;  
+				
+			}else{
+				//console.log('here*********************');
+				s_w = colWidth;
+				doneInX = true;
+			}
+			if(canvasHeight / zoom > scene.layerCanvas[layerName][i].canvas.height - smallUpperLeft.y){
+				s_h = scene.layerCanvas[layerName][i].canvas.height - smallUpperLeft.y;
+				
+				
+			}else{
+				//console.log('here2***********************');
+				s_h = rowHeight;
+				doneInY = true;
+				
+				
+			}
+			/*console.log('Drawing')
+			console.log('Canvas Number: ', i)
+			console.log(layerName);
+	
+			console.log('upperLeft', upperLeft.x, upperLeft.y);
+			console.log('s_w, s_h: ', s_w, s_h);
+			console.log('Dest', dest);
+			
+			console.log('BackgroundOffset: ', backgroundOffset);*/
+			var offset = {x : 0, y : 0};
+
+			if(firstX){
+				offset.x = Math.abs(backgroundOffset.x) % colWidth;
+				
+			}
+			if(firstY){
+				offset.y = Math.abs(backgroundOffset.y) % rowHeight;
+			}
+			
+			//console.log('offset', offset)
+
+			scene.context.drawImage(scene.layerCanvas[layerName][i].canvas, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, dest.x, dest.y, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+			xDrawn += (colWidth - offset.x) * zoom;
+
+			//console.log('xDrawn', xDrawn)
+
+			if(xDrawn > canvasWidth){
+				xDrawn = 0;
+				doneInX = true;
+			}
+
+
+			if(doneInX){
+				yDrawn += (rowHeight - offset.y) * zoom;
+
+				upperLeft.x = Math.abs(backgroundOffset.x);
+				
+				dest.x = 0;
+				dest.y += s_h * zoom;
+				
+				//console.log('ydrawn', yDrawn)
+				if(yDrawn < canvasHeight){
+					upperLeft.y += rowHeight;
+					
+				}else{
+					doneInY = true;
+				}
+				
+				
+				doneInX = false;
+				firstX = true;
+				firstY = false;
+			}else{
+				dest.x += s_w * zoom;
+				firstX = false;
+			}
+
+			
+
+			
+		}
+
+		//scene.context.drawSafeImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
+	}
+	
+
+}

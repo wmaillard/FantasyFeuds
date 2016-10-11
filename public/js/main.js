@@ -45,7 +45,9 @@ function slideMap(slope){
     redrawBackground();
 }
 $(function() {
-	
+	const $gameContainer = $('#gameContainer');
+    canvasWidth = $gameContainer.width();
+    canvasHeight = $gameContainer.height();
 /*	var sum = 0;
 for(var j = 0; j < 1000; j++){
 	var n = performance.now();
@@ -109,9 +111,9 @@ alert('Your performance: ' + sum / 5000);*/
             scale = 1 - (1 - scale) * zoomSpeed * 2
         }
 		zoom *= scale;
-		if(zoom < .25){
+	/*	if(zoom < .25){
 			zoom = .25;
-		}
+		}*/
 
         if(zoom > 2.25){
             zoom = 2.25;

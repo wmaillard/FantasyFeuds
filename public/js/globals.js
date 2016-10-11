@@ -57,6 +57,21 @@ var playerGold = 1000;
 var lastAnimation = Date.now();
 var serverSentFullState = false;
 
+var swipeRatio = 0.9;
+// enable vibration support
+navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+var pixelChangeForPan = 5;
+var backgroundOffset = {
+        "x": 0,
+        "y": 0
+    } //Default offset view of map
+
+var currentCoords = {
+        'x': 0,
+        'y': 0
+    } //Mouse coordinates, these are for panning
+
 var entityNames = {
 	'quarry': {'object': true},
 	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},
@@ -88,8 +103,8 @@ characterImages.blank.src = 'img/characters/blank.png';
 
 CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight){
   if(!canvasWidth || !canvasHeight || windowResize){
-    canvasWidth = $('#background').width();
-    canvasHeight = $('#background').height();
+    canvasWidth = $('#gameContainer').width();
+    canvasHeight = $('#gameContainer').height();
   }
   if (dx  < canvasWidth && dy < canvasHeight && dx >= 0 && dy >= 0)
         this.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
