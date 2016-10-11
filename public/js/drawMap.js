@@ -58,7 +58,7 @@ var scene = {
 	        	scratchCanvas.canvas.width = layer.width * size / columns;
 
 
-	        	scene.layerCanvas[layer.name].canvas[i] = scratchCanvas;
+	        	scene.layerCanvas[layer.name].canvas[i] = scratchCanvas.canvas;
 
 
 	        }
