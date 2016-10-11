@@ -123,7 +123,10 @@ var scene = {
 
             });
 		for(var i in scene.layerCanvas[layer.name]){
-			scene.layerCanvas[layer.name][i] = scene.layerCanvas[layer.name][i].toDataURL();
+			var can = scene.layerCanvas[layer.name][i].canvas;
+			scene.layerCanvas[layer.name][i] = {};
+			scene.layerCanvas[layer.name][i].url = can.toDataURL();
+			scene.layerCanvas[layer.name][i].img = null;
 		}
 
         	drawFromArray(layer.name, rows, columns);
@@ -281,11 +284,24 @@ function drawFromArray(layerName, rows, columns){
 			}
 			
 			//console.log('offset', offset)
-			var img = new Image;
-			img.onload = function(){
-				scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
-			};
-			img.src = scene.layerCanvas[layerName][i];
+			if(!scene.layerCanvas[layerName][i].img){
+				var img = new Image;
+				img.onload = function(){
+					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+				};
+				img.src = scene.layerCanvas[layerName][i].url;
+				scene.layerCanvas[layerName][i].img = img;
+			}else{
+				var img = scene.layerCanvas[layerName][i].img;
+				if(!img.complete){  //If the image was created but isn't loaded, override the onload function
+					img.onload = function(){
+						scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+					}
+				
+				}else{
+					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+				}
+			}
 			
 			xDrawn += (colWidth - offset.x) * zoom;
 
