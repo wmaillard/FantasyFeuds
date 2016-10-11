@@ -46,7 +46,8 @@ var scene = {
 
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
 
-			 scene.layerCanvas[layer.name] = [];
+			 scene.layerCanvas[layer.name] = {};
+			 scene.layerCanvas[layer.name].canvas = [];
 
 			var size = scene.data.tilewidth;
 	        for(var i = 0; i < rows * columns; i++){
@@ -57,7 +58,7 @@ var scene = {
 	        	scratchCanvas.canvas.width = layer.width * size / columns;
 
 
-	        	scene.layerCanvas[layer.name][i] = scratchCanvas;
+	        	scene.layerCanvas[layer.name].canvas[i] = scratchCanvas;
 
 
 	        }
@@ -119,14 +120,16 @@ var scene = {
 
 
 
-                scene.layerCanvas[layer.name][coord].drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
+                scene.layerCanvas[layer.name].canvas[coord].drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
 
             });
-		for(var i in scene.layerCanvas[layer.name]){
-			var can = scene.layerCanvas[layer.name][i].canvas;
-			scene.layerCanvas[layer.name][i] = {};
-			scene.layerCanvas[layer.name][i].url = can.toDataURL();
-			scene.layerCanvas[layer.name][i].img = null;
+		scene.layerCanvas[layer.name].img = [];
+		scene.layerCanvas[layer.name].url = [];
+		var i = var i in scene.layerCanvas[layer.name].canvas.length;
+		while(i--){
+			scene.layerCanvas[layer.name].url[i] = scene.layerCanvas[layer.name].canvas[i].toDataURL();
+			delete scene.layerCanvas[layer.name].canvas.splice(i, 0);
+			scene.layerCanvas[layer.name].img[i] = null;
 		}
 
         	drawFromArray(layer.name, rows, columns);
@@ -284,15 +287,15 @@ function drawFromArray(layerName, rows, columns){
 			}
 			
 			//console.log('offset', offset)
-			if(!scene.layerCanvas[layerName][i].img){
+			if(!scene.layerCanvas[layerName].img[i]){
 				var img = new Image;
 				img.onload = function(){
 					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
 				};
-				img.src = scene.layerCanvas[layerName][i].url;
+				img.src = scene.layerCanvas[layerName].url[i];
 				scene.layerCanvas[layerName][i].img = img;
 			}else{
-				var img = scene.layerCanvas[layerName][i].img;
+				var img = scene.layerCanvas[layerName].img[i];
 				if(!img.complete){  //If the image was created but isn't loaded, override the onload function
 					img.onload = function(){
 						scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
