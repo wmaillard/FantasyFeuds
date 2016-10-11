@@ -9,7 +9,7 @@ var scene = {
     tileSets: [],
     context: "",
     layers: [],
-    layerCanvas: {},
+    tiles: {},
 
     renderLayer: function(layer) {
 
@@ -46,20 +46,27 @@ var scene = {
 
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
 
-			 scene.layerCanvas[layer.name] = {};
-			 scene.layerCanvas[layer.name].canvas = [];
+			 scene.tiles[layer.name] = {};
+			 scene.tiles[layer.name].url = [];
+			 scene.tiles[layer.name].img = [];
+			
 
 			var size = scene.data.tilewidth;
 	        for(var i = 0; i < rows * columns; i++){
 
-				var scratchCanvas = document.createElement("canvas");;
-	        	scratchCanvas = scratchCanvas.getContext("2d");
-	        	scratchCanvas.canvas.height = layer.height * size / rows;
-	        	scratchCanvas.canvas.width = layer.width * size / columns;
-
-
-	        	scene.layerCanvas[layer.name].canvas[i] = scratchCanvas;
-
+			//var scratchCanvas = document.createElement("canvas");;
+	        	//scratchCanvas = scratchCanvas.getContext("2d");
+	        	//scratchCanvas.canvas.height = layer.height * size / rows;
+	        	//scratchCanvas.canvas.width = layer.width * size / columns;
+			var url = './img/map/map_';
+			var num = i + 1;
+			if(i < 99){
+				url = url + '0' + num + '.png'
+			}else{
+				url = url + num + '.png'
+			}
+	        	scene.tiles[layer.name].url[i] = url;
+			
 
 	        }
 
@@ -86,11 +93,11 @@ var scene = {
                 }
                 tile_idx = tile_idx - tile.firstgid;
 
-                img_x = (tile_idx % (tile.imagewidth / size)) * size; //pinpoint tile on x, y matrix tilesheet
+     /*           img_x = (tile_idx % (tile.imagewidth / size)) * size; //pinpoint tile on x, y matrix tilesheet
                 img_y = ~~(tile_idx / (tile.imagewidth / size)) * size; //Math.floor avoids floating point blurryness, can use fancy ~~ instead
 
                 s_x = (i % layer.width) * size;
-                s_y = (~~(i / layer.width) * size);
+                s_y = (~~(i / layer.width) * size);*/
 
                 //I beleive s_x, s_y is the upper left corner of a tile, so if it is in layer > 0 (check this), then
                 //s_x to s_x - size and s_y to s_y - size should be added to terrain array
@@ -111,7 +118,7 @@ var scene = {
 
 
                 //  if(s_x > $('#background').width() || s_y > $('#background').height()){return;} //outside current window, don't load
-                var coord = ~~(s_x / (layer.width * size / columns) ) + columns * (~~(s_y / (layer.height * size / rows)));
+  /*              var coord = ~~(s_x / (layer.width * size / columns) ) + columns * (~~(s_y / (layer.height * size / rows)));
                 //console.log('coord', coord)
                 
                 s_x %= (layer.width * size / columns);
@@ -121,16 +128,10 @@ var scene = {
 
 
                 scene.layerCanvas[layer.name].canvas[coord].drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
-
+*/
             });
-		scene.layerCanvas[layer.name].img = [];
-		scene.layerCanvas[layer.name].url = [];
-		var i = scene.layerCanvas[layer.name].canvas.length;
-		while(i--){
-			scene.layerCanvas[layer.name].url[i] = scene.layerCanvas[layer.name].canvas[i].canvas.toDataURL();
-			scene.layerCanvas[layer.name].canvas.splice(i, 0);
-			scene.layerCanvas[layer.name].img[i] = null;
-		}
+
+
 
         	drawFromArray(layer.name, rows, columns);
 
@@ -241,6 +242,8 @@ function drawFromArray(layerName, rows, columns){
 		var option1 = ~~(upperLeft.x / colWidth) + columns * (~~(upperLeft.y / rowHeight)) === i;
 
 		if(option1){ //if our upper left x comes from the layer, use it
+			
+			//TODO track who gets in here and then iterate through scene.layers and remove those that don't belong
 
 			/*var s_w, s_h;
 			var smallUpperLeft = {};
@@ -287,13 +290,13 @@ function drawFromArray(layerName, rows, columns){
 			}
 			
 			//console.log('offset', offset)
-			if(!scene.layerCanvas[layerName].img[i]){
+			if(!scene.tiles[layerName].img[i]){
 				var img = new Image;
 				img.onload = function(){
 					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
 				};
-				img.src = scene.layerCanvas[layerName].url[i];
-				scene.layerCanvas[layerName][i].img = img;
+				img.src = scene.tiles[layerName].url[i];
+				scene.tiles[layerName].img[i] = img;
 			}else{
 				var img = scene.layerCanvas[layerName].img[i];
 				if(!img.complete){  //If the image was created but isn't loaded, override the onload function
