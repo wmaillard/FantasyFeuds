@@ -1,7 +1,7 @@
 var newCan =  document.createElement('canvas');  //Still relevant? //This probably takes too long, keep one canvas active for this, store with character images.
 var numberOfCanvas = 32;
-var rows = 10;
-var columns = 10;
+var rows = 32;
+var columns = 32;
 
 //Loading tiled maps***
 //Help from this tutorial: https://hashrocket.com/blog/posts/using-tiled-and-canvas-to-render-game-screens
