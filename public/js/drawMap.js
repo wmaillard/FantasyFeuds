@@ -286,11 +286,13 @@ function drawFromArray(layerName, rows, columns){
 
 			if(xDrawn > canvasWidth){
 				xDrawn = 0;
+				upperLeft.x = Math.abs(backgroundOffset.x);
 				doneInX = true;
 			}
 
 
 			if(doneInX){
+				
 				yDrawn += (rowHeight - offset.y) * zoom;
 
 				//upperLeft.x = Math.abs(backgroundOffset.x);
@@ -310,6 +312,7 @@ function drawFromArray(layerName, rows, columns){
 				firstY = false;
 			}else{
 				firstX = false;
+				upperLeft.x += colWidth;
 			}
 
 			
