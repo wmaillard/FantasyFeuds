@@ -128,7 +128,7 @@ var scene = {
 		var i = scene.layerCanvas[layer.name].canvas.length;
 		while(i--){
 			scene.layerCanvas[layer.name].url[i] = scene.layerCanvas[layer.name].canvas[i].canvas.toDataURL();
-			delete scene.layerCanvas[layer.name].canvas.splice(i, 0);
+			scene.layerCanvas[layer.name].canvas.splice(i, 0);
 			scene.layerCanvas[layer.name].img[i] = null;
 		}
 
