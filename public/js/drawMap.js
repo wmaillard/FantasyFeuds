@@ -279,7 +279,7 @@ function drawFromArray(layerName, rows, columns){
 			
 			//console.log('offset', offset)
 
-			scene.context.drawImage(scene.layerCanvas[layerName][i].canvas, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, dest.x, dest.y, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+			scene.context.drawImage(scene.layerCanvas[layerName][i].canvas, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
 			xDrawn += (colWidth - offset.x) * zoom;
 
 			//console.log('xDrawn', xDrawn)
@@ -295,9 +295,6 @@ function drawFromArray(layerName, rows, columns){
 
 				//upperLeft.x = Math.abs(backgroundOffset.x);
 				
-				dest.x = 0;
-				dest.y += (rowHeight - offset.y) * zoom;
-				
 				//console.log('ydrawn', yDrawn)
 				if(yDrawn < canvasHeight){
 					upperLeft.y += rowHeight;
@@ -312,7 +309,6 @@ function drawFromArray(layerName, rows, columns){
 				firstX = true;
 				firstY = false;
 			}else{
-				dest.x += (colWidth - offset.x) * zoom;
 				firstX = false;
 			}
 
