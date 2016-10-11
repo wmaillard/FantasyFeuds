@@ -58,7 +58,7 @@ var scene = {
 	        	scratchCanvas.canvas.width = layer.width * size / columns;
 
 
-	        	scene.layerCanvas[layer.name].canvas[i] = scratchCanvas.canvas;
+	        	scene.layerCanvas[layer.name].canvas[i] = scratchCanvas;
 
 
 	        }
@@ -127,7 +127,7 @@ var scene = {
 		scene.layerCanvas[layer.name].url = [];
 		var i = scene.layerCanvas[layer.name].canvas.length;
 		while(i--){
-			scene.layerCanvas[layer.name].url[i] = scene.layerCanvas[layer.name].canvas[i].toDataURL();
+			scene.layerCanvas[layer.name].url[i] = scene.layerCanvas[layer.name].canvas[i].canvas.toDataURL();
 			delete scene.layerCanvas[layer.name].canvas.splice(i, 0);
 			scene.layerCanvas[layer.name].img[i] = null;
 		}
