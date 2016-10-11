@@ -123,7 +123,7 @@ var scene = {
 
             });
 		for(var i in scene.layerCanvas[layer.name]){
-			scene.layerCanvas[layer.name][i] = scene.layerCanvas[layer.name][i].toDataUrl;
+			scene.layerCanvas[layer.name][i] = scene.layerCanvas[layer.name][i].toDataUrl();
 		}
 
         	drawFromArray(layer.name, rows, columns);
