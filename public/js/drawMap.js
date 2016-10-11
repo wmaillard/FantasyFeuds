@@ -204,8 +204,8 @@ function drawFromArray(layerName, rows, columns){
 
 
 	var upperLeft = {}
-	upperLeft.x = Math.abs(backgroundOffset.x);
-	upperLeft.y = Math.abs(backgroundOffset.y);
+	upperLeft.x = Math.abs(backgroundOffset.x) / zoom;
+	upperLeft.y = Math.abs(backgroundOffset.y) / zoom;
 
 	var doneInX = false;
 	var doneInY = false;
@@ -233,10 +233,10 @@ function drawFromArray(layerName, rows, columns){
 
 		if(option1){ //if our upper left x comes from the layer, use it
 
-			var s_w, s_h;
+			/*var s_w, s_h;
 			var smallUpperLeft = {};
 			smallUpperLeft.x = upperLeft.x % colWidth; //The x and y in the canvas cutout
-			smallUpperLeft.y = upperLeft.y % rowHeight;
+			smallUpperLeft.y = upperLeft.y % rowHeight;*/
 
 		/*	if(canvasWidth / zoom > scene.layerCanvas[layerName][i].canvas.width - smallUpperLeft.x){
 				s_w = scene.layerCanvas[layerName][i].canvas.width - smallUpperLeft.x;
@@ -286,7 +286,7 @@ function drawFromArray(layerName, rows, columns){
 
 			if(xDrawn > canvasWidth){
 				xDrawn = 0;
-				upperLeft.x = Math.abs(backgroundOffset.x);
+				upperLeft.x = Math.abs(backgroundOffset.x) / zoom;
 				doneInX = true;
 			}
 
