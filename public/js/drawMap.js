@@ -204,8 +204,8 @@ function drawFromArray(layerName, rows, columns){
 
 
 	var upperLeft = {}
-	upperLeft.x = Math.abs(backgroundOffset.x) / zoom;
-	upperLeft.y = Math.abs(backgroundOffset.y) / zoom;
+	upperLeft.x = Math.abs(backgroundOffset.x) ;
+	upperLeft.y = Math.abs(backgroundOffset.y) ;
 
 	var doneInX = false;
 	var doneInY = false;
@@ -270,11 +270,11 @@ function drawFromArray(layerName, rows, columns){
 			var offset = {x : 0, y : 0};
 
 			if(firstX){
-				offset.x = Math.abs(backgroundOffset.x) % colWidth;  //Start cutting the 1st column of canvas's at offset.x
+				offset.x = (Math.abs(backgroundOffset.x) / zoom) % colWidth;  //Start cutting the 1st column of canvas's at offset.x
 				
 			}
 			if(firstY){
-				offset.y = Math.abs(backgroundOffset.y) % rowHeight; //Start cutting the top row of canvas's at offset.y
+				offset.y = (Math.abs(backgroundOffset.y) / zoom) % rowHeight; //Start cutting the top row of canvas's at offset.y
 			}
 			
 			//console.log('offset', offset)
@@ -286,7 +286,7 @@ function drawFromArray(layerName, rows, columns){
 
 			if(xDrawn > canvasWidth){
 				xDrawn = 0;
-				upperLeft.x = Math.abs(backgroundOffset.x) / zoom;
+				upperLeft.x = Math.abs(backgroundOffset.x) ;
 				doneInX = true;
 			}
 
