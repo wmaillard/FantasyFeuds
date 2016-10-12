@@ -290,6 +290,21 @@ function drawFromArray(layerName, rows, columns){
 			
 			//console.log('offset', offset)
 			if(!scene.tiles[layerName].img[i]){
+
+			var eight = loadEightAround(i, rows, columns);
+			for(var j in eight){
+				if(tilesUsed[eight[j]]){
+					continue;
+				}
+				tilesUsed[eight[j]] = true;
+				if(!scene.tiles[layerName].img[eight[j]]){
+						var img = new Image;
+						img.src = scene.tiles[layerName].url[eight[j]];
+						scene.tiles[layerName].img[eight[j]] = img; 
+				}
+				
+
+			}
 				var img = new Image;
 				img.onload = function(){
 					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
@@ -308,20 +323,6 @@ function drawFromArray(layerName, rows, columns){
 				}
 			}
 
-			var eight = loadEightAround(i, rows, columns);
-			for(var j in eight){
-				if(tilesUsed[eight[j]]){
-					continue;
-				}
-				tilesUsed[eight[j]] = true;
-				if(!scene.tiles[layerName].img[eight[j]]){
-						var img = new Image;
-						img.src = scene.tiles[layerName].url[eight[j]];
-						scene.tiles[layerName].img[eight[j]] = img; 
-				}
-				
-
-			}
 			
 			xDrawn += (colWidth - offset.x) * zoom;
 
