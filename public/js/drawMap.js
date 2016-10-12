@@ -287,16 +287,21 @@ function drawFromArray(layerName, rows, columns){
 			if(firstY){
 				offset.y = (Math.abs(backgroundOffset.y)) % rowHeight; //Start cutting the top row of canvas's at offset.y
 			}
-			
+			var eight = loadEightAround(i, rows, columns);
+			for(var j in eight){
+				if(!tilesUsed[eight[j]]){
+				    tilesUsed[eight[j]] = true;
+				}
+				
+				
+
+			}
 			//console.log('offset', offset)
 			if(!scene.tiles[layerName].img[i]){
 
-			var eight = loadEightAround(i, rows, columns);
+			
 			for(var j in eight){
-				if(tilesUsed[eight[j]]){
-					continue;
-				}
-				tilesUsed[eight[j]] = true;
+				
 				if(!scene.tiles[layerName].img[eight[j]]){
 						var img = new Image;
 						img.src = scene.tiles[layerName].url[eight[j]];
