@@ -226,18 +226,22 @@ function drawFromArray(layerName, rows, columns){
 	var yDrawn = 0;
 	var xDrawn = 0;
 
-	for(var i = 0; i <  scene.tiles[layerName].url.length; i++){
+	var tilesUsed = {};
+	var widthInTiles = Math.ceil(($('#gameContainer').width() / zoom) / colWidth);
+	var heightInTiles = Math.ceil(($('#gameContainer').height() / zoom) / rowHeight);
 
+	for(var i = 0; i <  scene.tiles[layerName].url.length; i++){
 		//if, based on the offset and the amount being drawn, we should use this canvas.  Draw a piece using that canvas
 		if(doneInY && doneInX){
 			//console.log('************ double done ************')
 			break;
 		}
 
-		var option1 = ~~(upperLeft.x / colWidth) + columns * (~~(upperLeft.y / rowHeight)) === i;
+		var option1 = ~~(upperLeft.x / colWidth) + columns * (~~(upperLeft.y / rowHeight)) === i; // in the box
+
 
 		if(option1){ //if our upper left x comes from the layer, use it
-			
+			tilesUsed[i] = true;
 			//TODO track who gets in here and then iterate through scene.layers and remove those that don't belong
 
 			/*var s_w, s_h;
@@ -303,6 +307,21 @@ function drawFromArray(layerName, rows, columns){
 					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
 				}
 			}
+
+			var eight = loadEightAround(i, rows, columns);
+			for(var j in eight){
+				if(tilesUsed[eight[j]]){
+					continue;
+				}
+				tilesUsed[eight[j]] = true;
+				if(!scene.tiles[layerName].img[eight[j]]){
+						var img = new Image;
+						img.src = scene.tiles[layerName].url[eight[j]];
+						scene.tiles[layerName].img[eight[j]] = img; 
+				}
+				
+
+			}
 			
 			xDrawn += (colWidth - offset.x) * zoom;
 
@@ -346,6 +365,57 @@ function drawFromArray(layerName, rows, columns){
 
 		//scene.context.drawSafeImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
 	}
+	//console.log(tilesUsed);
+	cleanUp(tilesUsed, scene.tiles[layerName].img, widthInTiles, heightInTiles);
 	
 
+}
+
+function loadEightAround(current, rows, columns){
+	var eight = [];
+
+
+	if(current - columns >= 0){
+		eight.push(current - columns);
+	}
+	if(current + columns < columns * rows){
+		eight.push(current + columns);
+	}
+
+	if(current % columns !== columns - 1){
+		eight.push(current + 1);
+		if(current - columns + 1 >= 0){
+			eight.push(current - columns + 1);
+		}
+		if(current + columns + 1 < columns * rows){
+			eight.push(current + columns + 1);
+		}
+
+	}
+
+	if(current % columns !== 0){
+		eight.push(current - 1)
+		if(current - columns - 1 >= 0){
+			eight.push(current - columns -1);
+		}
+		if(current + columns - 1 < columns * rows){
+			eight.push(current + columns - 1);
+		}
+	}
+
+	
+	return eight;
+
+
+}
+function cleanUp(tilesUsed, layerImgs, widthInTiles, heightInTiles){  //TODO use this to preload images too
+	//console.log('Width', widthInTiles);
+	//console.log('Height ', heightInTiles);
+	//var numToAdd = Math.ceil(Math.min(widthInTiles, heightInTiles) / 2);  
+
+	for(var i in layerImgs){
+		if(!tilesUsed[i]){
+			layerImgs[i] = null;
+		}
+	}
 }
