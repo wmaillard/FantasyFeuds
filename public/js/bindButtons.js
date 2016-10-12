@@ -1,5 +1,20 @@
 var BindButtons = { 
  bindAll: function(){
+
+
+ 	 $('#gameContainer').bind('mousewheel', function(e){
+ 	 	var centerY = $('#gameContainer').height() / 2;
+ 	 	var centerX = $('#gameContainer').width() / 2;
+
+        if(e.originalEvent.wheelDelta /120 > 0) {
+            zoomAction({scale: 1.10, center: {x: centerX, y: centerY}})
+        }
+        else{
+            zoomAction({scale: .90, center: {x: centerX, y: centerY}})
+        }
+    });
+
+
  	$('#showShop').click(function(){
  		if($('#shop').is(":visible")){
  			$('#shop').hide();

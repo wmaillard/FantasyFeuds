@@ -44,6 +44,58 @@ function slideMap(slope){
     }
     redrawBackground();
 }
+
+
+function zoomAction(e){
+        // do something cool
+
+        var scale = e.scale;
+        var center = {};
+        center.x =  -e.center.x;
+        center.y = -e.center.y;
+        var oldZoom = zoom;
+       if(scale > 1){
+            scale = 1 - (1 - scale) * zoomSpeed // .9 becomes .95, 1.1 becomes 1.05
+        }else{
+            scale = 1 - (1 - scale) * zoomSpeed * 2
+        }
+        zoom *= scale;
+    /*  if(zoom < .25){
+            zoom = .25;
+        }*/
+
+        if(zoom > 2.25){
+            zoom = 2.25;
+        }
+
+        //zoomHappened = true;      
+
+
+      /* backgroundOffset.x -= backgroundOffset.x * zoom / oldZoom; 
+        backgroundOffset.y -= backgroundOffset.y * zoom / oldZoom;*/
+
+
+
+           
+
+        var deltaZoom = zoom - oldZoom;
+
+        backgroundOffset.x += deltaZoom * center.x / oldZoom ;
+        backgroundOffset.y += deltaZoom * center.y / oldZoom;
+        redrawBackground();
+        
+
+
+        if(e.additionalEvent === 'pinchin'){
+            
+            
+        }else if(e.additionalEvent === 'pinchout'){
+
+       // alert(timesFired);
+        }
+}
+
+
 $(function() {
 	const $gameContainer = $('#gameContainer');
     canvasWidth = $gameContainer.width();
@@ -94,57 +146,9 @@ alert('Your performance: ' + sum / 5000);*/
 	
 	mc.get('pinch').set({ enable: true });
 
-	mc.on('pinch', function(e) {
-	    // do something cool
-
-
-        
-
-		var scale = e.scale;
-        var center = {};
-        center.x =  -e.center.x;
-        center.y = -e.center.y;
-        var oldZoom = zoom;
-       if(scale > 1){
-            scale = 1 - (1 - scale) * zoomSpeed // .9 becomes .95, 1.1 becomes 1.05
-        }else{
-            scale = 1 - (1 - scale) * zoomSpeed * 2
-        }
-		zoom *= scale;
-	/*	if(zoom < .25){
-			zoom = .25;
-		}*/
-
-        if(zoom > 2.25){
-            zoom = 2.25;
-        }
-
-        //zoomHappened = true;		
-
-
-      /* backgroundOffset.x -= backgroundOffset.x * zoom / oldZoom; 
-        backgroundOffset.y -= backgroundOffset.y * zoom / oldZoom;*/
-
-
-
-           
-
-            var deltaZoom = zoom - oldZoom;
-
-            backgroundOffset.x += deltaZoom * center.x / oldZoom ;
-            backgroundOffset.y += deltaZoom * center.y / oldZoom;
-            redrawBackground();
-        
-
-
-	    if(e.additionalEvent === 'pinchin'){
-	    	
-		    
-	    }else if(e.additionalEvent === 'pinchout'){
-
-	   // alert(timesFired);
-	    }
-	});
+	mc.on('pinch', function(e){
+        zoomAction(e);
+    });
 
 	
 	buildStore();

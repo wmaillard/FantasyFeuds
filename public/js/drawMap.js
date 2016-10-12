@@ -58,14 +58,9 @@ var scene = {
 	        	//scratchCanvas = scratchCanvas.getContext("2d");
 	        	//scratchCanvas.canvas.height = layer.height * size / rows;
 	        	//scratchCanvas.canvas.width = layer.width * size / columns;
-			var url = './img/map/map_';
-			var num = i + 1;
-			if(i < 99){
-				url = url + '0' + num + '.png'
-			}else{
-				url = url + num + '.png'
-			}
-	        	scene.tiles[layer.name].url[i] = url;
+			var url = 'img/map/' + layer.name + i + '.png'
+
+	        scene.tiles[layer.name].url[i] = url;
 			
 
 	        }
@@ -231,7 +226,7 @@ function drawFromArray(layerName, rows, columns){
 	var yDrawn = 0;
 	var xDrawn = 0;
 
-	for(var i = 0; i <  scene.layerCanvas[layerName].length; i++){
+	for(var i = 0; i <  scene.tiles[layerName].url.length; i++){
 
 		//if, based on the offset and the amount being drawn, we should use this canvas.  Draw a piece using that canvas
 		if(doneInY && doneInX){
@@ -298,7 +293,7 @@ function drawFromArray(layerName, rows, columns){
 				img.src = scene.tiles[layerName].url[i];
 				scene.tiles[layerName].img[i] = img;
 			}else{
-				var img = scene.layerCanvas[layerName].img[i];
+				var img = scene.tiles[layerName].img[i];
 				if(!img.complete){  //If the image was created but isn't loaded, override the onload function
 					img.onload = function(){
 						scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
