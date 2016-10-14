@@ -1,4 +1,7 @@
-var castles = {{x: 50, y:80, color: 'blue'}, {x: 300, y:400, color: 'green'}};
+var castles = [
+	{x: 50, y:80, color: 'blue'}, 
+        {x: 300, y:400, color: 'green'}
+	];
 var castleRadius = 300;
 
 function drawCastleCircles(castles, ctx){
