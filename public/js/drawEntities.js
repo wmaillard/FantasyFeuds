@@ -9,7 +9,7 @@ function drawCastleCircles(castles, ctx){
   for(var i in castles){
 	  ctx.save();
 	  ctx.lineWidth = 7 * zoom;
-	  ctx.globalAlpha = .8; //opacity
+	  ctx.globalAlpha = .6; //opacity
 	  ctx.beginPath();
 	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].x + backgroundOffset.y) * zoom, (castleRadius / 3) * zoom, (castleRadius / 2.5) * zoom, 0, 0, Math.PI*2);
 	  ctx.strokeStyle = castles[i].color;
