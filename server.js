@@ -7,8 +7,8 @@ let playerCastles = {};
 
 function setPlayerEntityAtCastle(e, playerCastles){
 
-	var rx = castleRadius / 2;
-	var ry = castleRadius / 3;
+	var rx = castleRadius / 3;
+	var ry = castleRadius / 2;
 	for(var c in castles){
 		console.log('castle', castles[c]);
 		//Within the ellipse http://math.stackexchange.com/questions/76457/check-if-a-point-is-within-an-ellipse
