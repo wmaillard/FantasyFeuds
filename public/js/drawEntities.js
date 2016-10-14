@@ -11,7 +11,7 @@ function drawCastleCircles(castles, ctx){
 	  ctx.lineWidth = 7 * zoom;
 	  ctx.globalAlpha = .6; //opacity
 	  ctx.beginPath();
-	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].x + backgroundOffset.y) * zoom, (castleRadius / 3) * zoom, (castleRadius / 2.5) * zoom, 0, 0, Math.PI*2);
+	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].x + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, 0, Math.PI*2);
 	  ctx.strokeStyle = castles[i].color;
 	  ctx.stroke();
 	  ctx.restore();
@@ -221,7 +221,7 @@ function drawHighlight(entity, canvas){
   var ctx = canvas.getContext('2d');
   ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
   ctx.beginPath();
-  ctx.ellipse(canvas.width / 2,  canvas.height * 2/3, canvas.width / 3, canvas.width / 2.5, 0, 0, Math.PI*2);
+  ctx.ellipse(canvas.width / 2,  canvas.height * 2/3, canvas.width / 2.5, canvas.width / 3, 0, 0, Math.PI*2);
   ctx.strokeStyle='red';
   ctx.stroke();
   ctx.restore();
