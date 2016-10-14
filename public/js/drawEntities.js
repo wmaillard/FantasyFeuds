@@ -7,9 +7,10 @@ var castleRadius = 300;
 function drawCastleCircles(castles, ctx){
 
   for(var i in castles){
-	  ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
+	  ctx.save();
+	  ctx.lineWidth = 10 * zoom;
 	  ctx.beginPath();
-	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].x + backgroundOffset.x) * zoom, castleRadius / 3, castleRadius / 2.5, 0, 0, Math.PI*2);
+	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].x + backgroundOffset.y) * zoom, (castleRadius / 3) * zoom, (castleRadius / 2.5) * zoom, 0, 0, Math.PI*2);
 	  ctx.strokeStyle = castles[i].color;
 	  ctx.stroke();
 	  ctx.restore();
