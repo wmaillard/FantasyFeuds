@@ -1,10 +1,25 @@
+var castles = {{x: 50, y:80, color: 'blue'}, {x: 300, y:400, color: 'green'}};
+var castleRadius = 300;
 
+function drawCastleCircles(castles, ctx){
+
+  for(var i in castles){
+	  ctx.save(); // This drawing if block was lifted from here: http://jsbin.com/ovuret/722/edit?html,js,output with our entities position added
+	  ctx.beginPath();
+	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].x + backgroundOffset.x) * zoom, castleRadius / 3, castleRadius / 2.5, 0, 0, Math.PI*2);
+	  ctx.strokeStyle = castles[i].color;
+	  ctx.stroke();
+	  ctx.restore();
+  }
+	
+	
+}
 
 
 function drawEntities(entities, ctx, lock, clear) { 
     //Lets just do this if there was a change, or does it matter.  There probably will always be a change...
 
-  ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
+
 
       var directions = {
         'S': 0,
@@ -29,6 +44,7 @@ function drawEntities(entities, ctx, lock, clear) {
         serverSentFullState = false;
         animate = true;
     }
+    ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
     for (var entity in entities) {
         
       if(animate){
@@ -86,6 +102,7 @@ function drawEntities(entities, ctx, lock, clear) {
             //ctx.drawImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, $('#background').width() / zoom, $('#background').height() / zoom, 0, 0, $('#background').width(), $('#background').height())
 
     }
+	drawCastleCircles(castles, ctx);
 }
 
 function cutOutCharacter(newCan, img, x, y, width, height, entity){
