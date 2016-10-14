@@ -1,4 +1,31 @@
+let castles = {
+	0 : {x: 50, y:80, color: 'blue', id: 0}, 
+        1 : {x: 300, y:400, color: 'green', id: 1}
+	}
+const castleRadius = 300;
+let playerCastles = {};
 
+function setPlayerEntityAtCastle(e, playerCastles){
+	if(!playerCastles[e.playerId]){
+		playerCastles[e.playerId] = {};
+	}if(!playerCastles[e.playerId].castles){
+		playerCastles[e.playerId].castles = {};
+	}
+	var rx = castleRadius / 2;
+	var ry = castleRadius / 3;
+	for(var c of castles){
+		//Within the ellipse http://math.stackexchange.com/questions/76457/check-if-a-point-is-within-an-ellipse
+		if(Math.pow((e.x - c.x), 2) / Math.pow(rx , 2) + Math.pow((e.y - c.y), 2) / Math.pow(ry, 2) < 1){
+			if(!playerCastles[e.playerId][c.id]){
+				playerCastles[e.playerId][c.id] = []
+			}
+			playerCastles[e.playerId][c.id].push(e.id);
+		
+		}
+	
+	}
+
+}
 
 const express = require('express');
 const socketIO = require('socket.io');
@@ -259,7 +286,7 @@ function moveEntities(entities) {
 	var more = false;
 
   	//console.log(entities.length);
-
+	playerCastles = {};
     for(var e in entities){
     	
     	var entity = entities[e];
@@ -334,10 +361,12 @@ function moveEntities(entities) {
 	            }
 
           	}
+			
      	 }
+	 setPlayerEntityAtCastle(entity, playerCastles);
 		
     }
-
+	console.log(JSON.stringify(playerCastles));
 	return more;
 
 	
