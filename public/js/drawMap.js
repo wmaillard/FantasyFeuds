@@ -58,7 +58,7 @@ var scene = {
 	        	//scratchCanvas = scratchCanvas.getContext("2d");
 	        	//scratchCanvas.canvas.height = layer.height * size / rows;
 	        	//scratchCanvas.canvas.width = layer.width * size / columns;
-			var url = 'img/map/' + layer.name + i + '.png'
+			var url = 'https://res.cloudinary.com/ochemaster/image/upload/c_scale,w_1.0/v1476547914/map/' + layer.name + i + '.png'
 
 	        scene.tiles[layer.name].url[i] = url;
 			
@@ -207,10 +207,45 @@ var scene = {
 
     }
 }
+function zoomURL(url, scale){
+	//scale must be string '1.0', '0.5', etc
+	var parts = url.split("/");
+	var newURL = "";
+	for(var i in parts){ 
+		if(i == 6){
+			newURL += ("c_scale,w_" + scale);
+		}
+		else{
+			newURL += parts[i];
+		}
+		if(i != parts.length - 1){
+			newURL += '/';
+		}
+	}
+	return newURL
 
+}
+function clearURLImages(tiles){
+	for(var i in tiles.url){
+		if(tiles.img[i]){
+			tiles.img[i] = null;
+		}
+		tiles.url[i] = zoomURL(tiles.url[i], '0.25');
+	}
 
+}
+var currentZoomResolution = '1.0';
 function drawFromArray(layerName, rows, columns){
 
+
+	var saveZoom = zoom;
+	if(zoom < 0.25 && currentZoomResolution !== '0.25'){
+		clearURLImages(scene.tiles['tile']);
+		currentZoomResolution = '0.25';
+	}
+	/*if(zoom < 0.25){
+		zoom += 1;
+	}*/
 
 	var upperLeft = {}
 	upperLeft.x = Math.abs(backgroundOffset.x) ;
@@ -378,7 +413,7 @@ function drawFromArray(layerName, rows, columns){
 	//console.log(tilesUsed);
 	cleanUp(tilesUsed, scene.tiles[layerName].img, widthInTiles, heightInTiles);
 	
-
+	zoom = saveZoom;
 }
 
 function loadEightAround(current, rows, columns){
