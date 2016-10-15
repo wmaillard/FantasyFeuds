@@ -60,9 +60,9 @@ function zoomAction(e){
             scale = 1 - (1 - scale) * zoomSpeed * 2
         }
         zoom *= scale;
-    	if(zoom < .5){
+    	/*if(zoom < .5){
            zoom = .5;
-        }
+        }*/
 
         if(zoom > 2.25){
             zoom = 2.25;

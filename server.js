@@ -1,8 +1,11 @@
-let castles = {
-	0 : {x: 50, y:80, color: 'blue', id: 0}, 
-        1 : {x: 300, y:400, color: 'green', id: 1}
-	}
-const castleRadius = 300;
+
+
+"use strict"
+
+const Castles = require('./castles.js');
+const castles = Castles.castles; 
+
+const castleRadius = 2500;
 let playerCastles = {};
 
 function setPlayerEntityAtCastle(e, playerCastles){
@@ -10,7 +13,6 @@ function setPlayerEntityAtCastle(e, playerCastles){
 	var rx = castleRadius / 3;
 	var ry = castleRadius / 2;
 	for(var c in castles){
-		console.log('castle', castles[c]);
 		//Within the ellipse http://math.stackexchange.com/questions/76457/check-if-a-point-is-within-an-ellipse
 		if(Math.pow((e.x - castles[c].x), 2) / Math.pow(rx , 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1){
 			if(!playerCastles[e.playerId]){

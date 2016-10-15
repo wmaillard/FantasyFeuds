@@ -1,8 +1,5 @@
-var castles = [
-	{x: 50, y:80, color: 'blue'}, 
-        {x: 300, y:400, color: 'green'}
-	];
-var castleRadius = 300;
+
+var castleRadius = 2500;
 
 function drawCastleCircles(castles, ctx){
 
@@ -11,7 +8,7 @@ function drawCastleCircles(castles, ctx){
 	  ctx.lineWidth = 7 * zoom;
 	  ctx.globalAlpha = .6; //opacity
 	  ctx.beginPath();
-	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].x + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, 0, Math.PI*2);
+	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, 0, Math.PI*2);
 	  ctx.strokeStyle = castles[i].color;
 	  ctx.stroke();
 	  ctx.restore();

@@ -21,23 +21,23 @@ var scene = {
         ////console.log(scratchCanvas.canvas.height);
         //   //console.log(scratchCanvas.canvas);
 
-        if (layer.name === 'Bottom' && firstLoad) {
-            levelWidth = layer.width;
-            levelHeight = layer.height;
+        if (firstLoad) {
+            levelWidth = 1000;
+            levelHeight = 1000;
             //backgroundOffset.y = -levelHeight*size + $(window).height();
          /*   if (levelWidth * size < window.innerWidth) {
                 backgroundOffset.x = window.innerWidth - levelWidth * size
             }; //fixes window too wide bug*/
-            blockingTerrain = new Array(layer.width);
+            /*blockingTerrain = new Array(layer.width);
             for (var i = 0; i < layer.width; i++) {
                 blockingTerrain[i] = new Array(layer.height);
                 blockingTerrain[i].fill(false);
-            }
-            entitiesMap = new Array(layer.width);
-            for (var i = 0; i < layer.width; i++) {
-                entitiesMap[i] = new Array(layer.height);
+            }*/
+            entitiesMap = new Array(levelWidth);
+            for (var i = 0; i < levelWidth; i++) {
+                entitiesMap[i] = new Array(levelHeight);
                 for(var j = 0; j < entitiesMap[i].length; j++){
-                    entitiesMap[i][j] = new Array(0);
+                    entitiesMap[i][j] = [];
                 }
             }
             
@@ -66,7 +66,7 @@ var scene = {
 	        }
 
         
-            layer.data.forEach(function(tile_idx, i) { //draw each tile
+          /*  layer.data.forEach(function(tile_idx, i) { //draw each tile
 
                 if (tile_idx === 0) {
                     return;
@@ -97,7 +97,7 @@ var scene = {
                 //I beleive s_x, s_y is the upper left corner of a tile, so if it is in layer > 0 (check this), then
                 //s_x to s_x - size and s_y to s_y - size should be added to terrain array
 
-                if (layer.name !== 'Bottom' && layer.name !== 'Bridges' && firstLoad) {
+                /*if (layer.name !== 'Bottom' && layer.name !== 'Bridges' && firstLoad) {
                     if (layer.name === 'Top') {
                         blockingTerrain[(i % layer.width)][~~(i / layer.width)] = 'wall';
                     } else if (false && layer.name === 'BaseS') {
@@ -109,7 +109,7 @@ var scene = {
                             blockingTerrain[(i % layer.width)][~~(i / layer.width)] = true;
                         }
                     }
-                }
+                }*/
 
 
                 //  if(s_x > $('#background').width() || s_y > $('#background').height()){return;} //outside current window, don't load
@@ -124,7 +124,7 @@ var scene = {
 
                 scene.layerCanvas[layer.name].canvas[coord].drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
 */
-            });
+            //});
 
 
 
@@ -136,7 +136,7 @@ var scene = {
 
         } else { //if all the layers have been previously loaded, use the cache
 
-            scene.data.layers.forEach(function(layer) {
+            
 
 
              /*   backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
@@ -147,18 +147,20 @@ var scene = {
                 //var i = $("<img />", {src: src})[0];
                 // //console.log(layer);
 				drawFromArray(layer.name, rows, columns);   
-	         });
-        }
-    },
+	         
+        
+    }
+},
 
     renderLayers: function(layers) {
-        layers = $.isArray(layers) ? layers : scene.data.layers; //can pass an array of layers
-        layers.forEach(scene.renderLayer);
+        /*layers = $.isArray(layers) ? layers : scene.data.layers; //can pass an array of layers
+        layers.forEach(scene.renderLayer);*/
+        scene.renderLayer({name: 'tile'})
         firstLoad = false;
     },
 
     loadTileset: function(json) {
-        this.data = json;
+        /*this.data = json;
 
         var itemsProcessed = 0;
         json.tilesets.forEach(function(item, index) { //does this give the images enough time to load?
@@ -178,7 +180,8 @@ var scene = {
                     scene.renderLayers(this);
                 }
             };
-        });
+        });*/
+        scene.renderLayers(this);
 
     },
 
@@ -192,11 +195,12 @@ var scene = {
         scene.context = ctx;
 
         if (firstLoad) {
-            $.getJSON("js/maps/" + name + ".json", function(json) {
+
+        	
                     //this.data = json;
-                    scene.data = json;
+                    scene.data = {layers: {name: 'tile'}};
                     scene.loadTileset(scene.data);
-                }) //.fail(alert("aweful things have happend"));
+ 
         } else {
             scene.renderLayers(false);
         }

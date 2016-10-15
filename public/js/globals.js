@@ -5,7 +5,6 @@ var attacks = [];
 var attackEffectsLoop = false;
 var baseNHealth = 1000;
 var baseSHealth = 1000;  //this will be moved when bases are turned into entities
-var blockingTerrain = [];  //Things that you can't walk over
 var boughtEntity = null;
 var canvasWidth; 
 var canvasHeight;
