@@ -60,7 +60,7 @@ var swipeRatio = 0.9;
 // enable vibration support
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
-var pixelChangeForPan = 5;
+var pixelChangeForPan = 10;
 var backgroundOffset = {
         "x": 0,
         "y": 0

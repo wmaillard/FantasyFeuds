@@ -122,10 +122,14 @@ alert('Your performance: ' + sum / 5000);*/
 	// create a recognizer
 	var pinch = new Hammer.Pinch();
     var swipe = new Hammer.Swipe();
+    var tap = new Hammer.Tap();
+    var pan = new Hammer.Pan();
 
 	// add the recognizer
 	mc.add(pinch);
     mc.add(swipe);
+    mc.add(tap);
+    mc.add(pan);
 
     mc.on('swipe', function(e){
         //e.angle
@@ -135,12 +139,32 @@ alert('Your performance: ' + sum / 5000);*/
         console.log(slope);
     });
 
+    mc.on('tap', function(e){
+        clickGameContainer(e);
+
+    });
+    mc.on('pan', function(e){
+        mapMove(e);
+        redrawBackground();
+
+    });
+    mc.on('panstart', function(e){
+        mapMove(e);
+        redrawBackground();
+    });
+    mc.on('panend', function(e){
+        mapMove(e);
+        redrawBackground();
+    });
+
+
+
 
 	
 	mc.get('pinch').set({ enable: true });
 
 	mc.on('pinch', function(e){
-        fullOnPanning = false;
+        console.log('pinching')
         zoomAction(e);
     });
 

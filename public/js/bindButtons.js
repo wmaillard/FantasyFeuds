@@ -202,29 +202,28 @@ var BindButtons = {
 	      $('#prompt').text('Choose a level');
 	  });
 
-	  $("#gameContainer").on('mousedown', function(e) {
+/*	  $("#gameContainer").on('mousedown', function(e) {
 		    pressMap(e)
 		}).on('mouseup', function(e) {
 		    releasePressMap(e)
 		}).on('mousemove', function(e) {
-		    mapMove(e);
+		    //mapMove(e);
 		});
 	$("#gameContainer").on('touchstart', function(e) {
-			if(e.originalEvent.touches.length === 1){
+			if(e.originalEvent.touches.length <= 1){
 			    pressMap(e, true)
 			}
 		    return false;
 		}).on('touchend', function(e) {
-			console.log('touchEnd')
-			if(e.originalEvent.touches.length === 1){
+			if(e.originalEvent.touches.length <= 1){
 			    releasePressMap(e, true);
 			}
 		    return false;
 		}).on('touchmove', function(e) {
-			if(e.originalEvent.touches.length === 1){
-		    	mapMove(e, true);
+			if(e.originalEvent.touches.length <= 1){
+		    	//mapMove(e, true);
 		    }
 		    return false;
-		});
+		});*/
 	}
 }

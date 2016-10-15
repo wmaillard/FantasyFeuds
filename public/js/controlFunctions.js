@@ -1,20 +1,30 @@
 
  
 
- function mapMove(e, mobile) {
-    e = switchEventToMobile(e);
+ function mapMove(e) {
+    //e = switchEventToMobile(e);
+    if(e.type === 'panstart'){
+        currentCoords.x = e.pointers[0].clientX;
+        currentCoords.y = e.pointers[0].clientY;
 
-    var changeX = Math.abs(e.clientX - currentCoords.x);
-    var changeY = Math.abs(e.clientY - currentCoords.y);
+        $('#gameContainer').css('cursor', 'move');
+    }else if(e.type === 'panend'){
+        $('#gameContainer').css('cursor', 'default');
 
-    if (fullOnPanning && !panning) {
+
+    };
+
+    var changeX = Math.abs(e.pointers[0].clientX - currentCoords.x);
+    var changeY = Math.abs(e.pointers[0].clientY - currentCoords.y);
+
+  /*  if (fullOnPanning && !panning) {
         fullOnPanning = false;
         scene.load(level, ctxB, zoom);  //Reload, possible fix dragging bug
-    }
+    }*/
 
-    if (fullOnPanning || (panning && (changeY > pixelChangeForPan || changeX > pixelChangeForPan))) {
+    //if (fullOnPanning || (panning && (changeY > pixelChangeForPan || changeX > pixelChangeForPan))) {
 
-        if(e.ctrlKey){
+        if(e.pointers[0].ctrlKey){
             //console.log('ctrl down');
             selectMulti(e.clientX, e.clientY, currentCoords.x, currentCoords.y);
             wasCtrl = true;
@@ -22,23 +32,23 @@
 
 
         else{
-            backgroundOffset.x += (e.clientX - currentCoords.x) / zoom;
-            backgroundOffset.y += (e.clientY - currentCoords.y) / zoom;
 
-            currentCoords.x = e.clientX;
-            currentCoords.y = e.clientY;
-            if ($('#gameContainer').css('cursor') != 'move') {
-                $('#gameContainer').css('cursor', 'move');
-            }
-            fullOnPanning = true;
+            backgroundOffset.x += (e.pointers[0].clientX - currentCoords.x) / zoom;
+            backgroundOffset.y += (e.pointers[0].clientY - currentCoords.y) / zoom;
+
+
+            currentCoords.x = e.pointers[0].clientX;
+            currentCoords.y = e.pointers[0].clientY;
+
+            //fullOnPanning = true;
         }
-        click = false;
+        //click = false;
 
-    } 
+    //} 
 
-    else {
+   /* else {
        click = true;  //This means it was a quick click
-    }
+    }*/
 
 }
 function createVector(panTime, oldCoords, newCoords){
@@ -87,7 +97,7 @@ function releasePressMap(e, mobile) {
         wasCtrl = false;
     }
     if(click){
-        clickGameContainer(e);
+        //clickGameContainer(e);
     }
 
 }
@@ -95,6 +105,7 @@ function releasePressMap(e, mobile) {
 function pressMap(e, mobile) {
    /* console.log("on Press: ");
     console.log(backgroundOffset);*/
+    console.log('clicking');
 
     var d = new Date;
     panTime = d.getTime();
@@ -135,10 +146,9 @@ function entityIsSelected(){
 	return selectedEntities;
 }
 function clickGameContainer(e){
-
    // console.time('clickGameContainer');
-      var x = ~~(e.clientX / zoom -  backgroundOffset.x);  //size/2 shifts everything from top left corner to center
-      var y = ~~(e.clientY / zoom -  backgroundOffset.y);
+    var x = ~~(e.pointers[0].clientX / zoom -  backgroundOffset.x);  //size/2 shifts everything from top left corner to center
+    var y = ~~(e.pointers[0].clientY / zoom -  backgroundOffset.y);
 
     var entityAtClick = entityIsThere(x, y);
     if(entityAtClick && !entityAtClick.dead && entityAtClick.playerId === playerId){ 
