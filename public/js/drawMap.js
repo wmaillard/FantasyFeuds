@@ -225,12 +225,12 @@ function zoomURL(url, scale){
 	return newURL
 
 }
-function clearURLImages(tiles){
+function clearURLImages(tiles, currentZoomR){
 	for(var i in tiles.url){
 		if(tiles.img[i]){
 			tiles.img[i] = null;
 		}
-		tiles.url[i] = zoomURL(tiles.url[i], '0.25');
+		tiles.url[i] = zoomURL(tiles.url[i], currentZoomR);
 	}
 
 }
@@ -239,10 +239,30 @@ function drawFromArray(layerName, rows, columns){
 
 
 	var saveZoom = zoom;
-	if(zoom < 0.25 && currentZoomResolution !== '0.25'){
-		clearURLImages(scene.tiles['tile']);
+	if(zoom > 0.5 && currentZoomResolution !== '1.0'){
+		clearURLImages(scene.tiles['tile'], '1.0');
+		currentZoomResolution = '1.0';
+	}
+	else if(zoom <= 0.5 && zoom > 0.25 && currentZoomResolution !== '0.5'){
+		clearURLImages(scene.tiles['tile'], '0.5');
+		currentZoomResolution = '0.5';
+	}
+	else if(zoom <= 0.25 && zoom > 0.1 && currentZoomResolution !== '0.25'){
+		clearURLImages(scene.tiles['tile'], '0.25');
 		currentZoomResolution = '0.25';
 	}
+
+	else if(zoom <= 0.1 && zoom > 0.05 && currentZoomResolution !== '0.1'){
+		clearURLImages(scene.tiles['tile'], '0.1');
+		currentZoomResolution = '0.1';
+	}
+	else if(zoom <= 0.05 && currentZoomResolution !== '0.05'){
+		clearURLImages(scene.tiles['tile'], '0.05');
+		currentZoomResolution = '0.05';
+	}
+
+
+
 	/*if(zoom < 0.25){
 		zoom += 1;
 	}*/
@@ -320,7 +340,7 @@ function drawFromArray(layerName, rows, columns){
 			var offset = {x : 0, y : 0};
 
 			if(firstX){
-				offset.x = (Math.abs(backgroundOffset.x)) % colWidth;  //Start cutting the 1st column of canvas's at offset.x
+				offset.x = (Math.abs(backgroundOffset.x)) % colWidth ;  //Start cutting the 1st column of canvas's at offset.x
 				
 			}
 			if(firstY){
@@ -351,7 +371,7 @@ function drawFromArray(layerName, rows, columns){
 			}
 				var img = new Image;
 				img.onload = function(){
-					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+					scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
 				};
 				img.src = scene.tiles[layerName].url[i];
 				scene.tiles[layerName].img[i] = img;
@@ -359,11 +379,11 @@ function drawFromArray(layerName, rows, columns){
 				var img = scene.tiles[layerName].img[i];
 				if(!img.complete){  //If the image was created but isn't loaded, override the onload function
 					img.onload = function(){
-						scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+						scene.context.drawImage(img, offset.x * currentZoomResolution , offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
 					}
 				
 				}else{
-					scene.context.drawImage(img, offset.x , offset.y, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, (colWidth - offset.x) * zoom, (rowHeight - offset.y) * zoom); //draw image from scratch canvas for better performance
+					scene.context.drawImage(img, offset.x * currentZoomResolution , offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
 				}
 			}
 

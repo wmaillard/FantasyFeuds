@@ -54,15 +54,15 @@ function zoomAction(e){
         center.x =  -e.center.x;
         center.y = -e.center.y;
         var oldZoom = zoom;
-       if(scale > 1){
+        if(scale > 1){
             scale = 1 - (1 - scale) * zoomSpeed // .9 becomes .95, 1.1 becomes 1.05
         }else{
             scale = 1 - (1 - scale) * zoomSpeed * 2
         }
         zoom *= scale;
-    	/*if(zoom < .5){
-           zoom = .5;
-        }*/
+    	if(levelWidth * size * zoom < $('#gameContainer').width() || levelHeight * size * zoom < $('#gameContainer').height()){
+			zoom = oldZoom
+        }
 
         if(zoom > 2.25){
             zoom = 2.25;
