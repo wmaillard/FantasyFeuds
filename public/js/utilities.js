@@ -11,6 +11,14 @@ function deepCloneArray(array){
   return newArray;
 }
 
+function limitBackgroundOffset(){
+
+    backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Move this to where backgroundOffset is set?
+    backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
+    $('#gameContainer').width() - backgroundOffset.x * zoom > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() / zoom - levelWidth * size : null;
+    $('#gameContainer').height()- backgroundOffset.y * zoom > levelHeight * size * zoom ? backgroundOffset.y = $('#gameContainer').height() / zoom - levelHeight * size : null;
+
+}
 
 function roughSizeOfObject( object ) {
 

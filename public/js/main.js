@@ -82,17 +82,10 @@ function zoomAction(e){
 
         backgroundOffset.x += deltaZoom * center.x / oldZoom ;
         backgroundOffset.y += deltaZoom * center.y / oldZoom;
+        limitBackgroundOffset();
         redrawBackground();
         
 
-
-        if(e.additionalEvent === 'pinchin'){
-            
-            
-        }else if(e.additionalEvent === 'pinchout'){
-
-       // alert(timesFired);
-        }
 }
 
 
@@ -373,13 +366,11 @@ var clearedF = false;
 var frameCount = 0;
 var entitiesChanged = true;
 
+
 function drawFrame() {
  	                    
-            backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Move this to where backgroundOffset is set?
-            backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
-            $('#gameContainer').width() * zoom - backgroundOffset.x * zoom > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() * zoom - levelWidth * size * zoom : null;
-            $('#gameContainer').height() * zoom - backgroundOffset.y * zoom > levelHeight * size * zoom ? backgroundOffset.y = $('#gameContainer').height() * zoom - levelHeight * size * zoom : null;
-	        // limitBackgroundOffset();
+
+	        limitBackgroundOffset();
 
 	            if (fullOnPanning) {
                      redrawBackground();
