@@ -140,6 +140,7 @@ alert('Your performance: ' + sum / 5000);*/
 	mc.get('pinch').set({ enable: true });
 
 	mc.on('pinch', function(e){
+        fullOnPanning = false;
         zoomAction(e);
     });
 

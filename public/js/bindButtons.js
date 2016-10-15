@@ -210,24 +210,18 @@ var BindButtons = {
 		    mapMove(e);
 		});
 	$("#gameContainer").on('touchstart', function(e) {
-		console.log('touchstart')
-			if(e.originalEvent.changedTouches.length === 1){
-
-
+			if(e.originalEvent.touches.length === 1){
 			    pressMap(e, true)
 			}
 		    return false;
 		}).on('touchend', function(e) {
 			console.log('touchEnd')
-			if(e.originalEvent.changedTouches.length === 1){
-
-
+			if(e.originalEvent.touches.length === 1){
 			    releasePressMap(e, true);
 			}
 		    return false;
 		}).on('touchmove', function(e) {
-			if(e.originalEvent.changedTouches.length === 1){
-
+			if(e.originalEvent.touches.length === 1){
 		    	mapMove(e, true);
 		    }
 		    return false;
