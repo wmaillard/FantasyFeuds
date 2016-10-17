@@ -260,31 +260,34 @@ function animateEntity(entity){
         
   }
 	var victim = null;
+	var current = null;
 	if(entity.attacking){
-		victim = entity.victim;
+		current = {};
+		current.x = entity.x;
+		current.y = entity.y
+		victim = {};
+		victim.x = entity.victim.x;
+		victim.y = entity.victim.y;
 	}else if(entity.walking){
-		victim = entity.nextNode;
-		victim.x *= 32;
-		victim.y *= 32;
+		victim = {};
+		victim.x = entity.nextNode.x * 32;
+		victim.y = entity.nextNode.y * 32;
+		current = {};
+		current.x = entity.previousNode.x * 32;
+		current.y = entity.previousNode.y * 32;
 		
-		if(Math.abs(victim.x - entity.x) < size / 2){
-			victim.y = entity.y
-		}
-		if(Math.abs(victim.y - entity.y) < size / 2){
-			victim.x = entity.x
-		}
 	}
-  	setDirectionFacing(entity, victim);
+  	setDirectionFacing(current, entity, victim);
 
 }
 
 
-function setDirectionFacing(entity, victim){
+function setDirectionFacing(current, entity, victim){
 
 
 
     if(victim){
-      var angle = Math.atan2(victim.y - entity.y, victim.x - entity.x); //entity x, y is the origin
+      var angle = Math.atan2(victim.y - current.y, victim.x - current.x); //entity x, y is the origin
       angle = angle * 360 / (2 * 3.1415); 
       angle < 0 ? angle = 180 - angle : null;  
     //  console.log(angle);
