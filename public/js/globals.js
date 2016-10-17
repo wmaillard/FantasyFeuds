@@ -102,3 +102,13 @@ CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidt
   if (dx  < canvasWidth && dy < canvasHeight && dx >= 0 && dy >= 0)
         this.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 }
+
+function isInWindow(x, y){
+	  if(!canvasWidth || !canvasHeight || windowResize){
+	    canvasWidth = $('#gameContainer').width();
+	    canvasHeight = $('#gameContainer').height();
+	  }
+	if(x + backgroundOffset.x < canvasWidth / zoom && y + backgroundOffset.y < canvasHeight / zoom && x + backgroundOffset.x >= 0 &&  x + backgroundOffset.y >= 0){
+		return true;
+	}else return false;
+}
