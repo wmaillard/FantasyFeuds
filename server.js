@@ -378,8 +378,12 @@ function moveEntities(entities) {
 			entity.walking = true;
 			  if(!entity.nextNode){
 				entity.nextNode = entity.path.pop();
-				entity.previousNode = entity.nextNode;  
-				setChange(entity.id, 'nextNode', entity.nextNode)
+				entity.previousNode = {};
+				  entity.previousNode.x = entity.nextNode.x;
+				  entity.previousNode.y = entity.nextNode.y;
+				setChange(entity.id, 'nextNode', entity.nextNode);
+				  setChange(entity.id, 'previousNode', entity.previousNode)
+
 			  }
 
 		  };
@@ -412,9 +416,12 @@ function moveEntities(entities) {
 			setChange(entity.id, 'y', entity.y);
 
 		  }else if(entity.path && entity.path.length > 0){
-			  entity.previousNode = entity.nextNode;
+			entity.previousNode = {};
+			entity.previousNode.x = entity.nextNode.x;
+			entity.previousNode.y = entity.nextNode.y;
 			entity.nextNode = entity.path.pop();
-			setChange(entity.id, 'nextNode', entity.nextNode)
+			setChange(entity.id, 'nextNode', entity.nextNode);
+			  setChange(entity.id, 'previousNode', entity.previousNode)
 
 
 		  }else if(Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6){
