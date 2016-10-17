@@ -84,7 +84,7 @@ function getPath(startX, startY, endX, endY, id){
 	    	//console.log(body);
 	        var pathResult = JSON.parse(body);
 			if(pathResult.length > 0){
-				addPath({id: id, heading: {x: nextX, y: nextY}, path: pathResult });	
+				addPath({id: id, heading: {x: endX, y: endY}, path: pathResult });	
 			}
 	    }else return;
 	});
