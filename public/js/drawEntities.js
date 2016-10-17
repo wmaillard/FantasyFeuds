@@ -264,6 +264,8 @@ function animateEntity(entity){
 		victim = entity.victim;
 	}else if(entity.walking){
 		victim = entity.nextNode;
+		victim.x *= 32;
+		victim.y *= 32;
 	}
   	setDirectionFacing(entity, victim);
 
