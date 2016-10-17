@@ -58,7 +58,7 @@ var scene = {
 	        	//scratchCanvas = scratchCanvas.getContext("2d");
 	        	//scratchCanvas.canvas.height = layer.height * size / rows;
 	        	//scratchCanvas.canvas.width = layer.width * size / columns;
-			var url = 'https://res.cloudinary.com/ochemaster/image/upload/c_scale,w_1.0/v1476547914/map/' + layer.name + i + '.png'
+			var url = 'https://res.cloudinary.com/ochemaster/image/upload/f_auto,fl_lossy,c_scale,w_1.0/v1476547914/map/' + layer.name + i + '.png'
 
 	        scene.tiles[layer.name].url[i] = url;
 			
@@ -213,7 +213,7 @@ function zoomURL(url, scale){
 	var newURL = "";
 	for(var i in parts){ 
 		if(i == 6){
-			newURL += ("c_scale,w_" + scale);
+			newURL += ("f_auto,fl_lossy,c_scale,w_" + scale);
 		}
 		else{
 			newURL += parts[i];
