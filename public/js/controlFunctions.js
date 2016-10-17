@@ -66,6 +66,9 @@ var oldBackgroundOffset = {};
 oldBackgroundOffset.x =    backgroundOffset.x;
 oldBackgroundOffset.y = backgroundOffset.y;
 
+
+
+//Obsolete
 function releasePressMap(e, mobile) {
     /*console.log("on release: ");
     console.log(backgroundOffset);*/
@@ -101,7 +104,7 @@ function releasePressMap(e, mobile) {
     }
 
 }
-
+//Obsolete
 function pressMap(e, mobile) {
    /* console.log("on Press: ");
     console.log(backgroundOffset);*/
@@ -217,7 +220,7 @@ function clickGameContainer(e){
 	}*/
 	setTimeout(function(){$('#gameContainer').css( 'cursor', 'default' ); }, 125);
     }
-    click = true;
+   // click = true;
 
   
     oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
@@ -282,6 +285,7 @@ function selectEntities(x, y, oldX, oldY){
     deselectAllEntities();
     entityIsThere(x, y, x + oldX, y + oldY)
 }
+//obsolete
 function switchEventToMobile(e){
         if(e.originalEvent.changedTouches && e.originalEvent.changedTouches.length === 1){
                 e = e.originalEvent.changedTouches[0];

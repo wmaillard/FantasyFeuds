@@ -5,6 +5,12 @@
 const Castles = require('./castles.js');
 const castles = Castles.castles; 
 
+const blockingTerrainFile = require('./blockingTerrain.js');
+const blockingTerrain = blockingTerrainFile.blockingTerrain;
+
+const entityInfoFile = require('./entityInfo.js');
+const entityInfo = entityInfoFile.entityInfo;
+
 const castleRadius = 2500;
 let playerCastles = {};
 
@@ -56,17 +62,41 @@ var walkingSlowDown = 0; // tracker for gaps
 var gapStep = 6; //gaps between steps;
 var playerInfo = {};
 var playerInfoChange = false;
-var levelWidth = 1600;
-var levelHeight = 2400;
+var levelWidthTiles = 1000;
+var levelHeightTiles = 1000;
+var levelWidthPixels = 1000 * 32;
+var levelHeightPixels = 1000 * 32;
 var changes = {};
 
-var entityStats = {
-  'quarry': {'attack': 0, 'cost': 0, 'value': 100, 'object': true},
-  'dwarfSoldier': {'attack': 10, 'cost' : 50, 'value' : 25},
-  'elfFemale' : {'attack' : 12, 'cost' : 75, 'value' : 35},
-  'humanSoldier' : {'attack' : 15, 'cost' : 120, 'value' : 60},
-  'orcPeon' : {'attack' : 20, 'cost' : 150, 'value' : 75}
+var request = require('request');
+//Lets try to make a HTTP GET request to modulus.io's website.
+function getPath(startX, startY, endX, endY){
+	startX = ~~startX;
+	startY = ~~startY;
+	endX = ~~endX;
+	endY = ~~endY;
+
+	request('https://aiserve.herokuapp.com/path?startX=' + startX + '&startY=' + startY +'&endX=' + endX + '&endY=' + endY, function (error, response, body) {
+	    /*console.log(error);
+	    console.log(response);*/
+	    if (!error && response.statusCode == 200) {
+	    	
+	    	console.log(body);
+	        return JSON.parse(body); // Show the HTML for the Modulus homepage.
+	    }
+	});
 }
+
+
+ function addPath(data){
+  	change = true;
+	if(allEntities[data.id]){
+		allEntities[data.id].path = data.path;
+		allEntities[data.id].heading = data.heading;
+		allEntities[data.id].attacking = false;
+	}else console.log(data.id + '. No such entity');
+	
+  }
 
 io.on('connection', (socket) => {
 	if(!playerInfo[convertId(socket.id)]){
@@ -92,13 +122,7 @@ io.on('connection', (socket) => {
   	//io.emit('ping', 'client ' + convertId(socket.id) + ' just sent me something')
   })*/
   socket.on('entityPath', (data) => {
-	change = true;
-	if(allEntities[data.id]){
-		allEntities[data.id].path = data.path;
-		allEntities[data.id].heading = data.heading;
-		allEntities[data.id].attacking = false;
-	}else console.log(data.id + '. No such entity');
-			
+		addPath(data);
   });
 			
 			
@@ -106,12 +130,13 @@ io.on('connection', (socket) => {
 	 change = true;
 	 attacks.push(data.attacks);
   });
+
 	
 	socket.on('addEntity', (data) => {
 		change = true;
-    if(playerInfo[convertId(socket.id)].gold >= entityStats[data.entity.type].cost){
+    if(playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost){
 
-        playerInfo[convertId(socket.id)].gold -= entityStats[data.entity.type].cost;
+        playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
         playerInfoChange = true;
         //console.log(playerInfo[convertId(socket.id)].gold);
 
@@ -126,14 +151,20 @@ io.on('connection', (socket) => {
   
 		   
 });
-var quar = {"attackType":"none","color":"#808080","playerId":"-1","type":"quarry","x":300,"y":487,"health":100,"directionPointing":"S","heading":{"x":292,"y":487},"attacking":false,"gore":{},"movedCount":0,"walking":true,"walkingState":0,"size":70,"height":70,"width":70,"loaded":true,"team":"red","ai":false,"selected":false,"fighting":false,"pathStart":{"x":0,"y":0},"dest":[],"pathDist":0,"path":[],"id":1475712082519,"nextNode":{"x":9,"y":15},"moved":false}
-quar = JSON.stringify(quar);
+var aiEnt = {"attackType":"none","color":"#808080","playerId":"-1","type":"quarry","x":300,"y":487,"health":100,"directionPointing":"S","heading":{"x":292,"y":487},"attacking":false,"gore":{},"movedCount":0,"walking":true,"walkingState":0,"size":70,"height":70,"width":70,"loaded":true,"team":"red","ai":false,"selected":false,"fighting":false,"pathStart":{"x":0,"y":0},"dest":[],"pathDist":0,"path":[],"id":1475712082519,"nextNode":{"x":9,"y":15},"moved":false}
+var quar = JSON.stringify(aiEnt);
 
-for(var i = 0; i < 20; i++){
+
+var hydraId; // just for testing
+/*for(var i = 0; i < 500; i++){
 
 	var newQuar = JSON.parse(quar);
-	newQuar.x = ~~(Math.random() * levelWidth);
-	newQuar.y = ~~(Math.random() * levelHeight);
+	newQuar.x = ~~(Math.random() * levelWidthPixels);
+	newQuar.y = ~~(Math.random() * levelHeightPixels);
+	while(blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]){
+		newQuar.x = ~~(Math.random() * levelWidthPixels);
+		newQuar.y = ~~(Math.random() * levelHeightPixels);
+	}
 	newQuar.heading.x = newQuar.x;
 	newQuar.heading.y = newQuar.y;
 	newQuar.nextNode.x = ~~(newQuar.x / 32)
@@ -144,6 +175,45 @@ for(var i = 0; i < 20; i++){
 
 
 }
+
+aiEnt.type = 'hydra';
+aiEnt.height = 175;
+aiEnt.width = 220;
+quar = JSON.stringify(aiEnt);
+
+for(var i = 0; i < 500; i++){
+
+	var newQuar = JSON.parse(quar);
+	newQuar.x = ~~(Math.random() * levelWidthPixels);
+	newQuar.y = ~~(Math.random() * levelHeightPixels);
+	while(blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]){
+		newQuar.x = ~~(Math.random() * levelWidthPixels);
+		newQuar.y = ~~(Math.random() * levelHeightPixels);
+	}
+	newQuar.heading.x = newQuar.x;
+	newQuar.heading.y = newQuar.y;
+	newQuar.nextNode.x = ~~(newQuar.x / 32)
+	newQuar.nextNode.y = ~~(newQuar.y / 32)
+
+	newQuar.id = Date.now() + i * 200;
+	allEntities[newQuar.id] = newQuar;
+
+
+	
+	hydraId = newQuar.id; //just for testing	
+	
+
+}
+
+var nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
+	var nextY = ~~(Math.random() * 200) + newQuar.y / 2;
+	while(blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]){
+	    nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
+	    nextY = ~~(Math.random() * 200) + newQuar.y / 2;
+	}
+addPath({id: hydraId, heading: {x: nextX, y: nextY}, path: getPath(allEntities[hydraId].x, allEntities[hydraId].y, nextX, nextY)});
+*/
+
 //var counter = 0;
 var lastAttacks = Date.now();
 var lastFullState = 0;
@@ -255,7 +325,7 @@ function applyAttacks(attacks, entities){
 	        if(allEntities[j].health > 0){
 	        	allEntities[k].victim = j;
 	        	setChange(k, 'victim', j);
-	            allEntities[j].health -= entityStats[allEntities[k].type].attack;
+	            allEntities[j].health -= entityInfo[allEntities[k].type].attack;
 	            allEntities[j].health < 0 ? allEntities[j].health = 0 : null;
 	            setChange(j, 'health', allEntities[j].health)
 	            if(allEntities[j].health <= 0){
@@ -263,7 +333,7 @@ function applyAttacks(attacks, entities){
 	              setChange(j, 'dead', true);
 	              allEntities[j].walkingState = 2;
 	              setChange(j, 'walkingState', 2);
-	              playerInfo[attack.attacker.playerId].gold += entityStats[allEntities[j].type].value;
+	              playerInfo[attack.attacker.playerId].gold += entityInfo[allEntities[j].type].value;
 	              playerInfoChange = true;
 	            }
 				//animateEntity(entities[j]); //animate victim
@@ -370,7 +440,7 @@ function moveEntities(entities) {
 	 setPlayerEntityAtCastle(entity, playerCastles);
 		
     }
-	console.log(JSON.stringify(playerCastles));
+	//console.log(JSON.stringify(playerCastles));
 	return more;
 
 	

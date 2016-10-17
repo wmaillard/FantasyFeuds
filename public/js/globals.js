@@ -71,19 +71,13 @@ var currentCoords = {
         'y': 0
     } //Mouse coordinates, these are for panning
 
-var entityNames = {
-	'quarry': {'object': true},
-	'dwarfSoldier': {'name': 'Dwarf Soldier', 'image': 'dwarfSoldierStore_o6dxmy.png', 'cost' : 50},
-	'elfFemale' : {'name' : 'Elf Female', 'image' : 'elfFemaleStore_nrmwwu.png', 'cost' : 75},
-	'humanSoldier' : {'name' : 'Human Soldier', 'image'  : 'humanSoldierStore_y97ypo.png', 'cost' : 120},
-	'orcPeon' : {'name' : 'Orc', 'image' : 'orcPeonStore_dp53w5.png', 'cost' : 150}
-}
+
 
 //  http://res.cloudinary.com/ochemaster/image/upload/w_241,c_scale/v1475040587/orcPeonStore_dp53w5.png
 //Load up entity images
-for(var entity in entityNames){
-	if(!entityNames[entity].object){
-		entityNames[entity].image = 'http://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1475040587/' + entityNames[entity].image;
+for(var entity in entityInfo){
+	if(!entityInfo[entity].object){
+		entityInfo[entity].image = 'http://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1475040587/' + entityInfo[entity].image;
 	}
 	
 	characterImages[entity] = new Image();

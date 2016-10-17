@@ -52,9 +52,10 @@ function drawEntities(entities, ctx, lock, clear) {
       if(animate){
         animateEntity(entities[entity]);
       }
-        
-        var img_x = entities[entity].walkingState * entities[entity].size;
-        var img_y = directions[entities[entity].directionPointing] * entities[entity].size;
+        var type = entities[entity].type;
+        console.log()
+        var img_x = entities[entity].walkingState * entityInfo[type].width;
+        var img_y = directions[entities[entity].directionPointing] * entityInfo[type].height;
         //animateEntity(entities[entity]);
 
 
@@ -68,17 +69,12 @@ function drawEntities(entities, ctx, lock, clear) {
         
 
 
-        //need to make isBlocked safe
-        if (false && (isBlocked(x, y) === 'wall' || isBlocked(x + 32, y) === 'wall' || isBlocked(x, y + 32) === 'wall' || isBlocked(x + 32, y + 32) === 'wall')) {
-            cutOutCharacter(newCan, characterImages.blank, img_x, img_y, entities[entity].width, entities[entity].height, entities[entity]);
-
-        } else {
 			var whichImage = entities[entity].type;
 			if(entities[entity].dead || (entities[entity].attacking && entities[entity].walkingState !== 2)){
 				whichImage += 'Pose';
 			}
           
-      cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entities[entity].size, entities[entity].size, entities[entity]);
+      cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entityInfo[type].width, entityInfo[type].height, entities[entity]);
 			if(!entities[entity].dead){  
 				drawHealthBar(entities[entity], newCan);
 			}
@@ -88,7 +84,7 @@ function drawEntities(entities, ctx, lock, clear) {
          //ctx.drawImage(newCan, 300, 200);
         //  ctx.drawImage(newCan, 0, 0, 32, 32,  x - backgroundOffset.x, y - backgroundOffset.y, 32, 32);  //This is going from 150 to 32
 
-        }
+        
 
 
 

@@ -1,0 +1,2 @@
+http://localhost:3000/path?startX=862&startY=671&endX=4043&endY=4307
+aiserver.herokuapp.com/path?startX=862&startY=671&endX=4043&endY=4307

@@ -19,25 +19,25 @@ function Entity(xyStart, health, type, playerId, color) {
 /*    this.alreadyBeen = [];
     this.alreadyBeen[this.x] = [];
     this.alreadyBeen[this.x][this.y] = true;*/
-    this.size = characterImages[this.type].height / 4;
+    this.size = characterImages[this.type].height / 4; //obsolete
 
-    this.height = characterImages[this.type].height / 4;
-    this.width = characterImages[this.type].width / 3;
+    this.height = characterImages[this.type].height / 4;//obsolete
+    this.width = characterImages[this.type].width / 3;//obsolete
 
     this.loaded = true; //Need to check if relavent
     this.team = 'red'; // red or blue
-    this.ai = false;
+    this.ai = false; //not used
     // kim add
     this.selected = false;
-    this.fighting = false;
+    this.fighting = false;  //obsolete
     this.pathStart = {};
     this.pathStart.x = 0;
     this.pathStart.y = 0;
-    this.dest = [];
-    this.dest.x = 0;
-    this.dest.y = 0;
-    this.dest.distance = 0;
-    this.pathDist = 0;
+    this.dest = []; //don't know if used
+    this.dest.x = 0;//don't know if used
+    this.dest.y = 0;//don't know if used
+    this.dest.distance = 0; //don't know if used
+    this.pathDist = 0;//don't know if used
     this.path = [];
     
 

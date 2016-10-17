@@ -10,78 +10,13 @@ var AI = {
   //https://en.wikipedia.org/wiki/A*_search_algorithm
   //10 points for adjacent node 14 for diagonal
 
-  //cNode.x, cNode.y, eNode.x, eNode.y, blockingTerrain (true && undefined is blocking)
-  drawTestDots: function(current, end, blockingTerrain, ctx){
-    var path;
-    if(!this.terrainArray){
 
-      current.GScore = 0;
 
-      var t0 = performance.now();
-
-      path = this.AStar(current, end, blockingTerrain);
-
-      this.terrainArray[end.x][end.y].color = 'lime'
-      this.terrainArray[5][5].val = 'selected';
-
-      var t1 = performance.now();
-      console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
-
-      
-    }
-
-    ctx.clearRect(0, 0, ctxI.canvas.width, ctxI.canvas.height);
-    for(var i = 0; i < this.terrainArray.length; i++){
-      for(var j = 0; j < this.terrainArray[i].length; j++){
-        var color;
-        if(this.terrainArray[i][j].color){
-          color = this.terrainArray[i][j].color;
-        }
-        else if(this.terrainArray[i][j].val === true || this.terrainArray[i][j].val === undefined){
-          color = 'red';
-        }else if(this.terrainArray[i][j].val === 'wall'){
-          color = 'lightblue'
-        }
-        else if(this.terrainArray[i][j].val === 'baseN'){
-          color = 'blue'
-        }
-        else if(this.terrainArray[i][j].val === 'baseS'){
-          color = 'violet'
-        }
-        else if(this.terrainArray[i][j].val === 'selected'){
-          color = 'deepPink'
-        }
-        else{
-          color = 'green';
-        }
-        var x = ~~((i ) * 32 + 16 + backgroundOffset.x);
-        var y = ~~((j )) * 32 + 16 + backgroundOffset.y;
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = '#003300';
-        ctx.stroke();
-      }
-    }
-    return path;
-  },
-  copyBlockingTerrain: function(blockingTerrain){
-    this.terrainArray = JSON.parse(JSON.stringify(blockingTerrain));
-    for(var i = 0; i < this.terrainArray.length; i++){
-      for(var j = 0; j < this.terrainArray[i].length; j++){
-        var val = this.terrainArray[i][j];
-        this.terrainArray[i][j] = {};
-        this.terrainArray[i][j].val = val;
-
-      }
-    }
-
-  },
   AStar: function(startNode, eNode, blockingTerrain){  //This takes about  6 ms right now, pretty good!
-
-    this.copyBlockingTerrain(blockingTerrain);
+    if(blockingTerrain[startNode.x][startNode.y] || blockingTerrain[eNode.x][eNode.y]){
+      return [];
+    }
+    this.terrainArray = blockingTerrain;
     this.closedSet = [];
     this.openSet = [];
     var cNode = startNode;
@@ -112,7 +47,7 @@ var AI = {
 
     }while(this.openSet.length > 0)
 
-
+    return [];
 
 
 
@@ -125,10 +60,7 @@ var AI = {
       coords.x = cNode.x;
       coords.y = cNode.y;
       path.push(coords);
-      this.terrainArray[cNode.x][cNode.y].color = 'yellow';
     }while(cNode = cNode.parent)
-    this.terrainArray[startNode.x][startNode.y].color = 'black';
-    this.terrainArray[endNode.x][endNode.y].color = 'black';
     return path;
   },
   addNonBlockedNeighborsToOpen: function(cNode, eNode){
@@ -136,7 +68,6 @@ var AI = {
       var nextNode = this.getNextNodeCoords(cNode, i);
       if(this.checkIfFree(nextNode) && this.findInArray(nextNode, this.closedSet) === -1){
 
-        this.terrainArray[nextNode.x][nextNode.y].color = 'blue';
         nextNode.parent = cNode;
         this.setScores(nextNode, eNode, i);
 
@@ -214,7 +145,7 @@ var AI = {
       nodeValue = undefined;
     }
     else{
-      nodeValue = this.terrainArray[nextCoords.x][nextCoords.y].val;
+      nodeValue = this.terrainArray[nextCoords.x][nextCoords.y];
     }
     if(nodeValue === true || nodeValue === undefined){
       return false;
@@ -440,3 +371,4 @@ function attackableEntities(entity, entitiesMap){
 
   
 }
+exports.AI = AI;
