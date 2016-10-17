@@ -292,10 +292,27 @@ function setDirectionFacing(current, entity, victim){
 
 
     if(victim !== null){
-      var angle = Math.atan2(victim.y - current.y, victim.x - current.x); //entity x, y is the origin
-      angle = angle * 360 / (2 * 3.1415); 
-      angle < 0 ? angle = 180 - angle : null;  
-    //  console.log(angle);
+        var angle = 90;
+	//easy calculations
+	if(current.x === entity.x){
+		if(current.y > entity.y){
+			angle = 270;
+		}else if(current.y < entity.y){
+			angle = 90;
+		}
+	}else if(current.y === entity.y){
+		if(current.x > entity.x){
+			angle = 180;
+		}else if(current.x < entity.x){
+			angle = 360;
+		}
+	}
+  	//Advanced, probably can optimize if needed.
+      else{angle = Math.atan2(victim.y - current.y, victim.x - current.x); //entity x, y is the origin
+	      angle = angle * 360 / (2 * 3.1415); 
+	      angle < 0 ? angle = 180 - angle : null;  
+	    //  console.log(angle);
+	  }
   /*
           90e
    0e       victim         180e
