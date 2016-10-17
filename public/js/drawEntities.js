@@ -292,7 +292,42 @@ function setDirectionFacing(current, entity, victim){
 
 
     if(victim !== null){
-        var angle = 90;
+	if(victim.x !== current.x || victim.y !== current.y){
+	      if(current.x === victim.x){
+		if(current.y < victim.y){
+		  entity.directionPointing = 'S';
+		}else{
+		  entity.directionPointing = 'N'
+		}
+	      }else{
+		if(current.x < victim.x){
+		  entity.directionPointing = 'E'
+		}else{
+		  entity.directionPointing = 'W';
+		}
+	      }
+	    }
+	  }
+}
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+    /*    var angle = 90;
 	//easy calculations
 	if(current.x === victim.x){
 		if(current.y > victim.y){
@@ -313,11 +348,11 @@ function setDirectionFacing(current, entity, victim){
 	      angle < 0 ? angle = 180 - angle : null;  
 	    //  console.log(angle);
 	  }
-  /*
+  
           90e
    0e       victim         180e
           270 e
-  */
+  
 
       if(angle > 45 && angle <= 135){
         entity.directionPointing = 'S';
@@ -331,7 +366,7 @@ function setDirectionFacing(current, entity, victim){
     }
 
 
-
+*/
   
   else if(entity.directionPointing !== 'S' && !entity.dead){
 	
