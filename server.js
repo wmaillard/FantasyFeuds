@@ -216,7 +216,7 @@ function addAICharacters(){
 	}
 
 }
-
+addAICharacters();
 //var counter = 0;
 var lastAttacks = Date.now();
 var lastFullState = 0;
