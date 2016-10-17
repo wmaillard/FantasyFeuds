@@ -402,7 +402,9 @@ function drawFrame() {
 		if(Date.now() > lastAnimation + 250 || serverSentFullState){
 			lastAnimation = Date.now();
 			serverSentFullState = false;
-			animateEntity(entities[entity]);
+			for(var e of entities){
+				animateEntity(e);
+			}
 		}
 
 		if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
