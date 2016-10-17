@@ -70,7 +70,7 @@ var changes = {};
 
 var request = require('request');
 //Lets try to make a HTTP GET request to modulus.io's website.
-function getPath(startX, startY, endX, endY){
+function getPath(startX, startY, endX, endY, id){
 	startX = ~~startX;
 	startY = ~~startY;
 	endX = ~~endX;
@@ -81,9 +81,12 @@ function getPath(startX, startY, endX, endY){
 	    console.log(response);*/
 	    if (!error && response.statusCode == 200) {
 	    	
-	    	console.log(body);
-	        return JSON.parse(body); // Show the HTML for the Modulus homepage.
-	    }
+	    	//console.log(body);
+	        var pathResult = JSON.parse(body);
+			if(pathResult.length > 0){
+				addPath({id: id, heading: {x: nextX, y: nextY}, path: pathResult });	
+			}
+	    }else return;
 	});
 }
 
@@ -156,7 +159,7 @@ var quar = JSON.stringify(aiEnt);
 
 
 var hydraId; // just for testing
-/*for(var i = 0; i < 500; i++){
+for(var i = 0; i < 500; i++){
 
 	var newQuar = JSON.parse(quar);
 	newQuar.x = ~~(Math.random() * levelWidthPixels);
@@ -181,7 +184,7 @@ aiEnt.height = 175;
 aiEnt.width = 220;
 quar = JSON.stringify(aiEnt);
 
-for(var i = 0; i < 500; i++){
+for(var i = 0; i < 100; i++){
 
 	var newQuar = JSON.parse(quar);
 	newQuar.x = ~~(Math.random() * levelWidthPixels);
@@ -200,10 +203,7 @@ for(var i = 0; i < 500; i++){
 
 
 	
-	hydraId = newQuar.id; //just for testing	
-	
-
-}
+	hydraId = newQuar.id; //just for testing
 
 var nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
 	var nextY = ~~(Math.random() * 200) + newQuar.y / 2;
@@ -211,8 +211,13 @@ var nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the cur
 	    nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
 	    nextY = ~~(Math.random() * 200) + newQuar.y / 2;
 	}
-addPath({id: hydraId, heading: {x: nextX, y: nextY}, path: getPath(allEntities[hydraId].x, allEntities[hydraId].y, nextX, nextY)});
-*/
+
+	getPath(allEntities[hydraId].x, allEntities[hydraId].y, nextX, nextY, hydraId);
+
+
+}
+
+
 
 //var counter = 0;
 var lastAttacks = Date.now();

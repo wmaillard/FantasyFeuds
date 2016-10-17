@@ -267,6 +267,10 @@ function animateEntity(entity){
 
 
 function setDirectionFacing(entity){
+  if(!entity.path){
+    entity.walking = false;
+  }
+
   if(entity.attacking){
 
     var victim = entities[entity.victim];
