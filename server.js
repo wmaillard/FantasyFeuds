@@ -170,8 +170,6 @@ for(var i = 0; i < 500; i++){
 	}
 	newQuar.heading.x = newQuar.x;
 	newQuar.heading.y = newQuar.y;
-	newQuar.nextNode.x = ~~(newQuar.x / 32)
-	newQuar.nextNode.y = ~~(newQuar.y / 32)
 
 	newQuar.id = Date.now() + i * 200;
 	allEntities[newQuar.id] = newQuar;
@@ -195,8 +193,6 @@ for(var i = 0; i < 100; i++){
 	}
 	newQuar.heading.x = newQuar.x;
 	newQuar.heading.y = newQuar.y;
-	newQuar.nextNode.x = ~~(newQuar.x / 32)
-	newQuar.nextNode.y = ~~(newQuar.y / 32)
 
 	newQuar.id = Date.now() + i * 200;
 	allEntities[newQuar.id] = newQuar;
