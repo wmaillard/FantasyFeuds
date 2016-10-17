@@ -302,17 +302,17 @@ function setDirectionFacing(current, entity, victim){
           270 e
   */
 
-
-      if(angle >= 45 && angle < 135){
+      if(angle > 45 && angle <= 135){
         entity.directionPointing = 'S';
-      }else if(angle >= 135 && angle < 225){
+      }else if(angle > 135 && angle <= 225){
         entity.directionPointing = 'W';
-      }else if(angle >= 225 && angle < 315){
+      }else if(angle > 225 && angle <= 315){
         entity.directionPointing = 'N';
-      }else if(angle >= 315 || angle < 45){
+      }else if(angle > 315 || angle <= 45){
         entity.directionPointing = 'E';
       }
     }
+
 
 
   
