@@ -366,7 +366,7 @@ function startLevel() {
     scene.load(level, ctxB, zoom);
 
 
-    var checkAttacks = setInterval(function(){
+ /*   var checkAttacks = setInterval(function(){
 		//var onlyPlayer = onlyPlayerEntities(entities, playerId);
 	    for(entity in entities){
             entities[entity].attacking = false;
@@ -379,7 +379,7 @@ function startLevel() {
 			attacks = [];
 		}
 
-    }, 1000 / attackRate);
+    }, 1000 / attackRate);*/
 
 
    	window.requestAnimationFrame(drawFrame);
