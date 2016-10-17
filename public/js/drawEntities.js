@@ -294,16 +294,16 @@ function setDirectionFacing(current, entity, victim){
     if(victim !== null){
         var angle = 90;
 	//easy calculations
-	if(current.x === entity.x){
-		if(current.y > entity.y){
+	if(current.x === victim.x){
+		if(current.y > victim.y){
 			angle = 270;
-		}else if(current.y < entity.y){
+		}else if(current.y < victim.y){
 			angle = 90;
 		}
-	}else if(current.y === entity.y){
-		if(current.x > entity.x){
+	}else if(current.y === victim.y){
+		if(current.x > victim.x){
 			angle = 180;
-		}else if(current.x < entity.x){
+		}else if(current.x < victim.x){
 			angle = 360;
 		}
 	}
