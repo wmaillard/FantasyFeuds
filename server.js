@@ -381,6 +381,7 @@ function moveEntities(entities) {
 			  if(!entity.nextNode){
 				entity.nextNode = entity.path.pop();
 				setChange(entity.id, 'nextNode', entity.nextNode)
+			  }
 
 		  };
 
