@@ -154,7 +154,7 @@ io.on('connection', (socket) => {
   
 		   
 });
-var aiEnt = {"attackType":"none","color":"#808080","playerId":"-1","type":"quarry","x":300,"y":487,"health":100,"directionPointing":"S","heading":{"x":292,"y":487},"attacking":false,"gore":{},"movedCount":0,"walking":true,"walkingState":0,"size":70,"height":70,"width":70,"loaded":true,"team":"red","ai":false,"selected":false,"fighting":false,"pathStart":{"x":0,"y":0},"dest":[],"pathDist":0,"path":[],"id":1475712082519,"nextNode":{"x":9,"y":15},"moved":false}
+var aiEnt = {"attackType":"none","color":"#808080","playerId":"-1","type":"quarry","x":300,"y":487,"health":100,"directionPointing":"S","heading":{"x":292,"y":487},"attacking":false,"walking":false,"walkingState":0,"size":70,"height":70,"width":70,"loaded":true,"team":"red","ai":false,"selected":false,"path":[],"id":1475712082519,"nextNode":null}
 var quar = JSON.stringify(aiEnt);
 
 
@@ -373,75 +373,72 @@ function moveEntities(entities) {
 
 		      
 
-		      var wasWalking = entity.walking;
+		  var wasWalking = entity.walking;
 
-		      entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
-		      if(entity.path && entity.path.length > 0){
-		        entity.walking = true;
+		  entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
+		  if(entity.path && entity.path.length > 0){
+			entity.walking = true;
+			  if(!entity.nextNode){
+				entity.nextNode = entity.path.pop();
+				setChange(entity.id, 'nextNode', entity.nextNode)
 
-		      };
+		  };
 
-		      if(wasWalking !== entity.walking){
-		      	setChange(entity.id, 'walking', entity.walking)
-		  		}
-
-
-	        if(entity.walking || wasWalking){
-	          entity.attacking = false;
-	          	//setChange(entity.id, 'attacking', false)
+		  if(wasWalking !== entity.walking){
+			setChange(entity.id, 'walking', entity.walking)
+			}
 
 
+		if(entity.walking || wasWalking){
+		  entity.attacking = false;
+			   more = true;
+		  if(!entity.nextNode){
+			entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
+			setChange(entity.id, 'nextNode', entity.nextNode)
+		  }else if(entity.path && entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
 
-			     // animateEntity(entity);
-		  	    //setDirectionFacing(entity);
-		 	       more = true;
-	          if(!entity.nextNode){
-	            entity.nextNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-	            setChange(entity.id, 'nextNode', entity.nextNode)
-	          }else if(entity.path && entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))){
+			if(~~(entity.x / 32) > entity.nextNode.x){
+			  entity.x -= microMove;
+			}else if (~~(entity.x / 32) < entity.nextNode.x){
+			  entity.x += microMove;
+			}
+			if(~~(entity.y / 32) > entity.nextNode.y){
+			  entity.y -= microMove;
+			}else if(~~(entity.y / 32) < entity.nextNode.y){
+			  entity.y += microMove;
+			}
 
-	            if(~~(entity.x / 32) > entity.nextNode.x){
-	              entity.x -= microMove;
-	            }else if (~~(entity.x / 32) < entity.nextNode.x){
-	              entity.x += microMove;
-	            }
-	            if(~~(entity.y / 32) > entity.nextNode.y){
-	              entity.y -= microMove;
-	            }else if(~~(entity.y / 32) < entity.nextNode.y){
-	              entity.y += microMove;
-	            }
+			setChange(entity.id, 'x', entity.x);
+			setChange(entity.id, 'y', entity.y);
 
-	            setChange(entity.id, 'x', entity.x);
-	            setChange(entity.id, 'y', entity.y);
-
-	          }else if(entity.path && entity.path.length > 0){
-	            entity.nextNode = entity.path.pop();
-	            setChange(entity.id, 'nextNode', entity.nextNode)
+		  }else if(entity.path && entity.path.length > 0){
+			entity.nextNode = entity.path.pop();
+			setChange(entity.id, 'nextNode', entity.nextNode)
 
 
-	          }else if(Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6){
+		  }else if(Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6){
 
-	            var xTooBig = Math.abs(entity.heading.x - entity.x) > 6;
-	            var yTooBig = Math.abs(entity.heading.y - entity.y) > 6;
-	            if(xTooBig && entity.x > entity.heading.x){
-	              entity.x -= microMove;
-	            }else if (xTooBig && entity.x < entity.heading.x){
-	              entity.x += microMove;
-	            }
-	            if(yTooBig && entity.y > entity.heading.y){
-	              entity.y -= microMove;
-	            }else if(yTooBig && entity.y < entity.heading.y){
-	              entity.y += microMove;
-	            }
-	            setChange(entity.id, 'x', entity.x);
-	            setChange(entity.id, 'y', entity.y);
-	            if(~~(entity.x / 32) !== entity.nextNode.x || ~~(entity.y / 32) !== entity.nextNode.y){
-	            	setChange(entity.id, 'nextNode', {x: ~~(entity.x / 32), y: ~~(entity.y / 32)});
-	            }
+			var xTooBig = Math.abs(entity.heading.x - entity.x) > 6;
+			var yTooBig = Math.abs(entity.heading.y - entity.y) > 6;
+			if(xTooBig && entity.x > entity.heading.x){
+			  entity.x -= microMove;
+			}else if (xTooBig && entity.x < entity.heading.x){
+			  entity.x += microMove;
+			}
+			if(yTooBig && entity.y > entity.heading.y){
+			  entity.y -= microMove;
+			}else if(yTooBig && entity.y < entity.heading.y){
+			  entity.y += microMove;
+			}
+			setChange(entity.id, 'x', entity.x);
+			setChange(entity.id, 'y', entity.y);
+			if(~~(entity.x / 32) !== entity.nextNode.x || ~~(entity.y / 32) !== entity.nextNode.y){
+				setChange(entity.id, 'nextNode', {x: ~~(entity.x / 32), y: ~~(entity.y / 32)});
+			}
 
-          	}
-			
-     	 }
+		}
+
+	 }
 	 setPlayerEntityAtCastle(entity, playerCastles);
 		
     }
