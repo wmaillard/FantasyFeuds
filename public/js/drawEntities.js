@@ -243,8 +243,12 @@ function drawHealthBar(entity, canvas){
 function animateEntity(entity){
   /*console.log(entity.id);
   console.log(entity.attacking);*/
-
-  if(entity.dead){
+  if(!entity.walking && !entity.attacking && entity.type !== 'quarry'){  
+      if(entitey.walkingState !== 1){
+	      entity.walkingState = 1;  
+      }
+  }
+  else if(entity.dead){
     entity.walkingState = 2;
 
   }
@@ -255,23 +259,21 @@ function animateEntity(entity){
         entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
         
   }
-  else if(!entity.walking && !entity.attacking && entity.type !== 'quarry'){  
-      entity.walkingState = 1;  
-  }
-
-  setDirectionFacing(entity);
+	var victim = null;
+	if(entity.attacking){
+		victim = entity.victim;
+	}else if(entity.walking){
+		victim = entity.nextNode;
+	}
+  	setDirectionFacing(entity, victim);
 
 }
 
 
-function setDirectionFacing(entity){
-  if(!entity.path){
-    entity.walking = false;
-  }
+function setDirectionFacing(entity, victim){
 
-  if(entity.attacking){
 
-    var victim = entities[entity.victim];
+
     if(victim){
       var angle = Math.atan2(victim.y - entity.y, victim.x - entity.x); //entity x, y is the origin
       angle = angle * 360 / (2 * 3.1415); 
@@ -291,86 +293,16 @@ function setDirectionFacing(entity){
       }else if(angle >= 225 && angle < 315){
         entity.directionPointing = 'N';
       }else if(angle >= 315 && angle < 45){
-        entity.diretionPointing = 'E';
+        entity.directionPointing = 'E';
       }
     }
 
 
-  }
-
-
-
-
-
-  else if(entity.walking && entity.path.length > 0){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    var currentNode = {x: ~~(entity.x / 32), y: ~~(entity.y / 32)};
-    var nextNode = entity.nextNode;
-    if(nextNode && nextNode.x !== currentNode.x || nextNode && nextNode.y !== currentNode.y){
-      if(currentNode.x === nextNode.x){
-        if(currentNode.y < nextNode.y){
-          entity.directionPointing = 'S';
-        }else{
-          entity.directionPointing = 'N'
-        }
-      }else{
-        if(currentNode.x < nextNode.x){
-          entity.directionPointing = 'E'
-        }else{
-          entity.directionPointing = 'W';
-        }
-      }
-    }
-  }
-  else if(!entity.dead){
-
+  
+  else if(entity.directionPointing !== 'S' && !entity.dead){
+	
     entity.directionPointing = 'S';
   }
 
 
-
-
-/* Keep this for a more fluid testing
-  if(nextNode && nextNode.x !== currentNode.x && nextNode.y !== currentNode.y){
-
-    var bPos = currentNode.y - currentNode.x;
-    var bNeg = currentNode.y + currentNode.x;
-    var yOnPos = nextNode.x + bPos;
-    var yOnNeg = -nextNode.x + bNeg;
-    if(nextNode.x < currentNode.x){
-      if(nextNode.y < yOnPos && nextNode.y > yOnNeg){
-        entity.directionPointing = 'W';
-      }
-      else if(nextNode.y < yOnNeg){
-        entity.directionPointing = 'N';
-      }
-      else{
-        entity.directionPointing = 'S'
-      }
-    }else{
-      if(nextNode.y > yOnPos && nextNode.y < yOnNeg){
-        entity.directionPointing = 'E';
-      }     
-      else if(nextNode.y < yOnPos){
-        entity.directionPointing = 'N';
-      }
-      else{
-        entity.directionPointing = 'S'
-      }
-    }
-  }*/
 }
