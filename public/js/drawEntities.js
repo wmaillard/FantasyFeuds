@@ -49,11 +49,16 @@ function drawEntities(entities, ctx, lock, clear) {
     ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
     for (var entity in entities) {
         
+
+
       if(animate){
         animateEntity(entities[entity]);
       }
         var type = entities[entity].type;
-        console.log()
+
+        if(!entityInfo[type]){
+          return;  //Takes care of race conditions when loading
+        }
         var img_x = entities[entity].walkingState * entityInfo[type].width;
         var img_y = directions[entities[entity].directionPointing] * entityInfo[type].height;
         //animateEntity(entities[entity]);

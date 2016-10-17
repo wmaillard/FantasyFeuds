@@ -16,6 +16,9 @@ var AI = {
     if(blockingTerrain[startNode.x][startNode.y] || blockingTerrain[eNode.x][eNode.y]){
       return [];
     }
+    if(Math.sqrt(Math.pow(startNode.x - eNode.x, 2) + Math.pow(startNode.y - eNode.y, 2)) > AI.distanceLimit){
+    	return [];
+    }
     this.terrainArray = blockingTerrain;
     this.closedSet = [];
     this.openSet = [];
@@ -24,10 +27,13 @@ var AI = {
     cNode.HScore = this.calcHScore(cNode, eNode);
     cNode.FScore = startNode.GScore + cNode.HScore;
     this.openSet.push(cNode);
-
+    var timeB = Date.now();
 
 
     do{
+    	if(timeB < Date.now() - 250){
+    		return []
+    	}
       cNode = this.getLowestFScore(this.openSet);
       this.addNonBlockedNeighborsToOpen(cNode, eNode);
       var index = this.findInArray(cNode, this.openSet);
@@ -371,4 +377,3 @@ function attackableEntities(entity, entitiesMap){
 
   
 }
-exports.AI = AI;

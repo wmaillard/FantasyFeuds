@@ -197,9 +197,11 @@ function clickGameContainer(e){
        			}
        			else{
        				entity.path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
-				    socket.emit('entityPath', {id : entity.id, path : entity.path, heading : entity.heading});
-                    if(entity.path && entity.path.length > 0){
+				    if(entity.path.length > 0){
+                        socket.emit('entityPath', {id : entity.id, path : entity.path, heading : entity.heading});
                         entity.walking = true;
+                    }else{
+                        console.log('no Path')
                     }
 
 
