@@ -308,7 +308,7 @@ function setDirectionFacing(current, entity, victim){
 	      }
 	    }
 	  }
-}
+
 	    
 	    
 	    
