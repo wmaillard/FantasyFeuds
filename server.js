@@ -378,6 +378,7 @@ function moveEntities(entities) {
 			entity.walking = true;
 			  if(!entity.nextNode){
 				entity.nextNode = entity.path.pop();
+				entity.previousNode = entity.nextNode;  
 				setChange(entity.id, 'nextNode', entity.nextNode)
 			  }
 
@@ -411,6 +412,7 @@ function moveEntities(entities) {
 			setChange(entity.id, 'y', entity.y);
 
 		  }else if(entity.path && entity.path.length > 0){
+			  entity.previousNode = entity.nextNode;
 			entity.nextNode = entity.path.pop();
 			setChange(entity.id, 'nextNode', entity.nextNode)
 
