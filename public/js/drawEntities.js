@@ -40,20 +40,13 @@ function drawEntities(entities, ctx, lock, clear) {
         delete attackEffects[a];
       }
     }
-    var animate = false;
-    if(Date.now() > lastAnimation + 250 || serverSentFullState){
-        lastAnimation = Date.now();
-        serverSentFullState = false;
-        animate = true;
-    }
+
     ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
     for (var entity in entities) {
         
 
 
-      if(animate){
-        animateEntity(entities[entity]);
-      }
+
         var type = entities[entity].type;
 
         if(!entityInfo[type]){
