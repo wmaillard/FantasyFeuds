@@ -266,6 +266,13 @@ function animateEntity(entity){
 		victim = entity.nextNode;
 		victim.x *= 32;
 		victim.y *= 32;
+		
+		if(Math.abs(victim.x - entity.x) > size / 2){
+			victim.y = entity.y
+		}
+		if(Math.abs(victim.y - entity.y) > size / 2){
+			victim.x = entity.x
+		}
 	}
   	setDirectionFacing(entity, victim);
 
