@@ -403,7 +403,9 @@ function drawFrame() {
 			lastAnimation = Date.now();
 			serverSentFullState = false;
 			for(var e in entities){
-				animateEntity(entities[e]);
+				if(isInWindow(entities[e]){
+					animateEntity(entities[e]);
+				}
 			}
 		}
 
