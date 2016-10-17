@@ -244,7 +244,7 @@ function animateEntity(entity){
   /*console.log(entity.id);
   console.log(entity.attacking);*/
   if(!entity.walking && !entity.attacking && entity.type !== 'quarry'){  
-      if(entitey.walkingState !== 1){
+      if(entity.walkingState !== 1){
 	      entity.walkingState = 1;  
       }
   }
