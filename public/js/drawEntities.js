@@ -273,6 +273,11 @@ function animateEntity(entity){
 		victim.x = entity.nextNode.x * 32;
 		victim.y = entity.nextNode.y * 32;
 		current = {};
+		if(!entity.previousNode){
+			entity.previousNode = {};
+			entity.previousNode.x = entity.nextNode.x;
+			entity.previousNode.y = entity.nextNode.y;
+		}
 		current.x = entity.previousNode.x * 32;
 		current.y = entity.previousNode.y * 32;
 		
