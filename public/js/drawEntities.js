@@ -39,12 +39,17 @@ function drawEntities(entities, ctx, lock, clear) {
       if(!attackEffects[a].active){
         delete attackEffects[a];
       }
-    }
-
-    ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
+    }	
+	if(!canvasWidth || !canvasHeight || windowResize){
+	    canvasWidth = $('#gameContainer').width();
+	    canvasHeight = $('#gameContainer').height();
+	  }
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     for (var entity in entities) {
         
-
+	if(!isInWindow(entities[entity].x, entities[entity].y)){
+		continue;
+	}
 
 
         var type = entities[entity].type;
