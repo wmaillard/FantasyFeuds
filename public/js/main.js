@@ -391,29 +391,25 @@ var clearedF = false;
 var frameCount = 0;
 var entitiesChanged = true;
 
+var lastAnimation = 0;
 
 function drawFrame() {
  	                    
 
 	        limitBackgroundOffset();
 
-	            if (fullOnPanning) {
-                     redrawBackground();
-        			 window.requestAnimationFrame(drawFrame);   
-        			 return true;
-	                //drawEntities(entities, ctxB, true, true);
 
-	            } else if (zoomHappened) {
-                    zoomNow(); 
-                    window.requestAnimationFrame(drawFrame);  
-        			return true;
+		if(Date.now() > lastAnimation + 250 || serverSentFullState){
+			lastAnimation = Date.now();
+			serverSentFullState = false;
+			animateEntity(entities[entity]);
+		}
 
-	            }else{
-                    if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
-                            drawEntities(entities, ctxF, true);
-                    }
-                    window.requestAnimationFrame(drawFrame); 
-            }
+		if(entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight){
+				drawEntities(entities, ctxF, true);
+		}
+		window.requestAnimationFrame(drawFrame); 
+
 
 	   
 	
