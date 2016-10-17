@@ -268,7 +268,7 @@ function animateEntity(entity){
 		victim = {};
 		victim.x = entity.victim.x;
 		victim.y = entity.victim.y;
-	}else if(entity.walking){
+	}else if(entity.walking || (entity.path && entity.path.length > 0)){
 		victim = {};
 		victim.x = entity.nextNode.x * 32;
 		victim.y = entity.nextNode.y * 32;
@@ -291,7 +291,7 @@ function setDirectionFacing(current, entity, victim){
 
 
 
-    if(victim){
+    if(victim !== null){
       var angle = Math.atan2(victim.y - current.y, victim.x - current.x); //entity x, y is the origin
       angle = angle * 360 / (2 * 3.1415); 
       angle < 0 ? angle = 180 - angle : null;  
