@@ -1,6 +1,7 @@
 
 
 "use strict"
+var = require('redis').createClient(process.env.REDIS_URL);
 
 const Castles = require('./castles.js');
 const castles = Castles.castles; 
