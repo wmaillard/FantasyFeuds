@@ -53,7 +53,7 @@ var waiting = false;
 var oldBackgroundOffset = {x: 0, y: 0};
 var attackRate = 1; //attacks checked per second
 var playerGold = 1000;
-var lastAnimation = Date.now();
+
 var serverSentFullState = false;
 
 var swipeRatio = 0.9;
