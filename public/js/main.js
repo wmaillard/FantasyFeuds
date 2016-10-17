@@ -402,8 +402,8 @@ function drawFrame() {
 		if(Date.now() > lastAnimation + 250 || serverSentFullState){
 			lastAnimation = Date.now();
 			serverSentFullState = false;
-			for(var e of entities){
-				animateEntity(e);
+			for(var e in entities){
+				animateEntity(entities[e]);
 			}
 		}
 
