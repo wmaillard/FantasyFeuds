@@ -309,7 +309,7 @@ function setDirectionFacing(current, entity, victim){
         entity.directionPointing = 'W';
       }else if(angle >= 225 && angle < 315){
         entity.directionPointing = 'N';
-      }else if(angle >= 315 && angle < 45){
+      }else if(angle >= 315 || angle < 45){
         entity.directionPointing = 'E';
       }
     }
