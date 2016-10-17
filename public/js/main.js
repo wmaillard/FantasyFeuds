@@ -392,6 +392,7 @@ var frameCount = 0;
 var entitiesChanged = true;
 
 var lastAnimation = 0;
+var animationPerSecond = 3;
 
 function drawFrame() {
  	                    
@@ -399,7 +400,7 @@ function drawFrame() {
 	        limitBackgroundOffset();
 
 
-		if(Date.now() > lastAnimation + 250 || serverSentFullState){
+		if(Date.now() > lastAnimation + 1000 / animationPerSecond || serverSentFullState){
 			lastAnimation = Date.now();
 			serverSentFullState = false;
 			for(var e in entities){
