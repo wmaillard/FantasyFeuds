@@ -222,12 +222,11 @@ addAICharacters();
 var lastAttacks = Date.now();
 var lastFullState = 0;
 var i = 0;
-setInterval(() => {
+var newString = 'hey';
 
- 	client.set("mykey","example" + i, function( err ) {
- 		client.publish('mykey', 'mykeyhappened')
- 	});
- 	i++;
+
+setInterval(() => {
+	
 
 	if(change){ 
 		  	walkingSlowDown++;
@@ -289,6 +288,11 @@ setInterval(() => {
 		io.emit('allEntities', allEntities);
 		console.log('full state')
 		lastFullState = Date.now();
+
+
+		i++;
+		var newString += i;
+		client.set('mykey', newString);
 	}
 
 	if(walkingSlowDown > gapStep){ 
