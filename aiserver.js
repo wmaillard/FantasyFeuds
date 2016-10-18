@@ -21,7 +21,7 @@ const server = express()
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 setTimeout(function(){
 	const io = require('socket.io-client');
-	var socket = pathIO('gotrtswm.herokuapp.com', {
+	var socket = io('gotrtswm.herokuapp.com', {
 	    path: '/socket.io-client',
 	    transports: ['websocket']
 	})
