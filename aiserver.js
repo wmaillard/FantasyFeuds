@@ -25,8 +25,8 @@ setTimeout(function(){
 	    path: '/socket.io-client',
 	    transports: ['websocket'],
 	})
-	pathSocket.on('connection', function(){
-		console.log('******************** AI Connected *******************');
+
+
 		pathSocket.on('pathRequest', function(data){
 			console.log('******************** Path Requested *******************');
 		var path = AI.AStar({
@@ -40,7 +40,7 @@ setTimeout(function(){
 		pathSocket.emit('path', {id:data.id, path: path});
 
 		})
-	});
+
 	}, 10000)
 
 
