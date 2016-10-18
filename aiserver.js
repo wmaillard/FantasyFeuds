@@ -24,7 +24,7 @@ const socketIO = require('socket.io');
 const io = socketIO(server);
 const pathSocket =  io.of('/path');
 
-pathSocket.connect();
+io.connect();
 
 pathSocket.on('pathRequest', function(data){
 	var path = AI.AStar({
