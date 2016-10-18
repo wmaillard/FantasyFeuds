@@ -39,7 +39,7 @@ setTimeout(function(){
 			y: ~~(data.endY / 32)
 		}, blockingTerrain);*/
 
-		pathSocket.of('/path').emit('path', { some: 'data***********' });
+		pathSocket.emit('path', { some: 'data***********' });
 
 		})
 	});
