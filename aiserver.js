@@ -21,10 +21,12 @@ const server = express()
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 setTimeout(function(){
 	const io = require('socket.io-client');
-	var pathSocket = io('gotrtswm.herokuapp.com', {
+	var socket = io('gotrtswm.herokuapp.com', {
 	    path: '/socket.io-client/path',
 	    transports: ['websocket']
 	})
+	var pathSocket = socket.of('/path');
+	
 	pathSocket.on('pathRequest', function(data){
 	var path = AI.AStar({
 		x: ~~(data.startX / 32),
