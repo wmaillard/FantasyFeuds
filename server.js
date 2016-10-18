@@ -82,7 +82,7 @@ pathSocket.on('connection', function(socket){
 
 /*******************Client Sockets ************************************/
 io.on('connection', (socket) => {
-  console.log('connected', socket);
+  //console.log('connected', socket);
   if (!playerInfo[convertId(socket.id)]) {
     playerInfo[convertId(socket.id)] = {};
   }
