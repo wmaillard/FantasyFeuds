@@ -2,8 +2,7 @@
 
 "use strict"
 var redis = require('redis');
-var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
-var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+
 
 const aiFile = require('./ai.js');
 const AI = aiFile.AI; 
@@ -21,31 +20,31 @@ const PORT = process.env.PORT || 3000;
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 
-// First subscriber listens only to events occurring for key mykey
-function subscribeIt() {
-    sub.subscribe( "mykey", itHappened);
 
-    
+
+
+
+function setPathfinding() {
+  var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+  var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+
+  sub.subscribe('getPath', function(err, reply) {
+    sub.on("message", function(channel, message) {
+      console.log("sub channel " + channel + ": " + message);
+      if (channel === 'getPath') {
+        message = JSON.parse(message);
+        var path = AI.AStar({
+          x: ~~(message.startX / 32),
+          y: ~~(message.startY / 32)
+        }, {
+          x: ~~(message.endX / 32),
+          y: ~~(message.endY / 32)
+        }, blockingTerrain);
+        pub.publish('path' + message.id, JSON.stringify(path), function(err) {});
+      }
+    });
+  });
 }
-
-var itHappened = function(err){
-      console.log(err);
-        console.log('mykey has changed');
-        pub.get("mykey", function(err, reply) {
-          // reply is null when the key is missing
-            console.log('heres the reply', reply);
-        });
-
-}
-sub.on("message", function(channel, message) {
-      console.log("Message from channel " + channel + ": " + message);
-});
-subscribeIt();
-
-sub.on('error', function(err){
-  console.log('Error', err);
-})
-
 
 
 
