@@ -16,10 +16,7 @@ const castleRadius = 2500;
 let playerCastles = {};
 
 const express = require('express');
-const socketIO = require('socket.io')(server, {
-  path: '/socket.io-client'
-});
-socketio.set('transports', ['websocket']);
+
 
 const path = require('path'); //What is this?
 var request = require('request');
@@ -30,7 +27,12 @@ const server = express()
   .use(express.static(path.join(__dirname, 'public')))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-const io = socketIO(server);
+
+const io = require('socket.io')(server, {
+  path: '/socket.io-client'
+});
+io.set('transports', ['websocket']);
+//const io = socketIO(server);
 const pathSocket = io.of('/path');
 
 var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
