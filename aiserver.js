@@ -29,15 +29,15 @@ setTimeout(function(){
 
 		pathSocket.on('pathRequest', function(data){
 			console.log('******************** Path Requested *******************');
-		var path = AI.AStar({
+		/*var path = AI.AStar({
 			x: ~~(data.startX / 32),
 			y: ~~(data.startY / 32)
 		}, {
 			x: ~~(data.endX / 32),
 			y: ~~(data.endY / 32)
-		}, blockingTerrain);
+		}, blockingTerrain);*/
 
-		pathSocket.emit('path', {id:data.id, path: path});
+		pathSocket.emit('path', 'This should be a path');
 
 		})
 
