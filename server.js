@@ -225,6 +225,7 @@ var i = 0;
 setInterval(() => {
 
  	client.set("mykey","example" + i, function( err ) {
+ 		client.publish('mykey', 'mykeyhappened')
  	});
  	i++;
 
