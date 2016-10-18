@@ -26,7 +26,11 @@ function subscribeIt() {
         console.log( "S1: received on "+channel+" event "+msg )
     });
     client.subscribe( "__keyspace@0__:mykey", function (err) {
-        console.log('mykey has changed')
+        console.log('mykey has changed');
+        client.get("mykey", function(err, reply) {
+          // reply is null when the key is missing
+            console.log('heres the reply', reply);
+        });
     });
 }
 
