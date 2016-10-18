@@ -27,6 +27,7 @@ const server = express()
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 const io = socketIO(server);
+const pathSocket = io.of('/path');
 
 var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
 
@@ -54,8 +55,17 @@ var microMove = 4;
 
 
 /********************Action Starts Here ************************/
+/*******************Worker Sockets ************************************/
+pathSocket.on('connection', function(socket){
+  console.log('someone connected'):
+  console.log(socket);
+  pathSocket.on('path', (data)=> {
+    console.log(data);
+  }
+});
 
-/*******************Sockets ************************************/
+
+/*******************Client Sockets ************************************/
 io.on('connection', (socket) => {
   if (!playerInfo[convertId(socket.id)]) {
     playerInfo[convertId(socket.id)] = {};
