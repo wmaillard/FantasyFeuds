@@ -1,7 +1,6 @@
 "use strict"
 var redis = require('redis');
-var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
-var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+
 
 //var client = require('redis').createClient('http://localhost:6379');
 const Castles = require('./castles.js');
@@ -54,67 +53,9 @@ var microMove = 4;
 
 
 
-function setPlayerEntityAtCastle(e, playerCastles) {
+/********************Action Starts Here ************************/
 
-  var rx = castleRadius / 2.5;
-  var ry = castleRadius / 3;
-  for (var c in castles) {
-    //Within the ellipse http://math.stackexchange.com/questions/76457/check-if-a-point-is-within-an-ellipse
-    if (e.playerId != -1 && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1) {
-      if (!playerCastles[e.playerId]) {
-        playerCastles[e.playerId] = {};
-      }
-      if (!playerCastles[e.playerId].castles) {
-        playerCastles[e.playerId].castles = {};
-      }
-      if (!playerCastles[e.playerId].castles[c]) {
-        playerCastles[e.playerId].castles[c] = []
-      }
-      playerCastles[e.playerId].castles[c].push(e.id);
-
-    }
-
-  }
-
-}
-
-function getPath(startX, startY, endX, endY, id) {
-  startX = ~~startX;
-  startY = ~~startY;
-  endX = ~~endX;
-  endY = ~~endY;
-
-  request('https://aiserve.herokuapp.com/path?startX=' + startX + '&startY=' + startY + '&endX=' + endX + '&endY=' + endY, function(error, response, body) {
-    /*console.log(error);
-    console.log(response);*/
-    if (!error && response.statusCode == 200) {
-
-      //console.log(body);
-      var pathResult = JSON.parse(body);
-      if (pathResult.length > 0) {
-        addPath({
-          id: id,
-          heading: {
-            x: endX,
-            y: endY
-          },
-          path: pathResult
-        });
-      }
-    } else return;
-  });
-}
-
-function addPath(data) {
-  change = true;
-  if (allEntities[data.id]) {
-    allEntities[data.id].path = data.path;
-    allEntities[data.id].heading = data.heading;
-    allEntities[data.id].attacking = false;
-  } else console.log(data.id + '. No such entity');
-
-}
-
+/*******************Sockets ************************************/
 io.on('connection', (socket) => {
   if (!playerInfo[convertId(socket.id)]) {
     playerInfo[convertId(socket.id)] = {};
@@ -153,6 +94,145 @@ io.on('connection', (socket) => {
   });
 
 });
+
+
+/*******************Server Actions ************************************/
+
+addAICharacters();
+
+setInterval(() => {
+
+  if (change) {
+    walkingSlowDown++;
+
+    /*for(var i in playerInfo){
+    	console.log(i + ': ' + playerInfo[i].gold + ' gold')
+    }*/
+    /*console.log(counter + '. ' +process.hrtime());
+    counter++;*/
+    change = false;
+
+    /*console.log('User Entities: ');
+    console.log(userEntities);*/
+
+    //console.log(attacks);
+
+    if (attacks.length > 0) {
+      applyAttacks(attacks, allEntities);
+
+    }
+    if (Date.now() > lastAttacks + 1000) {
+      //console.log('clearing');
+
+      lastAttacks = Date.now();
+
+    } else {
+      change = true;
+    }
+
+    var maybeChange = moveEntities(allEntities);
+    if (!change) {
+      change = maybeChange;
+    }
+
+    if (!(Object.keys(changes).length === 0 && changes.constructor === Object)) {
+      io.emit('changes', changes);
+
+    }
+    changes = {};
+
+    if (playerInfoChange) {
+      io.emit('playerInfo', playerInfo);
+      playerInfoChange = false;
+    }
+
+  }
+  if (Date.now() > lastFullState + 1000) {
+    io.emit('allEntities', allEntities);
+    console.log('full state')
+    lastFullState = Date.now();
+  }
+
+  if (walkingSlowDown > gapStep) {
+    walkingSlowDown = 0;
+  }
+
+}, 1000 / tickRate);
+
+
+
+
+
+/******************Function Definition ************************************/
+
+function setPlayerEntityAtCastle(e, playerCastles) {
+
+  var rx = castleRadius / 2.5;
+  var ry = castleRadius / 3;
+  for (var c in castles) {
+    //Within the ellipse http://math.stackexchange.com/questions/76457/check-if-a-point-is-within-an-ellipse
+    if (e.playerId != -1 && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1) {
+      if (!playerCastles[e.playerId]) {
+        playerCastles[e.playerId] = {};
+      }
+      if (!playerCastles[e.playerId].castles) {
+        playerCastles[e.playerId].castles = {};
+      }
+      if (!playerCastles[e.playerId].castles[c]) {
+        playerCastles[e.playerId].castles[c] = []
+      }
+      playerCastles[e.playerId].castles[c].push(e.id);
+
+    }
+
+  }
+
+}
+
+function getPath(startX, startY, endX, endY, id) {
+  var coords = {
+    startX: ~~startX,
+    startY: ~~startY,
+    endX: ~~endX,
+    endY: ~~endY,
+    id: id
+  }
+
+  //request('https://aiserve.herokuapp.com/path?startX=' + startX + '&startY=' + startY + '&endX=' + endX + '&endY=' + endY, function(error, response, body) {
+  var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+  var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+
+  pub.publish('requestPath', JSON.stringify(coords), function(err) {
+    sub.subscribe('path' + id, function(err, reply) {
+      sub.on("message", function(channel, message) {
+        console.log("sub channel " + channel + ": " + message);
+        if (channel === 'path' + id) {
+          addPath({
+            id: id,
+            heading: {
+              x: endX,
+              y: endY
+            },
+            path: message
+          });
+          sub.unsubscribe();
+          sub.quit();
+          pub.quit();
+        }
+      });
+    });
+  })
+}
+
+function addPath(data) {
+  change = true;
+  if (allEntities[data.id]) {
+    allEntities[data.id].path = data.path;
+    allEntities[data.id].heading = data.heading;
+    allEntities[data.id].attacking = false;
+  } else console.log(data.id + '. No such entity');
+
+}
 
 function addAICharacters() {
   var aiEnt = {
@@ -238,81 +318,9 @@ function addAICharacters() {
 }
 
 
-/********************Action Starts Here ************************/
-addAICharacters();
 
-setInterval(() => {
 
-  if (change) {
-    walkingSlowDown++;
 
-    /*for(var i in playerInfo){
-    	console.log(i + ': ' + playerInfo[i].gold + ' gold')
-    }*/
-    /*console.log(counter + '. ' +process.hrtime());
-    counter++;*/
-    change = false;
-
-    /*console.log('User Entities: ');
-    console.log(userEntities);*/
-
-    //console.log(attacks);
-
-    if (attacks.length > 0) {
-      applyAttacks(attacks, allEntities);
-
-    }
-    if (Date.now() > lastAttacks + 1000) {
-      //console.log('clearing');
-
-      lastAttacks = Date.now();
-
-    } else {
-      change = true;
-      /*for(var e in allEntities){
-      	if(allEntities[e].attacking){
-      		animateEntity(allEntities[e]);
-      	}
-      }*/
-
-    }
-
-    var maybeChange = moveEntities(allEntities);
-    if (!change) {
-      change = maybeChange;
-    }
-
-    if (!(Object.keys(changes).length === 0 && changes.constructor === Object)) {
-      io.emit('changes', changes);
-
-    }
-    changes = {};
-
-    if (playerInfoChange) {
-      io.emit('playerInfo', playerInfo);
-      playerInfoChange = false;
-    }
-
-  }
-  if (Date.now() > lastFullState + 1000) {
-    io.emit('allEntities', allEntities);
-    console.log('full state')
-    lastFullState = Date.now();
-
-    i++;
-    newString += i;
-    if (i % 2) {
-      pub.publish('mykey', 'yo it happened yo')
-      pub.set('mykey', newString);
-      console.log('published', newString);
-    }
-  }
-
-  if (walkingSlowDown > gapStep) {
-    walkingSlowDown = 0;
-  }
-
-}, 1000 / tickRate);
 
 function clearAttacks(entities) {
   for (var e in entities) {
