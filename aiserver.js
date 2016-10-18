@@ -20,11 +20,11 @@ const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-const socketIO = require('socket.io-client');
-const io = socketIO(server);
-const pathSocket =  io.of('/path');
-
-pathSocket.connect('localhost:'+ PORT, {reconnect: true});
+const io = require('socket.io-client');
+var pathSocket = io('gotrtswm.herokuapp.com', {
+    path: '/socket.io-client/path'
+    transports: ['websocket']
+})
 
 pathSocket.on('pathRequest', function(data){
 	var path = AI.AStar({
