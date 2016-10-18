@@ -26,11 +26,6 @@ setTimeout(function(){
 	    transports: ['websocket'],
 	})
 	
-	const ioEmit = require('socket.io-emitter');
-	var emitter = ioEmit('gotrtswm.herokuapp.com', {
-	    path: '/socket.io-emitter',
-	    transports: ['websocket'],
-	})
 
 	pathSocket.on('connect', function(){
 		pathSocket.on('pathRequest', function(data){
