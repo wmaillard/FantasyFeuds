@@ -57,7 +57,7 @@ var microMove = 4;
 /********************Action Starts Here ************************/
 /*******************Worker Sockets ************************************/
 pathSocket.on('connection', function(socket){
-  console.log('someone connected'):
+  console.log('someone connected');
   console.log(socket);
   pathSocket.on('path', (data)=> {
     console.log(data);
