@@ -64,9 +64,18 @@ var microMove = 4;
 /*******************Worker Sockets ************************************/
 pathSocket.on('connection', function(socket){
   console.log('someone connected');
-  console.log(socket);
+  //console.log(socket);
+    var coords = {
+    startX: 1501,
+    startY: 1722,
+    endX: 1256,
+    endY: 1865,
+    id: 123321
+  }
+  
+  pathSocket.emit('pathRequest', coords);
   pathSocket.on('path', (data)=> {
-    console.log(data);
+    //console.log(data);
   });
 });
 
@@ -214,7 +223,7 @@ function getPath(startX, startY, endX, endY, id) {
     endY: ~~endY,
     id: id
   }
-  pathSocket.emit('pathRequest', coords);
+ // pathSocket.emit('pathRequest', coords);
 
   //request('https://aiserve.herokuapp.com/path?startX=' + startX + '&startY=' + startY + '&endX=' + endX + '&endY=' + endY, function(error, response, body) {
 /*  var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
