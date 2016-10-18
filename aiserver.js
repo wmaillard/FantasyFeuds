@@ -25,6 +25,12 @@ setTimeout(function(){
 	    path: '/socket.io-client',
 	    transports: ['websocket'],
 	})
+	
+	const ioEmit = require('socket.io-emitter');
+	var emitter = ioEmit('gotrtswm.herokuapp.com', {
+	    path: '/socket.io-emitter',
+	    transports: ['websocket'],
+	})
 
 	pathSocket.on('connect', function(){
 		pathSocket.on('pathRequest', function(data){
@@ -38,7 +44,7 @@ setTimeout(function(){
 			y: ~~(data.endY / 32)
 		}, blockingTerrain);*/
 
-		pathSocket.emit('path', 'This should be a path', function(err){
+		emitter.of('/path').emit('path', 'This should be a path', function(err){
 			console.log('Emitted');
 			if(err) console.log(err);
 		});
