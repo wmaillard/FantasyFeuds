@@ -39,10 +39,7 @@ setTimeout(function(){
 			y: ~~(data.endY / 32)
 		}, blockingTerrain);*/
 
-		pathsocket.of('/path').emit('path', 'This should be a path', function(err){
-			console.log('Emitted');
-			if(err) console.log(err);
-		});
+		pathSocket.of('/path').emit('path', { some: 'data***********' });
 
 		})
 	});
