@@ -20,7 +20,8 @@ const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 
 const socketIO = require('socket.io');
-const pathSocket =  socketIO(server).of('/path');
+const io = socketIO(server);
+const pathSocket =  io.of('/path');
 
 
 pathSocket.on('pathRequest', function(data){
