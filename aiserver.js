@@ -26,7 +26,7 @@ setTimeout(function(){
 	    transports: ['websocket'],
 	})
 
-
+	pathSocket.on('connect', function(){
 		pathSocket.on('pathRequest', function(data){
 			console.log('******************** Path Requested *******************');
 			console.log(pathSocket)
@@ -38,9 +38,13 @@ setTimeout(function(){
 			y: ~~(data.endY / 32)
 		}, blockingTerrain);*/
 
-		pathSocket.emit('path', 'This should be a path');
+		pathSocket.emit('path', 'This should be a path', function(err){
+			console.log('Emitted');
+			if(err) console.log(err);
+		});
 
 		})
+	});
 
 	}, 10000)
 
