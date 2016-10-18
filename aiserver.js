@@ -20,11 +20,11 @@ const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-const socketIO = require('socket.io');
+const socketIO = require('socket.io-client');
 const io = socketIO(server);
 const pathSocket =  io.of('/path');
 
-io.connect();
+pathSocket.connect();
 
 pathSocket.on('pathRequest', function(data){
 	var path = AI.AStar({
