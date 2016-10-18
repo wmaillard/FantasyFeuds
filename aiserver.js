@@ -24,7 +24,7 @@ setTimeout(function(){
 	var pathSocket = io('gotrtswm.herokuapp.com', {
 	    path: '/socket.io-client',
 	    transports: ['websocket'],
-	    Namespace: 'path'
+	    Namespace: '/path'
 	})
 	
 	pathSocket.on('pathRequest', function(data){
