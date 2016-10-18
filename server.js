@@ -61,7 +61,7 @@ pathSocket.on('connection', function(socket){
   console.log(socket);
   pathSocket.on('path', (data)=> {
     console.log(data);
-  }
+  });
 });
 
 
