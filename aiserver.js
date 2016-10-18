@@ -18,6 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
+	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 const socketIO = require('socket.io');
 const io = socketIO(server);
@@ -67,7 +68,7 @@ server.get('/path', function(req, res){
 	var path = AI.AStar({x: ~~(query.startX / 32), y: ~~(query.startY / 32)}, {x: ~~(query.endX / 32), y: ~~(query.endY / 32)}, blockingTerrain);
 	res.send(path);
 })
-server.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
 
 
 var entityStats = {
