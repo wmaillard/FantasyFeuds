@@ -94,6 +94,9 @@ io.on('connection', (socket) => {
 
   lastFullState = Date.now() - 1000 * 10 + 500;
 
+  socket.on('path', (data) => {
+    console.log('path in socket', data);
+  })
   socket.on('disconnect', () => console.log('Client disconnected'));
 
   socket.on('entityPath', (data) => {
