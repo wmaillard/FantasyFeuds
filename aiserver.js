@@ -25,7 +25,7 @@ setTimeout(function(){
 	    path: '/socket.io-client',
 	    transports: ['websocket'],
 	})
-	pathSocket.on('connect', function(){
+	pathSocket.on('connection', function(){
 		console.log('******************** AI Connected *******************');
 		pathSocket.on('pathRequest', function(data){
 			console.log('******************** Path Requested *******************');
