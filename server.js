@@ -1,7 +1,10 @@
 
 
 "use strict"
-var client = require('redis').createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+var redis = require('redis');
+var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+
 //var client = require('redis').createClient('http://localhost:6379');
 const Castles = require('./castles.js');
 const castles = Castles.castles; 
@@ -284,15 +287,19 @@ setInterval(() => {
 		}
 
 	}
-	if(Date.now() > lastFullState + 1000 * 10){
+	if(Date.now() > lastFullState + 1000){
 		io.emit('allEntities', allEntities);
 		console.log('full state')
 		lastFullState = Date.now();
 
 
 		i++;
-		var newString += i;
-		client.set('mykey', newString);
+		newString += i;
+		if(i % 2){
+			pub.publish('mykey', 'yo it happened yo')
+			pub.set('mykey', newString);
+			console.log('published', newString);
+		}
 	}
 
 	if(walkingSlowDown > gapStep){ 

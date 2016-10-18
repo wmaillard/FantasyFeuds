@@ -1,7 +1,9 @@
 
 
 "use strict"
-var client = require('redis').createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+var redis = require('redis');
+var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
 
 const aiFile = require('./ai.js');
 const AI = aiFile.AI; 
@@ -19,24 +21,30 @@ const PORT = process.env.PORT || 3000;
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 
-
 // First subscriber listens only to events occurring for key mykey
 function subscribeIt() {
-    client.on('message', function(channel, msg) {
-        console.log( "S1: received on "+channel+" event "+msg )
-    });
-    client.subscribe( "__keyspace@0__:mykey", function (err) {
+    sub.subscribe( "mykey", itHappened);
+
+    
+}
+
+var itHappened = function(err){
+      console.log(err);
         console.log('mykey has changed');
-        client.get("mykey", function(err, reply) {
+        pub.get("mykey", function(err, reply) {
           // reply is null when the key is missing
             console.log('heres the reply', reply);
         });
-    });
+
 }
-
-
+sub.on("message", function(channel, message) {
+      console.log("Message from channel " + channel + ": " + message);
+});
 subscribeIt();
 
+sub.on('error', function(err){
+  console.log('Error', err);
+})
 
 
 
