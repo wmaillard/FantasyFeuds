@@ -75,6 +75,7 @@ pathSocket.on('connection', function(socket){
   
   pathSocket.emit('pathRequest', coords);
   pathSocket.on('path', (data)=> {
+    console.log('Got a path');
     console.log(data);
   });
 });
