@@ -19,14 +19,13 @@ const PORT = process.env.PORT || 3000;
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
-
-const io = require('socket.io-client');
-var pathSocket = io('gotrtswm.herokuapp.com', {
-    path: '/socket.io-client/path',
-    transports: ['websocket']
-})
-
-pathSocket.on('pathRequest', function(data){
+setTimeout(function(){
+	const io = require('socket.io-client');
+	var pathSocket = io('gotrtswm.herokuapp.com', {
+	    path: '/socket.io-client/path',
+	    transports: ['websocket']
+	})
+	pathSocket.on('pathRequest', function(data){
 	var path = AI.AStar({
 		x: ~~(data.startX / 32),
 		y: ~~(data.startY / 32)
@@ -38,6 +37,8 @@ pathSocket.on('pathRequest', function(data){
 	pathSocket.emit('path', {id:data.id, path: path});
 	
 })
+	}, 10000)
+
 
 function setPathfinding() {
   var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
