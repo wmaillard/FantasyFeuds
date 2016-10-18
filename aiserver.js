@@ -19,6 +19,40 @@ const PORT = process.env.PORT || 3000;
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
+
+
+
+// Consumer
+
+var q = 'tasks';
+
+var url = process.env.CLOUDAMQP_URL || "amqp://localhost";
+var open = require('amqplib').connect(url);
+
+
+setTimeout(function(){
+open.then(function(conn) {
+  var ok = conn.createChannel();
+  ok = ok.then(function(ch) {
+    ch.assertQueue(q);
+    ch.consume(q, function(msg) {
+      if (msg !== null) {
+        console.log(msg.content.toString());
+        ch.ack(msg);
+      }
+    });
+  });
+  return ok;
+}).then(null, console.warn);
+
+}, 5000);
+
+
+
+
+
+
 setTimeout(function(){
 	const io = require('socket.io-client');
 	//was .com/path
