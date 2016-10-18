@@ -22,11 +22,11 @@ const server = express()
 setTimeout(function(){
 	const io = require('socket.io-client');
 	//was .com/path
-	/*var pathSocket = io('gotrtswm.herokuapp.com', {
+	var pathSocket = io('gotrtswm.herokuapp.com/path', {
 	    path: '/socket.io-client',
 	    transports: ['websocket'],
-	})*/
-	var pathSocket = io('gotrtswm.herokuapp.com/path');
+	})
+
 	
 
 	pathSocket.on('connect', function(){
