@@ -11,7 +11,6 @@ const blockingTerrainFile = require('./blockingTerrain.js');
 const blockingTerrain = blockingTerrainFile.blockingTerrain;
 
 const express = require('express');
-const socketIO = require('socket.io');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
@@ -20,9 +19,22 @@ const PORT = process.env.PORT || 3000;
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 
+const socketIO = require('socket.io');
+const pathSocket =  socketIO(server).of('/path');
 
 
-
+pathSocket.on('pathRequest', function(data){
+	var path = AI.AStar({
+		x: ~~(data.startX / 32),
+		y: ~~(data.startY / 32)
+	}, {
+		x: ~~(data.endX / 32),
+		y: ~~(data.endY / 32)
+	}, blockingTerrain);
+	
+	pathSocket.emit('path', {id:data.id, path: path});
+	
+})
 
 function setPathfinding() {
   var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
