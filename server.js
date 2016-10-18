@@ -1,8 +1,8 @@
 
 
 "use strict"
-var = require('redis').createClient(process.env.REDIS_URL);
-
+var client = require('redis').createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+//var client = require('redis').createClient('http://localhost:6379');
 const Castles = require('./castles.js');
 const castles = Castles.castles; 
 
