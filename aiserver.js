@@ -22,7 +22,7 @@ const server = express()
 
 const io = require('socket.io-client');
 var pathSocket = io('gotrtswm.herokuapp.com', {
-    path: '/socket.io-client',
+    path: '/socket.io-client/path',
     transports: ['websocket']
 })
 
