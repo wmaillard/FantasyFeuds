@@ -29,6 +29,7 @@ setTimeout(function(){
 
 		pathSocket.on('pathRequest', function(data){
 			console.log('******************** Path Requested *******************');
+			console.log(pathSocket)
 		/*var path = AI.AStar({
 			x: ~~(data.startX / 32),
 			y: ~~(data.startY / 32)
