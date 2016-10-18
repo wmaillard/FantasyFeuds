@@ -21,7 +21,7 @@ const server = express()
 
 
 // First subscriber listens only to events occurring for key mykey
-function subcribe() {
+function subscribeIt() {
     client.on('message', function(channel, msg) {
         console.log( "S1: received on "+channel+" event "+msg )
     });
@@ -31,7 +31,7 @@ function subcribe() {
 }
 
 
-subscribe();
+subscribeIt();
 
 
 
