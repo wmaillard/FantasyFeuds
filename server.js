@@ -221,9 +221,12 @@ addAICharacters();
 //var counter = 0;
 var lastAttacks = Date.now();
 var lastFullState = 0;
+var i = 0;
 setInterval(() => {
 
-
+ 	client.set("mykey","example" + i, function( err ) {
+ 	});
+ 	i++;
 
 	if(change){ 
 		  	walkingSlowDown++;
