@@ -16,7 +16,11 @@ const castleRadius = 2500;
 let playerCastles = {};
 
 const express = require('express');
-const socketIO = require('socket.io');
+const socketIO = require('socket.io')(server, {
+  path: '/socket.io-client'
+});
+socketio.set('transports', ['websocket']);
+
 const path = require('path'); //What is this?
 var request = require('request');
 
