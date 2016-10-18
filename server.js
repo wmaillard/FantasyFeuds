@@ -17,7 +17,7 @@ let playerCastles = {};
 
 const express = require('express');
 const socketIO = require('socket.io');
-const path = require('path');
+const path = require('path'); //What is this?
 var request = require('request');
 
 const PORT = process.env.PORT || 3000;
@@ -207,9 +207,10 @@ function getPath(startX, startY, endX, endY, id) {
     endY: ~~endY,
     id: id
   }
+  pathSocket.emit('pathRequest', coords);
 
   //request('https://aiserve.herokuapp.com/path?startX=' + startX + '&startY=' + startY + '&endX=' + endX + '&endY=' + endY, function(error, response, body) {
-  var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
+/*  var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
   var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
 
   pub.publish('requestPath', JSON.stringify(coords), function(err) {
@@ -231,7 +232,7 @@ function getPath(startX, startY, endX, endY, id) {
         }
       });
     });
-  })
+  })*/
 }
 
 function addPath(data) {
