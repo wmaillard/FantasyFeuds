@@ -31,9 +31,11 @@ const server = express()
 const io = require('socket.io')(server, {
   path: '/socket.io-client'
 });
+
 io.set('transports', ['websocket']);
 //const io = socketIO(server);
 const pathSocket = io.of('/path');
+
 
 var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
 
@@ -58,7 +60,7 @@ var i = 0;
 var newString = 'hey';
 var microMove = 4;
 
-/*Trying cloudamqp*/
+/*Trying cloudamqp
 var q = 'tasks';
 
 var url = process.env.CLOUDAMQP_URL || "amqp://localhost";
@@ -72,7 +74,7 @@ open.then(function(conn) {
     ch.sendToQueue(q, new Buffer('something to do'));
   });
   return ok;
-}).then(null, console.warn);
+}).then(null, console.warn);*/
 
 
 
@@ -88,13 +90,19 @@ pathSocket.on('connection', function(socket){
     endY: 1865,
     id: 123321
   }
-  
-  pathSocket.emit('pathRequest', coords);
-  pathSocket.on('path', (data)=> {
+
+  socket.on('yo', function(data){
+		console.log('bbs');
+
+	})
+  socket.on('path', (data)=> {
     console.log('Got a path');
     console.log(data);
   });
-});
+  socket.emit('pathRequest', coords);
+  
+	});
+
 
 
 /*******************Client Sockets ************************************/

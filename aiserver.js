@@ -22,7 +22,7 @@ const server = express()
 
 
 
-
+/*Trying cloudamqp
 // Consumer
 
 var q = 'tasks';
@@ -48,7 +48,7 @@ open.then(function(conn) {
 
 }, 5000);
 
-
+*/
 
 
 
@@ -56,17 +56,20 @@ open.then(function(conn) {
 setTimeout(function(){
 	const io = require('socket.io-client');
 	//was .com/path
-	var pathSocket = io('gotrtswm.herokuapp.com/path', {
+	var pathSocket = io('http://localhost:5000/path', {
 	    path: '/socket.io-client',
 	    transports: ['websocket'],
 	})
 
 	
 
-	pathSocket.on('connect', function(){
+	pathSocket.on('connect', function(socket){
+    pathSocket.emit('yo', {it: 'yoyoyu'});
+    pathSocket.emit('path', { some: 'data***********' });
+
 		pathSocket.on('pathRequest', function(data){
 			console.log('******************** Path Requested *******************');
-			console.log(pathSocket)
+      console.log(data);
 		/*var path = AI.AStar({
 			x: ~~(data.startX / 32),
 			y: ~~(data.startY / 32)
@@ -75,12 +78,11 @@ setTimeout(function(){
 			y: ~~(data.endY / 32)
 		}, blockingTerrain);*/
 
-		pathSocket.emit('path', { some: 'data***********' });
 
 		})
 	});
 
-	}, 10000)
+	}, 1000)
 
 
 function setPathfinding() {

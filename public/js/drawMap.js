@@ -58,7 +58,7 @@ var scene = {
 	        	//scratchCanvas = scratchCanvas.getContext("2d");
 	        	//scratchCanvas.canvas.height = layer.height * size / rows;
 	        	//scratchCanvas.canvas.width = layer.width * size / columns;
-			var url = 'https://res.cloudinary.com/ochemaster/image/upload/f_auto,fl_lossy,c_scale,w_1.0/v1476547914/map/' + layer.name + i + '.png'
+			var url = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/100/' + layer.name + i + '_100'+ '.png';
 
 	        scene.tiles[layer.name].url[i] = url;
 			
@@ -208,18 +208,21 @@ var scene = {
     }
 }
 function zoomURL(url, scale){
-	//scale must be string '1.0', '0.5', etc
+	//scale is 5, 10, 25, 50, 100
 	var parts = url.split("/");
 	var newURL = "";
 	for(var i in parts){ 
-		if(i == 6){
-			newURL += ("f_auto,fl_lossy,c_scale,w_" + scale);
+		if(i == 4){
+			newURL += scale;
 		}
-		else{
+		else if(i != parts.length -1){
 			newURL += parts[i];
 		}
 		if(i != parts.length - 1){
 			newURL += '/';
+		}else{
+			var splitName = parts[i].split("_");
+			newURL += (splitName[0] + '_' + scale + '.png');
 		}
 	}
 	return newURL
@@ -234,32 +237,33 @@ function clearURLImages(tiles, currentZoomR){
 	}
 
 }
-var currentZoomResolution = '1.0';
+var currentZoomResolution = 1;
+
 function drawFromArray(layerName, rows, columns){
 
 
 	var saveZoom = zoom; 
 	//Step down or up image resolutions
-	if(zoom > 0.5 && currentZoomResolution !== '1.0'){
-		clearURLImages(scene.tiles['tile'], '1.0');
-		currentZoomResolution = '1.0';
+	if(zoom > 0.5 && currentZoomResolution !== 1){
+		clearURLImages(scene.tiles['tile'], '100');
+		currentZoomResolution = 1;
 	}
-	else if(zoom <= 0.5 && zoom > 0.25 && currentZoomResolution !== '0.5'){
-		clearURLImages(scene.tiles['tile'], '0.5');
-		currentZoomResolution = '0.5';
+	else if(zoom <= 0.5 && zoom > 0.25 && currentZoomResolution !== 0.5){
+		clearURLImages(scene.tiles['tile'], '50');
+		currentZoomResolution = 0.5;
 	}
-	else if(zoom <= 0.25 && zoom > 0.1 && currentZoomResolution !== '0.25'){
-		clearURLImages(scene.tiles['tile'], '0.25');
-		currentZoomResolution = '0.25';
+	else if(zoom <= 0.25 && zoom > 0.1 && currentZoomResolution !== 0.25){
+		clearURLImages(scene.tiles['tile'], '25');
+		currentZoomResolution = 0.25;
 	}
 
-	else if(zoom <= 0.1 && zoom > 0.05 && currentZoomResolution !== '0.1'){
-		clearURLImages(scene.tiles['tile'], '0.1');
-		currentZoomResolution = '0.1';
+	else if(zoom <= 0.1 && zoom > 0.05 && currentZoomResolution !== 0.10){
+		clearURLImages(scene.tiles['tile'], '10');
+		currentZoomResolution = 0.10;
 	}
-	else if(zoom <= 0.05 && currentZoomResolution !== '0.05'){
-		clearURLImages(scene.tiles['tile'], '0.05');
-		currentZoomResolution = '0.05';
+	else if(zoom <= 0.05 && currentZoomResolution !== 0.05){
+		clearURLImages(scene.tiles['tile'], '5');
+		currentZoomResolution = 0.05;
 	}
 
 
@@ -384,7 +388,7 @@ function drawFromArray(layerName, rows, columns){
 					}
 				
 				}else{
-					scene.context.drawImage(img, offset.x * currentZoomResolution , offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
+					scene.context.drawImage(img, offset.x * currentZoomResolution , offset.y * currentZoomResolution , colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
 				}
 			}
 
