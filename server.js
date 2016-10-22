@@ -17,7 +17,7 @@ let playerCastles = {};
 
 const express = require('express');
 
-
+const socketIO = require('socket.io');
 const path = require('path'); //What is this?
 var request = require('request');
 
@@ -28,13 +28,14 @@ const server = express()
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 
-const io = require('socket.io')(server, {
+const ioWorker = require('socket.io')(server, {
   path: '/socket.io-client'
 });
 
-io.set('transports', ['websocket']);
-//const io = socketIO(server);
-const pathSocket = io.of('/path');
+ioWorker.set('transports', ['websocket']);
+
+const io = socketIO(server);
+const pathSocket = ioWorker.of('/path');
 
 
 var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
@@ -60,6 +61,9 @@ var i = 0;
 var newString = 'hey';
 var microMove = 4;
 
+var pathSocketConnection;
+var clientSocketConnection;
+
 /*Trying cloudamqp
 var q = 'tasks';
 
@@ -81,6 +85,7 @@ open.then(function(conn) {
 /********************Action Starts Here ************************/
 /*******************Worker Sockets ************************************/
 pathSocket.on('connection', function(socket){
+	pathSocketConnection = socket;
   console.log('someone connected');
   //console.log(socket);
     var coords = {
@@ -98,8 +103,8 @@ pathSocket.on('connection', function(socket){
   socket.on('path', (data)=> {
     console.log('Got a path');
     console.log(data);
+    addPath(data);
   });
-  socket.emit('pathRequest', coords);
   
 	});
 
@@ -123,8 +128,8 @@ io.on('connection', (socket) => {
   })
   socket.on('disconnect', () => console.log('Client disconnected'));
 
-  socket.on('entityPath', (data) => {
-    addPath(data);
+  socket.on('entityPathRequest', (data) => {
+  	pathSocketConnection.emit('pathRequest', data);
   });
 
   socket.on('attacks', (data) => {
@@ -152,7 +157,7 @@ io.on('connection', (socket) => {
 
 /*******************Server Actions ************************************/
 
-addAICharacters();
+//addAICharacters();
 
 setInterval(() => {
 

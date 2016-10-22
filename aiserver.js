@@ -64,19 +64,20 @@ setTimeout(function(){
 	
 
 	pathSocket.on('connect', function(socket){
-    pathSocket.emit('yo', {it: 'yoyoyu'});
-    pathSocket.emit('path', { some: 'data***********' });
 
 		pathSocket.on('pathRequest', function(data){
 			console.log('******************** Path Requested *******************');
       console.log(data);
-		/*var path = AI.AStar({
+		var path = AI.AStar({
 			x: ~~(data.startX / 32),
 			y: ~~(data.startY / 32)
 		}, {
 			x: ~~(data.endX / 32),
 			y: ~~(data.endY / 32)
-		}, blockingTerrain);*/
+		}, blockingTerrain);
+    var heading = {x : data.endX, y: data.endY}
+
+    pathSocket.emit('path', {id: data.id, path: path, heading : heading})
 
 
 		})

@@ -196,13 +196,20 @@ function clickGameContainer(e){
 					selectedEntities[i].path = AI.drawTestDots({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
        			}
        			else{
-       				entity.path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
-				    if(entity.path.length > 0){
-                        socket.emit('entityPath', {id : entity.id, path : entity.path, heading : entity.heading});
-                        entity.walking = true;
-                    }else{
-                        console.log('no Path')
-                    }
+       				//entity.path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
+                    var coords = {
+                        startX: entity.x,
+                        startY: entity.y,
+                        endX: entity.heading.x,
+                        endY: entity.heading.y,
+                        id: entity.id
+                      }
+
+
+                        socket.emit('entityPathRequest', coords);
+                        //entity.walking = true;
+                
+                    
 
 
 
