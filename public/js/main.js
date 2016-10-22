@@ -44,15 +44,38 @@ function slideMap(slope){
     }
     redrawBackground();
 }
+function convertScreenToMapPoint(x, y, zoom){ //tested, seems right
+    //screen x, y
+    var mapPoint = {x: x / zoom - backgroundOffset.x,
+                    y: y / zoom - backgroundOffset.y 
+                }
+    return mapPoint;
+}
+function mapToScreenPoint(x, y){ //tested, seems right
+    //screen x, y
+    var screenPoint = {x: x * zoom + backgroundOffset.x * zoom,
+                    y: y * zoom + backgroundOffset.y * zoom
+                }
+    return screenPoint;
+}
 
+function setBackgroundOffsetToScreenPoint(sx, sy, z1, z2){
+    //sx, sy-> screen points
+    //z1, z2 ->original and final zoom
+    var mapPoint = convertScreenToMapPoint(sx, sy, z1);
+    backgroundOffset.x = (sx - mapPoint.x * z2) / z2;
+    backgroundOffset.y = (sy - mapPoint.y * z2) / z2;
+
+
+
+}
 
 function zoomAction(e){
         // do something cool
 
         var scale = e.scale;
-        var center = {};
-        center.x =  -e.center.x;
-        center.y = -e.center.y;
+ 
+
         var oldZoom = zoom;
         if(scale > 1){
             scale = 1 - (1 - scale) * zoomSpeed // .9 becomes .95, 1.1 becomes 1.05
@@ -60,13 +83,14 @@ function zoomAction(e){
             scale = 1 - (1 - scale) * zoomSpeed * 2
         }
         zoom *= scale;
-    	if(levelWidth * size * zoom < $('#gameContainer').width() || levelHeight * size * zoom < $('#gameContainer').height()){
-			zoom = oldZoom
+    	while(levelWidth * size * zoom < $('#gameContainer').width() || levelHeight * size * zoom < $('#gameContainer').height()){
+			zoom += 0.001
         }
 
-        if(zoom > 2.25){
-            zoom = 2.25;
+        if(zoom > 3){
+            zoom = 3;
         }
+
 
         //zoomHappened = true;      
 
@@ -75,18 +99,29 @@ function zoomAction(e){
         backgroundOffset.y -= backgroundOffset.y * zoom / oldZoom;*/
 
 
+        setBackgroundOffsetToScreenPoint(e.center.x, e.center.y, oldZoom, zoom);
 
-           
-
-        var deltaZoom = zoom - oldZoom;
-
-        backgroundOffset.x += deltaZoom * center.x / oldZoom ;
-        backgroundOffset.y += deltaZoom * center.y / oldZoom;
         limitBackgroundOffset();
         redrawBackground();
         
 
 }
+
+function zoomAndCheck(center){
+    if(zoom < 2){
+        zoomAction({scale : 1.1, center : center});
+        setTimeout(zoomAndCheck(center), 1000/30);
+    }
+
+}
+
+
+function doubleClickZoom(e){
+    //console.log(e.originalEvent.clientX);
+    //console.log(convertScreenToMapPoint(e.originalEvent.clientX, e.originalEvent.clientY, zoom));
+    //setTimeout(zoomAndCheck(convertScreenToMapPoint(e.originalEvent.clientX, e.originalEvent.clientY,)), 1000/30)
+}
+
 
 
 $(function() {

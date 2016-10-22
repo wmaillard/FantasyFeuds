@@ -1,16 +1,14 @@
 var BindButtons = { 
  bindAll: function(){
 
-
+ 	$('#gameContainer').dblclick(function(e){doubleClickZoom(e)})
  	 $('#gameContainer').bind('mousewheel', function(e){
- 	 	var centerY = $('#gameContainer').height() / 2;
- 	 	var centerX = $('#gameContainer').width() / 2;
 
-        if(e.originalEvent.wheelDelta /120 > 0) {
-            zoomAction({scale: 1.10, center: {x: centerX, y: centerY}})
+        if(e.originalEvent.wheelDelta / 120 > 0) {
+            zoomAction({scale: 1.10, center: {x: e.originalEvent.clientX, y: e.originalEvent.clientY}})
         }
         else{
-            zoomAction({scale: .90, center: {x: centerX, y: centerY}})
+            zoomAction({scale: .90, center: {x: e.originalEvent.clientX, y: e.originalEvent.clientY}})
         }
     });
 
