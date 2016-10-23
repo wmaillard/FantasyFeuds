@@ -50,13 +50,13 @@ open.then(function(conn) {
 
 */
 
-
-
+var socketURL = 'https://gotrtswm.herokuapp.com/path';
+//'http://localhost:5000/path'
 
 setTimeout(function(){
 	const io = require('socket.io-client');
 	//was .com/path
-	var pathSocket = io('http://localhost:5000/path', {
+	var pathSocket = io(socketURL, {
 	    path: '/socket.io-client',
 	    transports: ['websocket'],
 	})

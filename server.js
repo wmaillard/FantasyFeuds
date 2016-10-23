@@ -106,8 +106,8 @@ pathSocket.on('connection', function(socket){
 
 	})
   socket.on('path', (data)=> {
-    console.log('Got a path');
-    console.log(data);
+    /*console.log('Got a path');
+    console.log(data);*/
     addPath(data);
   });
   
@@ -163,12 +163,16 @@ io.on('connection', (socket) => {
 
 
 /*******************Server Actions ************************************/
+var redisClient = redis.createClient(process.env.REDIS_URL);
 
 //addAICharacters();
 
 setInterval(() => {
+
+
   if (change) {
     walkingSlowDown++;
+    addAttacks();
 
     /*for(var i in playerInfo){
     	console.log(i + ': ' + playerInfo[i].gold + ' gold')
@@ -181,19 +185,25 @@ setInterval(() => {
     console.log(userEntities);*/
 
     //console.log(attacks);
-
-    if (attacks.length > 0) {
-      applyAttacks(attacks, allEntities);
-
-    }
     if (Date.now() > lastAttacks + 1000) {
-      //console.log('clearing');
-
+      redisClient.get('attacks', function(err, attacks) {
+        if (err) {
+          console.err(err);
+        }
+        attacks = JSON.parse(attacks);
+        //console.log(attacks);
+        //console.log(attacks.length);
+        if (attacks && attacks.length > 0) {
+          var val = JSON.stringify([]);
+          redisClient.set('attacks', val);
+          applyAttacks(attacks, allEntities);
+        }
+      });
       lastAttacks = Date.now();
+    }else change = true; 
 
-    } else {
-      change = true;
-    }
+
+
 
     var maybeChange = moveEntities(allEntities);
     if (!change) {
@@ -216,7 +226,6 @@ setInterval(() => {
     io.emit('allEntities', allEntities);
     console.log('full state')
     lastFullState = Date.now();
-    console.log(Attacks.entitiesMap)
 
   }
 
@@ -231,6 +240,16 @@ setInterval(() => {
 
 
 /******************Function Definition ************************************/
+
+function addAttacks(){
+	var attacks = [];
+	for (var entity in allEntities){
+		var attack = Attacks.attackableEntities(allEntities[entity], allEntities);
+		attacks.push(attack);
+	}
+	//console.log('************', attacks)
+	redisClient.set('attacks', JSON.stringify(attacks));
+}
 
 function setPlayerEntityAtCastle(e, playerCastles) {
 
@@ -397,6 +416,10 @@ function clearAttacks(entities) {
 }
 
 function setChange(entityId, key, value) {
+  change = true;
+  redisClient.set('entities', JSON.stringify(allEntities));
+
+
   if (!changes[entityId]) {
     changes[entityId] = {};
   }
@@ -410,6 +433,7 @@ function applyAttacks(attacks, entities) {
   //check if health = 0 and set dead.
 
   var attackList;
+  //console.log('attacks in applyAttacks', attacks)
   while (attackList = attacks.shift()) {
     for (var a in attackList) {
       var attack = attackList[a];
@@ -418,26 +442,29 @@ function applyAttacks(attacks, entities) {
 
       var j = attack.victim.id;
       var k = attack.attacker.id;
+      var attacking = false;
       if (allEntities[j] && allEntities[k]) {
 
-        allEntities[k].attacking = true;
+
         if (allEntities[j].health > 0) {
+          attacking = true;
           allEntities[k].victim = j;
           setChange(k, 'victim', j);
           allEntities[j].health -= entityInfo[allEntities[k].type].attack;
           allEntities[j].health < 0 ? allEntities[j].health = 0 : null;
           setChange(j, 'health', allEntities[j].health)
-          if (allEntities[j].health <= 0) {
+
+        }else{
+        	Attacks.removeFromEntityMap(allEntities[j].x, allEntities[j].y, allEntities[j].id)
             allEntities[j].dead = true;
             setChange(j, 'dead', true);
             allEntities[j].walkingState = 2;
             setChange(j, 'walkingState', 2);
             playerInfo[attack.attacker.playerId].gold += entityInfo[allEntities[j].type].value;
             playerInfoChange = true;
-          }
-          //animateEntity(entities[j]); //animate victim
-
         }
+
+        allEntities[k].attacking = attacking;
 
       }
 
