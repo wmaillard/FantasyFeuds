@@ -1,7 +1,8 @@
 var BindButtons = { 
  bindAll: function(){
 
- 	$('#gameContainer').dblclick(function(e){doubleClickZoom(e)})
+ 	$('#gameContainer').dblclick(function(e){doubleClickZoom(e)});
+ 	
  	 $('#gameContainer').bind('mousewheel', function(e){
 
         if(e.originalEvent.wheelDelta / 120 > 0) {

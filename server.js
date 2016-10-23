@@ -9,6 +9,9 @@ const castles = Castles.castles;
 const blockingTerrainFile = require('./blockingTerrain.js');
 const blockingTerrain = blockingTerrainFile.blockingTerrain;
 
+const attacksFile = require('./attacks.js');
+const Attacks = attacksFile.Attacks;
+
 const entityInfoFile = require('./entityInfo.js');
 const entityInfo = entityInfoFile.entityInfo;
 
@@ -63,6 +66,8 @@ var microMove = 4;
 
 var pathSocketConnection;
 var clientSocketConnection;
+
+
 
 /*Trying cloudamqp
 var q = 'tasks';
@@ -146,6 +151,8 @@ io.on('connection', (socket) => {
       //console.log(playerInfo[convertId(socket.id)].gold);
 
       allEntities[data.entity.id] = data.entity;
+      Attacks.setEntitiesMap(allEntities[data.entity.id], true);
+
       changes[data.entity.id] = data.entity;
 
     }
@@ -160,7 +167,6 @@ io.on('connection', (socket) => {
 //addAICharacters();
 
 setInterval(() => {
-
   if (change) {
     walkingSlowDown++;
 
@@ -210,6 +216,8 @@ setInterval(() => {
     io.emit('allEntities', allEntities);
     console.log('full state')
     lastFullState = Date.now();
+    console.log(Attacks.entitiesMap)
+
   }
 
   if (walkingSlowDown > gapStep) {
@@ -443,7 +451,11 @@ function convertId(oldId) {
 
 
 function moveEntities(entities) {
-  var more = false;
+	//NextNode is actually the current node, but called nextNode because currentNode should be derived from x, y
+	//Previous node is the previous node
+  var finalPixelFromHeading = 6;
+
+  var more = false;  //If there are still entities walking after the move, several other ways to do this, like an array of walkers
 
   //console.log(entities.length);
   playerCastles = {};
@@ -455,6 +467,7 @@ function moveEntities(entities) {
 
     entity.walking = (entity.nextNode && (Math.abs(entity.heading.x - entity.x) > 10 || Math.abs(entity.heading.y - entity.y) > 10));
     if (entity.path && entity.path.length > 0) {
+    	//if entitiy has a path
       entity.walking = true;
       if (!entity.nextNode) {
         entity.nextNode = entity.path.pop();
@@ -462,27 +475,35 @@ function moveEntities(entities) {
         entity.previousNode.x = entity.nextNode.x;
         entity.previousNode.y = entity.nextNode.y;
         setChange(entity.id, 'nextNode', entity.nextNode);
-        setChange(entity.id, 'previousNode', entity.previousNode)
+        setChange(entity.id, 'previousNode', entity.previousNode);
 
       }
 
     };
 
     if (wasWalking !== entity.walking) {
+    	//if entity has just started or just stopped walking
       setChange(entity.id, 'walking', entity.walking)
     }
+    var entityHasPath = entity.path && entity.path.length > 0 ;
+
 
     if (entity.walking || wasWalking) {
+    	//if entity is walking or just stopped walking
       entity.attacking = false;
       more = true;
       if (!entity.nextNode) {
+      	//if next node hasn't been set, it is set to the current one?
+      	//Attacks.setEntitiesMap(entity)
+
         entity.nextNode = {
           x: ~~(entity.x / 32),
           y: ~~(entity.y / 32)
         };
         setChange(entity.id, 'nextNode', entity.nextNode)
-      } else if (entity.path && entity.path.length > 0 && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))) {
-
+      } else if (entityHasPath && (entity.nextNode.x !== ~~(entity.x / 32) || entity.nextNode.y !== ~~(entity.y / 32))) {
+      	//if entity has a path and entity is not on next node yet
+      	//then move it closer to nextNode
         if (~~(entity.x / 32) > entity.nextNode.x) {
           entity.x -= microMove;
         } else if (~~(entity.x / 32) < entity.nextNode.x) {
@@ -497,18 +518,22 @@ function moveEntities(entities) {
         setChange(entity.id, 'x', entity.x);
         setChange(entity.id, 'y', entity.y);
 
-      } else if (entity.path && entity.path.length > 0) {
+      } else if (entityHasPath) {
+      	//if entity has path and already is on next node
+
+      	Attacks.setEntitiesMap(entity)
+
         entity.previousNode = {};
         entity.previousNode.x = entity.nextNode.x;
         entity.previousNode.y = entity.nextNode.y;
         entity.nextNode = entity.path.pop();
         setChange(entity.id, 'nextNode', entity.nextNode);
-        setChange(entity.id, 'previousNode', entity.previousNode)
+        setChange(entity.id, 'previousNode', entity.previousNode);
 
-      } else if (Math.abs(entity.heading.x - entity.x) > 6 || Math.abs(entity.heading.y - entity.y) > 6) {
-
-        var xTooBig = Math.abs(entity.heading.x - entity.x) > 6;
-        var yTooBig = Math.abs(entity.heading.y - entity.y) > 6;
+      } else if (Math.abs(entity.heading.x - entity.x) > finalPixelFromHeading || Math.abs(entity.heading.y - entity.y) > finalPixelFromHeading) {
+      	//if entity doens't have a path and is not cloes enough to heading;
+        var xTooBig = Math.abs(entity.heading.x - entity.x) > finalPixelFromHeading;
+        var yTooBig = Math.abs(entity.heading.y - entity.y) > finalPixelFromHeading;
         if (xTooBig && entity.x > entity.heading.x) {
           entity.x -= microMove;
         } else if (xTooBig && entity.x < entity.heading.x) {
@@ -521,11 +546,29 @@ function moveEntities(entities) {
         }
         setChange(entity.id, 'x', entity.x);
         setChange(entity.id, 'y', entity.y);
+
+
         if (~~(entity.x / 32) !== entity.nextNode.x || ~~(entity.y / 32) !== entity.nextNode.y) {
-          setChange(entity.id, 'nextNode', {
+
+
+
+          
+
+          setChange(entity.id, 'nextNode', { //what does this do?
             x: ~~(entity.x / 32),
             y: ~~(entity.y / 32)
           });
+
+
+        }else{
+
+        	//if we have moved onto nextNode
+        	Attacks.setEntitiesMap(entity)
+
+        	entity.previousNode.x = entity.nextNode.x;
+        	entity.previousNode.y = entity.nextNode.y;
+        	entity.nextNode.x = ~~(entity.x / 32);
+        	entity.nextNode.y = ~~(entity.y / 32)
         }
 
       }

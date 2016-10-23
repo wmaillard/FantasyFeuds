@@ -68,7 +68,7 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
         
-        entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);  //need to store last node and need to run this every time we get new entities with if(lastNode !== currentNode)
+       // entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);  //need to store last node and need to run this every time we get new entities with if(lastNode !== currentNode)
         
 
 
@@ -178,38 +178,7 @@ function updateEntityMap(entity, oldNode, newNode, entitiesMap){
         entitiesMap[newNode.x][newNode.y].push(entity);
     }
 }*/
-function setNodeXY(entity, entitiesMap,  entitiesLastNode){
-   
 
-    var newX = ~~(entity.x / 32);
-    var newY = ~~(entity.y / 32);
-    if(entitiesLastNode[entity.id]){
-        var oldX = entitiesLastNode[entity.id].x;
-        var oldY = entitiesLastNode[entity.id].y;  
-        var node = entitiesMap[oldX][oldY];
- 
-        if(oldX !== newX || oldY !== newY){
-            for(var i in node){
-                if(node[i] === entity.id){
-                  //  console.log('deleting some stuff')
-                    node.splice(i, 1);
-                    entitiesLastNode[entity.id] = {x: newX, y: newY};
-                    entitiesMap[newX][newY].push(entity.id);
-
-
-                }
-            }
-            return true; //moved
-        }
-        return false; //didn't move
-    }
-    else{
-        entitiesLastNode[entity.id] = {x: newX, y: newY};
-        entitiesMap[newX][newY].push(entity.id);
-        return false;
-    }
-
-}
 
 
 function drawHighlight(entity, canvas){
