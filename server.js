@@ -591,7 +591,9 @@ function moveEntities(entities) {
 
         	//if we have moved onto nextNode
         	Attacks.setEntitiesMap(entity)
-
+          if(!entity.previousNode){
+            entity.previousNode = {};
+          }
         	entity.previousNode.x = entity.nextNode.x;
         	entity.previousNode.y = entity.nextNode.y;
         	entity.nextNode.x = ~~(entity.x / 32);

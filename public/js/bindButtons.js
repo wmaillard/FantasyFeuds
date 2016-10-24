@@ -13,7 +13,24 @@ var BindButtons = {
         }
     });
 
+ 	 $('#previousEntity').click(function(){
+ 	 	$(this).toggleClass('buttonDown');
 
+ 	 	setTimeout(function(current){
+ 	 		$('#previousEntity').toggleClass('buttonDown');
+ 	 	}, 200);
+ 	 	return false;
+
+ 	 })
+ 	 $('#nextEntity').click(function(){
+ 	 	$(this).toggleClass('buttonDown');
+
+ 	 	setTimeout(function(current){
+ 	 		$('#nextEntity').toggleClass('buttonDown');
+ 	 	}, 200);
+ 	 	return false;
+ 	 	
+ 	 })
 
  	$('#showShop').click(function() {
  	    if ($('#shop').is(":visible")) {
@@ -27,9 +44,31 @@ var BindButtons = {
  	    return false;
  	});
 
+ 	$('.buy').each(function(){
+        $(this).click(function(){
+
+            boughtEntity = this.closest('.card').id;
+            if(entityInfo[boughtEntity].cost > playerGold){
+                $("#playerGold").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+            }else{
+                $('#shop').hide();
+                $('#showShop').toggleClass('buttonDown')
+        	    if ($('#bottomNav').is(":visible")) {
+		 	        $('#bottomNav').hide();
+		 	    } else $('#bottomNav').show();
+            }
+            return false;
+        })
+    })
+
 
  	$('#allEntities').click(function(){
- 		$(this).toggleClass('buttonDown')
+ 		if($(this).hasClass('buttonDown')){
+ 			deselectAllEntities();
+ 		}else{
+ 			selectAllVisiblePlayerEntities(entities, playerId);
+ 		}
+ 		$(this).toggleClass('buttonDown');
  		return false;
  	})
 

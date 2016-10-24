@@ -50,8 +50,10 @@ open.then(function(conn) {
 
 */
 
-var socketURL = 'https://gotrtswm.herokuapp.com/path';
-//'http://localhost:5000/path'
+var socketURL = 'http://localhost:5000/path';
+if(process.env.ON_HEROKU){
+  socketURL = 'https://gotrtswm.herokuapp.com/path';
+}
 
 setTimeout(function(){
 	const io = require('socket.io-client');
@@ -66,8 +68,6 @@ setTimeout(function(){
 	pathSocket.on('connect', function(socket){
 
 		pathSocket.on('pathRequest', function(data){
-			console.log('******************** Path Requested *******************');
-      console.log(data);
 		var path = AI.AStar({
 			x: ~~(data.startX / 32),
 			y: ~~(data.startY / 32)
