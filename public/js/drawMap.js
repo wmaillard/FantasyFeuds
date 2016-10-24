@@ -54,10 +54,6 @@ var scene = {
 			var size = scene.data.tilewidth;
 	        for(var i = 0; i < rows * columns; i++){
 
-			//var scratchCanvas = document.createElement("canvas");;
-	        	//scratchCanvas = scratchCanvas.getContext("2d");
-	        	//scratchCanvas.canvas.height = layer.height * size / rows;
-	        	//scratchCanvas.canvas.width = layer.width * size / columns;
 			var url = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/100/' + layer.name + i + '_100'+ '.png';
 
 	        scene.tiles[layer.name].url[i] = url;

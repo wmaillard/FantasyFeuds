@@ -12,11 +12,24 @@ function deepCloneArray(array){
 }
 
 function limitBackgroundOffset(){
-
-    backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Move this to where backgroundOffset is set?
-    backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
-    $('#gameContainer').width() - backgroundOffset.x * zoom > levelWidth * size * zoom ? backgroundOffset.x = $('#gameContainer').width() / zoom - levelWidth * size : null;
-    $('#gameContainer').height()- backgroundOffset.y * zoom > levelHeight * size * zoom ? backgroundOffset.y = $('#gameContainer').height() / zoom - levelHeight * size : null;
+    var returnValue = {x: false, y: false};
+    if(backgroundOffset.x > 0){
+        backgroundOffset.x = 0
+        returnValue.x = true;
+    }
+    if(backgroundOffset.y > 0 ){
+       backgroundOffset.y = 0;
+       returnValue.y = true; 
+    }
+    if($('#gameContainer').width() - backgroundOffset.x * zoom > levelWidth * size * zoom){
+         backgroundOffset.x = $('#gameContainer').width() / zoom - levelWidth * size;
+         returnValue.x = true;
+     }
+    if($('#gameContainer').height()- backgroundOffset.y * zoom > levelHeight * size * zoom){
+        backgroundOffset.y = $('#gameContainer').height() / zoom - levelHeight * size;
+        returnValue.y = true;
+    } 
+    return returnValue;
 
 }
 

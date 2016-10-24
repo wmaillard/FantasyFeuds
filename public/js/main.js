@@ -235,19 +235,8 @@ alert('Your performance: ' + sum / 5000);*/
     playerColor = getRandomColor();
     BindButtons.bindAll();
 
-    //add this to bindbutton eventually
-    $('.buy').each(function(){
-        $(this).click(function(){
 
-            boughtEntity = this.closest('.card').id;
-            if(entityInfo[boughtEntity].cost > playerGold){
-                $("#playerGold").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-            }else{
-                $('#shop').hide();
-            }
-            return false;
-        })
-    })
+ 
 
 
     if (Cookies.get('loggedIn') === "true") {

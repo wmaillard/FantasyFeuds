@@ -6,6 +6,7 @@ var attackEffectsLoop = false;
 var baseNHealth = 1000;
 var baseSHealth = 1000;  //this will be moved when bases are turned into entities
 var boughtEntity = null;
+var currentEntity = null;
 var canvasWidth; 
 var canvasHeight;
 var characterImages = {};

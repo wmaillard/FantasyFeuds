@@ -19,6 +19,7 @@ var BindButtons = {
  	 	setTimeout(function(current){
  	 		$('#previousEntity').toggleClass('buttonDown');
  	 	}, 200);
+ 	 	goToPreviousEntity();
  	 	return false;
 
  	 })
@@ -28,6 +29,8 @@ var BindButtons = {
  	 	setTimeout(function(current){
  	 		$('#nextEntity').toggleClass('buttonDown');
  	 	}, 200);
+ 	 	goToNextEntity();
+
  	 	return false;
  	 	
  	 })

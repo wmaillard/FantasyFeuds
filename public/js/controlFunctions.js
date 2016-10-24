@@ -316,7 +316,11 @@ function selectAllVisiblePlayerEntities(entities, playerId){
 
 }
 
-function zoomPanTo(x, y, localZoom){  //x, y is mapX, mapY
+function zoomPanTo(x, y, localZoom, limits){  //x, y is mapX, mapY
+
+    if(limits === undefined){
+        limits = {x: false, y: false}
+    }
     var point = mapToScreenPoint(x, y, localZoom);
     var midPoint = {x : canvasWidth / 2, y: canvasHeight / 2}; //This is reset on canvas reset.
     var diffX = Math.abs(midPoint.x - point.x);
@@ -325,6 +329,7 @@ function zoomPanTo(x, y, localZoom){  //x, y is mapX, mapY
     var diffChangeX = 50;
     var diffRangeY = 100;
     var diffChangeY = 50; 
+    var stuck = true;
     //We may need to look at the difference between point.x and midpoint.x when point.x is negative, currently ignoring
     while(diffX < diffRangeX && diffX > 5){
         diffRangeX /= 2;
@@ -335,14 +340,16 @@ function zoomPanTo(x, y, localZoom){  //x, y is mapX, mapY
         diffChangeY /= 2;
     }
 
-    if(diffX > 5 || point.x < 0){
+    if(!limits.x && (diffX > 5 || point.x < 0)){
+        stuck = false;
         if(midPoint.x > point.x){
             backgroundOffset.x += diffChangeX;
         }else{
             backgroundOffset.x -= diffChangeX;
         }
     }
-    if(diffY > 5 || point.y < 0){
+    if(!limits.y && (diffY > 5 || point.y < 0)){
+        stuck = false;
         if(midPoint.y > point.y){
             backgroundOffset.y += diffChangeY;
         }else{
@@ -350,23 +357,25 @@ function zoomPanTo(x, y, localZoom){  //x, y is mapX, mapY
         }
     }
     redrawBackground();
-
+    var oldPoint = point;
     point = mapToScreenPoint(x, y, zoom);
     midPoint = {x : canvasWidth / 2, y: canvasHeight / 2}; //This is reset on canvas reset.
-    var oldDiffX = diffX;
-    var oldDiffY = diffY;
+
     diffX = Math.abs(midPoint.x - point.x);
     diffY = Math.abs(midPoint.y - point.y);
 
-    var stuck = false;
-    if(diffX === oldDiffX && diffY === oldDiffY){
-        stuck = true;
+    var newLimits = limitBackgroundOffset();
+    if(newLimits.x === true){
+        limits.x = true;
     }
-    console.log('diffX:', diffX);
-    console.log('diffY:', diffY);
-    if(!stuck && (diffX > 5 || diffY > 5 || point.x < 0 || point.y < 0)){
+    if(newLimits.y === true){
+        limits.y = true;
+    }
+
+
+    if(!stuck && !(limits.x && limits.y) && (diffX > 5 || diffY > 5 || point.x < 0 || point.y < 0)){
         setTimeout(function(){
-            zoomPanTo(x, y, zoom)}, 1000 / 30);
+            zoomPanTo(x, y, zoom, limits)}, 1000 / 30);
     }else if(zoom < 1){
         setTimeout(function(){
             zoomToOne(x, y, zoom);
@@ -379,7 +388,7 @@ function zoomPanTo(x, y, localZoom){  //x, y is mapX, mapY
 
 function zoomToOne(x, y){
     var point = mapToScreenPoint(x, y);
-    zoomAction({scale: 1.10, center: point});
+    zoomAction({scale: 1.5, center: point});
     if(zoom < 1){
         setTimeout(function(){
             zoomToOne(x, y, zoom);
@@ -387,4 +396,56 @@ function zoomToOne(x, y){
     }
 
 }
+
+function goToNextEntity(){
+    var playerEntities = onlyPlayerEntities(entities, playerId);
+    var index = -1;
+    for(var i in playerEntities){
+        if(playerEntities[i].id === currentEntity){
+            index = i;
+            break;
+        }
+    }
+    if(index === -1){
+        if(playerEntities.length === 0){
+            return -1;
+        }else index = 0;
+    }
+    index++;
+    if(index === playerEntities.length){
+        index = 0;
+    }
+
+    var nextEntity = playerEntities[index];
+    currentEntity = nextEntity.id;
+
+    zoomPanTo(nextEntity.x, nextEntity.y, zoom);
+}
+
+function goToPreviousEntity(){
+    var playerEntities = onlyPlayerEntities(entities, playerId);
+    var index = -1;
+    for(var i in playerEntities){
+        if(playerEntities[i].id === currentEntity){
+            index = i;
+            break;
+        }
+    }
+    if(index === -1){
+        if(playerEntities.length === 0){
+            return -1;
+        }else index = 0;
+    }
+    index--;
+
+    if(index < 0){
+        index = playerEntities.length - 1;
+    }
+
+    var nextEntity = playerEntities[index];
+    currentEntity = nextEntity.id;
+
+    zoomPanTo(nextEntity.x, nextEntity.y, zoom);
+}
+
 
