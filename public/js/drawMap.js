@@ -65,67 +65,6 @@ var scene = {
 
 	        }
 
-        
-          /*  layer.data.forEach(function(tile_idx, i) { //draw each tile
-
-                if (tile_idx === 0) {
-                    return;
-                } //tile_idx is the id of the specific tile given by Tiled
-
-                var img_x, img_y, s_x, s_y; //nice description of these variables: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-
-                var tile = -1;
-                var tileSetIndex = 0;
-                for (tileSetIndex; tileSetIndex < scene.data.tilesets.length - 1; tileSetIndex++) {
-                    if (tile_idx >= scene.data.tilesets[tileSetIndex].firstgid && tile_idx < scene.data.tilesets[tileSetIndex + 1].firstgid) {
-                        tile = scene.data.tilesets[tileSetIndex];
-                        break;
-                    }
-                }
-
-                if (tile === -1) {
-                    tile = scene.data.tilesets[tileSetIndex];
-                }
-                tile_idx = tile_idx - tile.firstgid;
-
-     /*           img_x = (tile_idx % (tile.imagewidth / size)) * size; //pinpoint tile on x, y matrix tilesheet
-                img_y = ~~(tile_idx / (tile.imagewidth / size)) * size; //Math.floor avoids floating point blurryness, can use fancy ~~ instead
-
-                s_x = (i % layer.width) * size;
-                s_y = (~~(i / layer.width) * size);*/
-
-                //I beleive s_x, s_y is the upper left corner of a tile, so if it is in layer > 0 (check this), then
-                //s_x to s_x - size and s_y to s_y - size should be added to terrain array
-
-                /*if (layer.name !== 'Bottom' && layer.name !== 'Bridges' && firstLoad) {
-                    if (layer.name === 'Top') {
-                        blockingTerrain[(i % layer.width)][~~(i / layer.width)] = 'wall';
-                    } else if (false && layer.name === 'BaseS') {
-                        blockingTerrain[(i % layer.width)][~~(i / layer.width)] = 'BaseS';
-                    } else if (false  && layer.name === 'BaseN') {
-                        blockingTerrain[(i % layer.width)][~~(i / layer.width)] = 'BaseN';
-                    } else {
-                        if (blockingTerrain[(i % layer.width)][~~(i / layer.width)] === false) {
-                            blockingTerrain[(i % layer.width)][~~(i / layer.width)] = true;
-                        }
-                    }
-                }*/
-
-
-                //  if(s_x > $('#background').width() || s_y > $('#background').height()){return;} //outside current window, don't load
-  /*              var coord = ~~(s_x / (layer.width * size / columns) ) + columns * (~~(s_y / (layer.height * size / rows)));
-                //console.log('coord', coord)
-                
-                s_x %= (layer.width * size / columns);
-                s_y %= (layer.height * size / rows);
-
-
-
-
-                scene.layerCanvas[layer.name].canvas[coord].drawImage(scene.tileSets[tileSetIndex], img_x, img_y, size, size, s_x, s_y, size, size);
-*/
-            //});
-
 
 
         	drawFromArray(layer.name, rows, columns);
@@ -137,15 +76,6 @@ var scene = {
         } else { //if all the layers have been previously loaded, use the cache
 
             
-
-
-             /*   backgroundOffset.x > 0 ? backgroundOffset.x = 0 : backgroundOffset.x; //Make sure not to pan outside of map
-                backgroundOffset.y > 0 ? backgroundOffset.y = 0 : backgroundOffset.y;
-                (layer.width + backgroundOffset.x) / scene.zoom < canvasWidth ? backgroundOffset.x = canvasWidth * scene.zoom - layer.width : backgroundOffset.x;
-                (layer.height + backgroundOffset.y) / scene.zoom < canvasHeight ? backgroundOffset.y = canvasHeight * scene.zoom - layer.height : backgroundOffset.y;
-                */ 
-                //var i = $("<img />", {src: src})[0];
-                // //console.log(layer);
 				drawFromArray(layer.name, rows, columns);   
 	         
         

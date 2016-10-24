@@ -122,12 +122,39 @@ function doubleClickZoom(e){
     //setTimeout(zoomAndCheck(convertScreenToMapPoint(e.originalEvent.clientX, e.originalEvent.clientY,)), 1000/30)
 }
 
-
+function bottomNavCenter(){
+    var leftMargin = canvasWidth * .46  - $('#allEntities').outerWidth() / 2 - $('#previousEntity').outerWidth();
+    console.log(leftMargin);
+    $('#allEntities').css({marginLeft: leftMargin});
+}
 
 $(function() {
-	const $gameContainer = $('#gameContainer');
+
+	var $gameContainer = $('#gameContainer');
     canvasWidth = $gameContainer.width();
     canvasHeight = $gameContainer.height();
+
+    bottomNavCenter();
+
+    $( window ).resize(function() {
+        $("#background").attr("height", window.innerHeight);  //innerWidth may not be right...
+        $("#background").attr("width", window.innerWidth);
+        $("#foreground").attr("height", window.innerHeight);
+        $("#foreground").attr("width", window.innerWidth);
+        $("#info").attr("height", window.innerHeight);
+        $("#info").attr("width", window.innerWidth);   
+        $("#explosions").attr("height", window.innerHeight);
+        $("#explosions").attr("width", window.innerWidth);  
+        ctxF = $("#foreground")[0].getContext("2d");
+        ctxB = $("#background")[0].getContext("2d");
+        ctxI = $("#info")[0].getContext("2d");
+        canvasWidth = $('#gameContainer').width();
+        canvasHeight = $('#gameContainer').height();
+        bottomNavCenter();
+        limitBackgroundOffset();
+        redrawBackground();
+
+    });
 /*	var sum = 0;
 for(var j = 0; j < 1000; j++){
 	var n = performance.now();
@@ -250,7 +277,7 @@ alert('Your performance: ' + sum / 5000);*/
     socket.on('playerInfo', function(data){
         //console.log(data);
         playerGold = data[playerId].gold;
-        $('#playerGold').html('<img src="http://res.cloudinary.com/ochemaster/image/upload/c_scale,h_50/v1475689538/11-512_naajvi.png">' + " " + data[playerId].gold)
+        $('#playerGold span').text(" " + data[playerId].gold)
     });
 
     socket.on('changes', function(changes){

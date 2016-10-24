@@ -14,14 +14,26 @@ var BindButtons = {
     });
 
 
- 	$('#showShop').click(function(){
- 		if($('#shop').is(":visible")){
- 			$('#shop').hide();
- 		}
-        else $('#shop').show();
-        return false;
-    });
 
+ 	$('#showShop').click(function() {
+ 	    if ($('#shop').is(":visible")) {
+ 	        $('#shop').hide();
+ 	    } else $('#shop').show();
+ 	    if ($('#bottomNav').is(":visible")) {
+ 	        $('#bottomNav').hide();
+ 	    } else $('#bottomNav').show();
+
+ 	    $(this).toggleClass('buttonDown')
+ 	    return false;
+ 	});
+
+
+ 	$('#allEntities').click(function(){
+ 		$(this).toggleClass('buttonDown')
+ 		return false;
+ 	})
+
+ 	
   	$('#signOut').click(function() {
   		$('#saveGame').hide();
   	    logOut();
