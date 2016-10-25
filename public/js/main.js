@@ -177,21 +177,29 @@ alert('Your performance: ' + sum / 5000);*/
 	
 	// get a reference to an element
 	var stage = document.getElementById('gameContainer');
+    var stage2 = document.getElementById('background');
 
 	// create a manager for that element
 	var mc = new Hammer.Manager(stage);
+    var mc2 = new Hammer.Manager(stage2);
 
 	// create a recognizer
 	var pinch = new Hammer.Pinch();
     var swipe = new Hammer.Swipe();
-    var tap = new Hammer.Tap();
+
     var pan = new Hammer.Pan();
+    var singleTap = new Hammer.Tap({event: 'singletap', taps: 1});
+    var doubleTap = new Hammer.Tap({event: 'doubletap', taps: 2});
+
+    doubleTap.recognizeWith(singleTap);
+    singleTap.requireFailure(doubleTap);
 
 	// add the recognizer
 	mc.add(pinch);
     mc.add(swipe);
-    mc.add(tap);
+    mc.add(singleTap);
     mc.add(pan);
+    mc.add(doubleTap);
 
     mc.on('swipe', function(e){
         //e.angle
@@ -201,8 +209,22 @@ alert('Your performance: ' + sum / 5000);*/
         console.log(slope);
     });
 
-    mc.on('tap', function(e){
-        clickGameContainer(e);
+    mc.on('singletap', function(e){
+        
+        if(e.tapCount === 1){
+            clickGameContainer(e);
+        }
+        else if(e.tapCount === 2){
+            var point = convertScreenToMapPoint(e.srcEvent.x, e.srcEvent.y, zoom);
+            if(zoom > .95){
+                zoomToOne(point.x, point.y, .3)
+
+            }else{
+                
+                zoomPanTo(point.x, point.y, zoom);
+            }
+        }
+
 
     });
     mc.on('pan', function(e){
@@ -218,6 +240,10 @@ alert('Your performance: ' + sum / 5000);*/
         mapMove(e);
         redrawBackground();
     });
+  /*  mc.on('doubletap', function(e){
+        console.log('doubletap');
+
+    })*/
 
 
 

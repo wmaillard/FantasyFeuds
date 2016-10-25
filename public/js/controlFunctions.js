@@ -378,21 +378,37 @@ function zoomPanTo(x, y, localZoom, limits){  //x, y is mapX, mapY
             zoomPanTo(x, y, zoom, limits)}, 1000 / 30);
     }else if(zoom < 1){
         setTimeout(function(){
-            zoomToOne(x, y, zoom);
+            zoomToOne(x, y);
         })
     }
 
 
 }
 
-
-function zoomToOne(x, y){
+//Does not work with final zoom for zooming in right now
+function zoomToOne(x, y, finalZoom){
+    var scale = 2;
+    if(!finalZoom){
+        finalZoom = 1;
+    }
+    if(finalZoom < 1){
+        scale = .5;
+    }
     var point = mapToScreenPoint(x, y);
-    zoomAction({scale: 1.5, center: point});
-    if(zoom < 1){
-        setTimeout(function(){
-            zoomToOne(x, y, zoom);
-        }, 1000 / 30)
+    zoomAction({scale: scale, center: point});
+
+    if(scale > 1){
+        if(zoom < 1){
+            setTimeout(function(){
+                zoomToOne(x, y, finalZoom);
+            }, 1000 / 30)
+        }
+    }else{
+        if(zoom > finalZoom){
+            setTimeout(function(){
+                    zoomToOne(x, y, finalZoom);
+            }, 1000 / 30)
+        }
     }
 
 }
