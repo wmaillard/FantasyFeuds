@@ -123,3 +123,13 @@ function compare(a, b){
     }
     return 0;
 }
+
+function isInWindow(x, y){
+      if(!canvasWidth || !canvasHeight){
+        canvasWidth = $('#gameContainer').width();
+        canvasHeight = $('#gameContainer').height();
+      }
+    if(x + backgroundOffset.x < canvasWidth / zoom && y + backgroundOffset.y < canvasHeight / zoom && x + backgroundOffset.x >= 0 &&  y + backgroundOffset.y >= 0){
+        return true;
+    }else return false;
+}
