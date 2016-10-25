@@ -77,14 +77,23 @@ var currentCoords = {
 //  http://res.cloudinary.com/ochemaster/image/upload/w_241,c_scale/v1475040587/orcPeonStore_dp53w5.png
 //Load up entity images
 for(var entity in entityInfo){
-	if(!entityInfo[entity].object){
-		entityInfo[entity].image = 'http://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1475040587/' + entityInfo[entity].image;
+	if(!entityInfo[entity].object && !entityInfo[entity].animal){
+		entityInfo[entity].image = 'https://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1477430979/' + entityInfo[entity].image;
+      var teams = ['orange', 'blue'];
+
+      for(var t in teams){
+        characterImages[entity + '_' + teams[t]] = new Image();
+        characterImages[entity + '_' + teams[t]].src = 'img/characters/' + entity + '/' + entity + '_' + teams[t] + '.png';
+        characterImages[entity + 'Pose' + '_' + teams[t]] = new Image();
+        characterImages[entity + 'Pose' + '_' + teams[t]].src = 'img/characters/' + entity + '/' + entity+ 'Pose' + '_' + teams[t] + '.png';
+      }
 	}
-	
-	characterImages[entity] = new Image();
-	characterImages[entity].src = 'img/characters/' + entity + '/' + entity + '.png';
-	characterImages[entity + 'Pose'] = new Image();
-	characterImages[entity + 'Pose'].src = 'img/characters/' + entity + '/' + entity+ 'Pose.png';
+
+
+  characterImages[entity] = new Image();
+    characterImages[entity].src = 'img/characters/' + entity + '/' + entity + '.png';
+    characterImages[entity + 'Pose'] = new Image();
+    characterImages[entity + 'Pose'].src = 'img/characters/' + entity + '/' + entity+ 'Pose' + '.png';
 
 
 }

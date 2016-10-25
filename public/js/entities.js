@@ -25,7 +25,11 @@ function Entity(xyStart, health, type, playerId, color) {
     this.width = characterImages[this.type].width / 3;//obsolete
 
     this.loaded = true; //Need to check if relavent
-    this.team = 'red'; // red or blue
+    if (Math.random() >= 0.5){
+        this.team = 'orange';
+    }else{
+        this.team = 'blue';
+    }
     this.ai = false; //not used
     // kim add
     this.selected = false;

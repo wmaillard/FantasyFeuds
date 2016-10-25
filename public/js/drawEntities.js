@@ -76,6 +76,10 @@ function drawEntities(entities, ctx, lock, clear) {
 			if(entities[entity].dead || (entities[entity].attacking && entities[entity].walkingState !== 2)){
 				whichImage += 'Pose';
 			}
+			if(entities[entity].team === 'orange' || entities[entity].team === 'blue'){
+				whichImage += ('_' + entities[entity].team)
+			}
+
           
       cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entityInfo[type].width, entityInfo[type].height, entities[entity]);
 			if(!entities[entity].dead){  

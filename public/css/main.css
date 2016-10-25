@@ -1,6 +1,8 @@
-body{
-  font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+body {
+    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
 }
+
 .header {
     display: table;
     position: relative;
@@ -22,7 +24,7 @@ canvas, #shop {
 
 #shop{
   overflow: auto;
-
+  height: 90%;
 }
 
 #info{
@@ -54,9 +56,8 @@ canvas, #shop {
 #sidebar-wrapper{
 	opacity: .8;
 }
-body {
-	overflow-y:hidden
-}
+
+
 #gameContainer{
     position:fixed;
     overflow:hidden;

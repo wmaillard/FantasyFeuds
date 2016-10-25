@@ -15,6 +15,7 @@ const Attacks = attacksFile.Attacks;
 const entityInfoFile = require('./entityInfo.js');
 const entityInfo = entityInfoFile.entityInfo;
 
+
 const castleRadius = 2500;
 let playerCastles = {};
 

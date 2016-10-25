@@ -19,12 +19,29 @@ function metaStartGame(overRide){
 function buildStore(){
     var navHeight = $('nav').outerHeight();
     $('#shop').css({'margin-top':navHeight});
-    $('#shop .card-deck').css('margin-bottom', navHeight).css('margin-top', navHeight * .25);
+    var count = 0;
+    var top = false;
+    var bottom = false;
     for (var entity in entityInfo){
+    	if(!top && count % 3 === 0){
+    		$('#shop').append('<div id="cards' + count / 3 + '" class="card-deck">');
+    		top = true;
+    	}
+    	
         if(!entityInfo[entity].object && !entityInfo[entity].animal){
-            $('#shop > .card-deck').append('<div class="card text-xs-center" id = ' + entity + '><img class="card-img-top" src="' + entityInfo[entity].image + '" alt="Card image cap"><div class="card-block text-xs-center"><h4 class="card-title">' + entityInfo[entity].name + '</h4><p class="card-text">Soldiers a strong attackers and defenders.  They are weak against magic and dragons</p><p class="card-text"><small class="text-muted">' + entityInfo[entity].cost + ' Gold Pieces</p><button type="button" class="btn btn-success buy">Buy</button><button type="button" class="btn btn-info stats">Stats</button></div>')
+        	var id = ~~(count / 3)
+            $('#cards' + id).append('<div class="card text-xs-center" id = ' + entity + '><img class="card-img-top" src="' + entityInfo[entity].image + '" alt="Card image cap"><div class="card-block text-xs-center"><h4 class="card-title">' + entityInfo[entity].name + '</h4><p class="card-text">Soldiers a strong attackers and defenders.  They are weak against magic and dragons</p><p class="card-text"><small class="text-muted">' + entityInfo[entity].cost + ' Gold Pieces</p><button type="button" class="btn btn-success buy">Buy</button><button type="button" class="btn btn-info stats">Stats</button></div>')
+        	count++;
+        	top = false;
+        	bottom = false;
         }
+       /* if(!bottom && count % 3 === 2){
+        	$('#shop').append('</div>');
+        	bottom = true;
+        }*/
     }
+    $('#shop .card-deck').css('margin-bottom', navHeight).css('margin-top', navHeight * .25);
+
 }
 function getTanDeg(deg) {
   var rad = deg * Math.PI/180;
