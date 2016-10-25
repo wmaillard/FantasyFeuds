@@ -217,7 +217,7 @@ alert('Your performance: ' + sum / 5000);*/
         else if(e.tapCount === 2){
             var point = convertScreenToMapPoint(e.center.x, e.center.y, zoom);
             if(zoom > .95){
-                zoomToOne(point.x, point.y, 0.3)
+                zoomToOne(point.x, point.y, 0.1)
 
             }else{
                 
