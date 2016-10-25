@@ -213,7 +213,8 @@ alert('Your performance: ' + sum / 5000);*/
         console.log(e);
     });
     mc.on('singletap', function(e){
-        
+        console.log('singleTap');
+        console.log(e);
         if(e.tapCount === 1){
             clickGameContainer(e);
         }
