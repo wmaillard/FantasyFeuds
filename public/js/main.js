@@ -208,7 +208,10 @@ alert('Your performance: ' + sum / 5000);*/
         //slideMap(slope);     
         console.log(slope);
     });
-
+    mc.on('doubletap', function(e){
+        console.log('doubleTap');
+        console.log(e);
+    });
     mc.on('singletap', function(e){
         
         if(e.tapCount === 1){
@@ -217,7 +220,7 @@ alert('Your performance: ' + sum / 5000);*/
         else if(e.tapCount === 2){
             var point = convertScreenToMapPoint(e.srcEvent.x, e.srcEvent.y, zoom);
             if(zoom > .95){
-                zoomToOne(point.x, point.y, .3)
+                zoomToOne(point.x, point.y, 0.3)
 
             }else{
                 
