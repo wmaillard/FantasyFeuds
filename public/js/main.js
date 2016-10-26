@@ -1,20 +1,6 @@
 
 
 
-//This start game and metastart game is stupid, and not relevant anymore
-function metaStartGame(overRide){
-	if(!overRide && Cookies.get('loggedIn') === "true"){
-		loadGame();
-	}
-	else{
-		entities = [];
-        	baseSHealth = 1000;
-        	baseNHealth = 1000;
-		firstLoad = true;
-		startLevel();
-
-	} 
-}
 function buildStore(){
     var navHeight = $('nav').outerHeight();
     $('#shop').css({'margin-top':navHeight});
@@ -131,16 +117,8 @@ function zoomAndCheck(center){
 
 }
 
-
-function doubleClickZoom(e){
-    //console.log(e.originalEvent.clientX);
-    //console.log(convertScreenToMapPoint(e.originalEvent.clientX, e.originalEvent.clientY, zoom));
-    //setTimeout(zoomAndCheck(convertScreenToMapPoint(e.originalEvent.clientX, e.originalEvent.clientY,)), 1000/30)
-}
-
 function bottomNavCenter(){
     var leftMargin = canvasWidth * .46  - $('#allEntities').outerWidth() / 2 - $('#previousEntity').outerWidth();
-    console.log(leftMargin);
     $('#allEntities').css({marginLeft: leftMargin});
 }
 
@@ -171,25 +149,6 @@ $(function() {
         redrawBackground();
 
     });
-/*	var sum = 0;
-for(var j = 0; j < 1000; j++){
-	var n = performance.now();
-	var p; 
-	for(var i = 0; i < 100000; i++){p *= p * p};
-	n = performance.now() - n;
-	sum += n;
-}
-console.log(sum / 1000);
-	
-var sum = 0;
-for(var j = 0; j < 5000; j++){
-	var n = performance.now();
-	var p; 
-	for(var i = 0; i < 100000; i++){p *= p * p};
-	n = performance.now() - n;
-	sum += n;
-}
-alert('Your performance: ' + sum / 5000);*/
 	
 	// get a reference to an element
 	var stage = document.getElementById('gameContainer');
@@ -218,10 +177,8 @@ alert('Your performance: ' + sum / 5000);*/
     mc.add(doubleTap);
 
     mc.on('swipe', function(e){
-        //e.angle
-        //e.overallVelocity (- or +)
         var slope = getTanDeg(e.angle);
-        //slideMap(slope);     
+     
         console.log(slope);
     });
 
@@ -256,12 +213,6 @@ alert('Your performance: ' + sum / 5000);*/
         mapMove(e);
         redrawBackground();
     });
-  /*  mc.on('doubletap', function(e){
-        console.log('doubletap');
-
-    })*/
-
-
 
 
 	
@@ -277,18 +228,7 @@ alert('Your performance: ' + sum / 5000);*/
     playerColor = getRandomColor();
     BindButtons.bindAll();
 
-
- 
-
-
-    if (Cookies.get('loggedIn') === "true") {
-        startGame(levels[Cookies.get('level')]);
-        $('#signInNav').hide();
-        $('#signedInNav').show();
-        $('#signedInNav div').text('Signed in as ' + Cookies.get('userName'));
-
-    }
-    $("#background").attr("height", window.innerHeight);  //innerWidth may not be right...
+    $("#background").attr("height", window.innerHeight);  
     $("#background").attr("width", window.innerWidth);
     $("#foreground").attr("height", window.innerHeight);
     $("#foreground").attr("width", window.innerWidth);
@@ -306,7 +246,6 @@ alert('Your performance: ' + sum / 5000);*/
     socket = io();
 
     socket.on('playerInfo', function(data){
-        //console.log(data);
         playerGold = data[playerId].gold;
         $('#playerGold span').text(" " + data[playerId].gold)
     });
@@ -365,8 +304,8 @@ socket.on('castleColors', function(colors){
 /*    setInterval(function(){
     	moveEntities();
     }, 250);*/
-    
-    startGame('megaMap');
+    level = 'magaMap'
+    startLevel();
 
 
     // ************End Login
@@ -383,10 +322,6 @@ function sendToServer(){
         //var newOldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));  // are these in a sorted order???!
 
         if(changeToSendToServer){
-           /* console.log('new: ', newOldEntities);
-            console.log('old: ', oldEntities);*/
-            console.log('sent');
-            //oldEntities = newOldEntities;
             socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
             attacks = [];
             changeToSendToServer = false;
@@ -396,21 +331,6 @@ function sendToServer(){
 
     }
  
- 
-function startGame(userLevel, overRide) {
-	level = userLevel;
-
-    $("#signInBox").hide();
-    $("#initialDescription").hide();
-
-    $("#background").fadeTo(100, 1, function() {
-        $("#foreground").fadeTo(1, 1, function() {
-            metaStartGame(overRide);
-        });
-
-    });
-
-}
 
 
 
@@ -428,12 +348,6 @@ function startLevel() {
             $('#' + levelsWon[lev]).show()
         }
     }
-
-   /* entity = new Entity({
-                    'x': 0,
-                    'y': 0
-    }, "img/characters/blank.png", 75);
-    entities.push(entity);*/
 
 
 	$('#problem').remove();
@@ -453,25 +367,8 @@ function startLevel() {
 
 
     var i = 0;
-    //ctxB.imageSmoothingEnabled = false; //supposedly this should optimize graphics
-
     scene.load(level, ctxB, zoom);
 
-
- /*   var checkAttacks = setInterval(function(){
-		//var onlyPlayer = onlyPlayerEntities(entities, playerId);
-	    for(entity in entities){
-            entities[entity].attacking = false;
-			if(!entities[entity].dead){
-				attackableEntities(entities[entity], entitiesMap)
-			};
-		}
-		if(attacks.length > 0){
-			socket.emit('attacks', {attacks: attacks});
-			attacks = [];
-		}
-
-    }, 1000 / attackRate);*/
 
 
    	window.requestAnimationFrame(drawFrame);

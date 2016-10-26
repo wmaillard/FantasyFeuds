@@ -45,7 +45,6 @@ var Attacks = {
 			    }
 
 			    Attacks.entitiesMap[newX][newY].push(entity.id);
-			    console.log('entitiesMap', Attacks.entitiesMap)
 
 			    return true; //moved
 		          }
