@@ -216,9 +216,20 @@ function modCastleRatio(castle){
 
 
 	if(dominantColor){
-		var index = 1;
-		if(castle.color[0].color === dominantColor){
-			index = 0;
+		var index = 0;
+		var oneOfCurrent = false;
+		if(dominantColor === castle.color[0].color || dominantColor === castle.color[1].color){
+			oneOfCurrent = true;
+		}
+
+		if(!oneOfCurrent){
+			if(castle.color[0].color === 'grey'){
+				index = 0
+			}else index = 1;
+		}else{
+			if(castle.color[0].color === dominantColor){
+				index = 0;
+			}else index = 1;
 		}
 
 		castle.color[index].percent += Math.abs(moreOrange) * percentPerEntity;
