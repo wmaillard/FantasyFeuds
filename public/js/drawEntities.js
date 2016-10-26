@@ -2,17 +2,31 @@
 var castleRadius = 2500;
 
 function drawCastleCircles(castles, ctx){
-
   for(var i in castles){
+  	//currently only works for two colors
+
+  	if(castles[i].color[0].percent !== 0){
 	  ctx.save();
 	  ctx.lineWidth = 7 * zoom;
 	  ctx.globalAlpha = .6; //opacity
 	  ctx.beginPath();
-	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, 0, Math.PI*2);
-	  ctx.strokeStyle = castles[i].color;
+	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, 0,  Math.PI * 2 * castles[i].color[0].percent );
+	  ctx.strokeStyle = castles[i].color[0].color;
+	  ctx.stroke();
+	  ctx.restore();
+	}
+
+ 	if(castles[i].color[1].percent !== 0){
+	  ctx.save();
+	  ctx.lineWidth = 7 * zoom;
+	  ctx.globalAlpha = .6; //opacity
+	  ctx.beginPath();
+	  ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom,  (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, -Math.PI * 2 * castles[i].color[1].percent, 0  );
+	  ctx.strokeStyle = castles[i].color[1].color;
 	  ctx.stroke();
 	  ctx.restore();
   }
+}
 	
 	
 }

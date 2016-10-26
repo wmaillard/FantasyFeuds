@@ -167,6 +167,7 @@ setInterval(() => {
                     if (!change) {
                         redisClient.set('change', 'false');
                     }
+
                 }
                 if (Date.now() > lastAttacks + 1000) {
 
@@ -188,7 +189,16 @@ setInterval(() => {
 function setCastleColors(castles){
 	var changes = {};
 	for(var c in castles){
-		castles.entities.teams['orange'].length() > castles.entities.teams['blue'].length() ? castles[c].color = 'orange' : castles[c].color = 'blue';
+		castles[c].color = [];
+
+		if(!castles[c].entities.teams['orange'].length() && !castles[c].entities.teams['blue'].length()){
+			castles[c].color = [{color: 'grey', percent: '1'}, {color: 'grey', percent: '0'}]
+		}else{
+			var percent = castles[c].entities.teams['orange'].length() / (castles[c].entities.teams['orange'].length() + castles[c].entities.teams['blue'].length())
+			castles[c].color = [{color: 'orange', percent: percent}, {color: 'blue', percent: 1 - percent}]
+		}
+		
+		  
 		//test if above has actually done anything
 		changes[c] = castles[c].color;
 	}
@@ -214,7 +224,6 @@ function doAttacks(entities){
         attacks = JSON.parse(attacks);
         //console.log(attacks);
         //console.log(attacks.length);
-        console.log('attacks: ', attacks)
         if (attacks && attacks.length > 0) {
           var val = JSON.stringify([]);
           redisClient.set('attacks', val);
@@ -230,6 +239,7 @@ function mainServer(entities){
 
 
     var moreMoves = moveEntities(entities);
+    setCastleColors(castles);
 
 
     //Send out changes to clients

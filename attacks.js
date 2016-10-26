@@ -8,13 +8,13 @@ var Attacks = {
 	              Attacks.entitiesMap[x][y].splice(i, 1);
 
 	              //if x,y node is empty, free up some space
-	              if(Attacks.entitiesMap[x][y].length === 0){
+	              /*if(Attacks.entitiesMap[x][y].length === 0){
 	              	delete Attacks.entitiesMap[x][y];
 	              	if(Object.keys(Attacks.entitiesMap[x]).length === 0 && Attacks.entitiesMap[x].constructor === Object){
 	              		delete Attacks.entitiesMap[x];
 	              	}
 
-	              }
+	              }*/
 	              
 
 
@@ -83,7 +83,7 @@ var Attacks = {
   	  	          for (var e in entitiesAtNode) {
 	           		 //console.log('d')
 		            var charact = entities[entitiesAtNode[e]];
-		            if (!charact.dead && charact.playerId !== entity.playerId) { //don't attack yourself, could use this logic to heal
+		            if (charact && !charact.dead && charact.playerId !== entity.playerId) { //don't attack yourself, could use this logic to heal
 		              nearbyEntities.push(entities[entitiesAtNode[e]]);
 		              //console.log('e')
 

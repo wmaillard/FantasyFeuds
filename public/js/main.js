@@ -325,6 +325,15 @@ socket.on('changes', function(changes) {
     }
 })
 
+socket.on('castleColors', function(colors){
+    for(var c in colors){
+        if(castles[c]){
+            castles[c].color = colors[c];
+        }
+
+    }
+})
+
 
 
 
