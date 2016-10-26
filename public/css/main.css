@@ -73,8 +73,17 @@ canvas, #shop {
 }
 nav {
   font-size: 30px;
-
   color:  #262626;
+
+  -webkit-touch-callout: none; /* Don't let the user select anything*/
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+  pointer-events: none
+
 }
 
 #allEntities{
@@ -96,3 +105,6 @@ nav { /*Inner shadow on nav items*/
     color: rgba(0,0,0,.6) !important;
 }
 /*Override bootstrap navbar active and focus*/
+i {
+  pointer-events: auto; /*allows clicking on nav buttons*/
+}

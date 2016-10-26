@@ -173,6 +173,12 @@ setInterval(() => {
 
                 	clearAttacks(entities)
                     doAttacks(entities); //has built in set redis for attacks
+                    clearEntitiesInCastles(castles);
+                    for(var e in entities){
+	    				setEntitiesInCastles(entities[e], castles);
+	    			}
+                    setCastleColors(castles);
+
                 }
                 if (Date.now() > lastFullState + 1000) {
                     sendFullState(entities);
@@ -186,17 +192,83 @@ setInterval(() => {
 
 }, 1000 / tickRate);
 
+
+var percentPerEntity = 0.05
+
+
+function modCastleRatio(castle){
+
+	var moreOrange = LOO(castle.entities.teams['orange']) - LOO(castle.entities.teams['blue']);
+	var moreBlue = LOO(castle.entities.teams['blue']) - LOO(castle.entities.teams['orange']);
+
+	var dominantColor = null;
+	if(moreOrange > 0){
+		dominantColor = 'orange';
+	}else if(moreBlue > 0){
+		dominantColor = 'blue'
+	}
+	//if both colors are grey
+
+	if(castle.color[0].color === castle.color[1].color){	//if both are grey
+		castle.color[1].color = dominantColor;
+		castle.color[1].percent = 0;
+	}
+
+
+	if(dominantColor){
+		var index = 1;
+		if(castle.color[0].color === dominantColor){
+			index = 0;
+		}
+
+		castle.color[index].percent += Math.abs(moreOrange) * percentPerEntity;
+		castle.color[(index + 1) % 2].percent -= Math.abs(moreOrange) * percentPerEntity
+
+	}
+
+
+	if(castle.color[0].color === 'grey' && castle.color[1].color !== 'grey'){  
+		
+		if(castle.color[1].percent <= 0){
+			castle.color[1].color = 'grey';
+		}else if(castle.color[1].percent >= 1){
+			if(castle.color[1].color === 'orange'){
+				castle.color[0].color = 'blue';
+			}
+			else castle.color[0].color = 'orange';
+		}
+	}
+
+
+
+	if(castle.color[1].percent > 1){
+		castle.color[1].percent = 1;
+		castle.color[0].percent = 0;
+	}
+	else if(castle.color[1].percent < 0){
+		castle.color[1].percent = 0;
+		castle.color[0].percent = 1;
+	}
+
+	if(castle.color[0].percent > 1){
+		castle.color[0].percent = 1;
+		castle.color[1].percent = 0;
+	}
+	else if(castle.color[0].percent < 0){
+		castle.color[0].percent = 0;
+		castle.color[1].percent = 1;
+	}
+
+}
+
 function setCastleColors(castles){
 	var changes = {};
-	for(var c in castles){
-		castles[c].color = [];
 
-		if(!castles[c].entities.teams['orange'].length() && !castles[c].entities.teams['blue'].length()){
-			castles[c].color = [{color: 'grey', percent: '1'}, {color: 'grey', percent: '0'}]
-		}else{
-			var percent = castles[c].entities.teams['orange'].length() / (castles[c].entities.teams['orange'].length() + castles[c].entities.teams['blue'].length())
-			castles[c].color = [{color: 'orange', percent: percent}, {color: 'blue', percent: 1 - percent}]
-		}
+	for(var c in castles){
+
+		/*console.log(castles[c].color);
+		console.log('number: ', c)*/
+		modCastleRatio(castles[c])
 		
 		  
 		//test if above has actually done anything
@@ -239,7 +311,6 @@ function mainServer(entities){
 
 
     var moreMoves = moveEntities(entities);
-    setCastleColors(castles);
 
 
     //Send out changes to clients
@@ -427,7 +498,7 @@ function moveEntities(entities) {
 
   //console.log(entities.length);
   //playerCastles = {};
-  clearEntitiesInCastles(castles);
+
   for (var e in entities) {
 
     var entity = entities[e];
@@ -546,7 +617,7 @@ function moveEntities(entities) {
 
     }
     //setPlayerEntityAtCastle(entity, playerCastles);
-    setEntitiesInCastles(entity, castles);
+
 
 
   }
@@ -640,8 +711,9 @@ function addAICharacters() {
 
 }
 
-Object.prototype.length = function(){
-	if(this.constructor === Object){
-		return Object.keys(this).length;
+
+function LOO(theObject){
+	if(theObject.constructor === Object){
+		return Object.keys(theObject).length;
 	}else return 0;
 }
