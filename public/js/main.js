@@ -1,7 +1,6 @@
 
 
 
-
 //This start game and metastart game is stupid, and not relevant anymore
 function metaStartGame(overRide){
 	if(!overRide && Cookies.get('loggedIn') === "true"){
@@ -312,45 +311,35 @@ alert('Your performance: ' + sum / 5000);*/
         $('#playerGold span').text(" " + data[playerId].gold)
     });
 
-    socket.on('changes', function(changes){
 
+socket.on('changes', function(changes) {
+    console.log(changes);
+    for (var i in changes) {
+        if (entities[i]) {
+            for (var j in changes[i]) {
+                entities[i][j] = changes[i][j]
+            }
+        } else {
+            entities[i] = changes[i];
+        }
+    }
+})
 
-                for(var i in changes){
-                    if(entities[i]){
-                        for(var j in changes[i]){
-                            entities[i][j] = changes[i][j]
-                        }
-                    }else{
-                        entities[i] = changes[i];
-                    }
-                    
-                }
-               
-            
-    })
 
 
 
 
     socket.on('allEntities', function(serverEntities){
-    serverSentFullState = true;
-	if(changeToSendToServer){
-		console.log('missed a change');
-	}
+        serverSentFullState = true;
+
         serverSentChange = true;
         var selected = entityIsSelected();
-        var objSelected = {};  //urg got to change entities to an obj
         for(var i in selected){
-            objSelected[selected[i].id] = true;
-        }
-        for(var entity in serverEntities){
-            if(!serverEntities[entity].dead && objSelected[serverEntities[entity].id] ===  true){
-                serverEntities[entity].selected = true;
-            }else{
-                serverEntities[entity].selected = false;
+            if(!serverEntities[selected[i].id].dead){
+                serverEntities[selected[i].id].selected = true;
             }
-
         }
+
         oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
         entities = serverEntities;
 
@@ -486,7 +475,7 @@ var frameCount = 0;
 var entitiesChanged = true;
 
 var lastAnimation = 0;
-var animationPerSecond = 3;
+var animationPerSecond = 5;
 
 function drawFrame() {
  	                    

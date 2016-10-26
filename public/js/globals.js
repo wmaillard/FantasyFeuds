@@ -58,6 +58,8 @@ var playerGold = 1000;
 var serverSentFullState = false;
 
 var swipeRatio = 0.9;
+var selectedEntities = {};
+
 // enable vibration support
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 

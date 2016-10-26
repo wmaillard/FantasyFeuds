@@ -16,8 +16,7 @@ const entityInfoFile = require('./entityInfo.js');
 const entityInfo = entityInfoFile.entityInfo;
 
 
-const castleRadius = 2500;
-let playerCastles = {};
+
 
 const express = require('express');
 
@@ -44,14 +43,10 @@ const pathSocket = ioWorker.of('/path');
 
 var tickRate = 30; // in hz, having trouble. Client sends [], server returns [], client sends [x] before getting[], client sends [] then [] is stored
 
-var allEntities = {};
 var userEntities = {};
 var change = true;
 var attacks = [];
-var moveCount = 0;
-var moveSpeed = 1;
-var walkingSlowDown = 0; // tracker for gaps
-var gapStep = 6; //gaps between steps;
+
 var playerInfo = {};
 var playerInfoChange = false;
 var levelWidthTiles = 1000;
@@ -59,15 +54,17 @@ var levelHeightTiles = 1000;
 var levelWidthPixels = 1000 * 32;
 var levelHeightPixels = 1000 * 32;
 var changes = {};
-var lastAttacks = Date.now();
+var lastAttacks = Date.now() + 500;
 var lastFullState = 0;
-var i = 0;
-var newString = 'hey';
+
 var microMove = 4;
 
 var pathSocketConnection;
 var clientSocketConnection;
 
+const castleRadius = 2500;
+let playerCastles = {};
+var teams = ['orange', 'blue'];
 
 
 /*Trying cloudamqp
@@ -86,33 +83,19 @@ open.then(function(conn) {
   return ok;
 }).then(null, console.warn);*/
 
+var redisClient = redis.createClient(process.env.REDIS_URL);
 
+redisClient.set('changes', JSON.stringify({}));
 
 /********************Action Starts Here ************************/
 /*******************Worker Sockets ************************************/
-pathSocket.on('connection', function(socket){
-	pathSocketConnection = socket;
-  console.log('someone connected');
-  //console.log(socket);
-    var coords = {
-    startX: 1501,
-    startY: 1722,
-    endX: 1256,
-    endY: 1865,
-    id: 123321
-  }
+pathSocket.on('connection', function(socket) {
+    pathSocketConnection = socket;
 
-  socket.on('yo', function(data){
-		console.log('bbs');
-
-	})
-  socket.on('path', (data)=> {
-    /*console.log('Got a path');
-    console.log(data);*/
-    addPath(data);
-  });
-  
-	});
+    socket.on('path', (data) => {
+        addPath(data);
+    });
+});
 
 
 
@@ -124,7 +107,7 @@ io.on('connection', (socket) => {
   }
   playerInfo[convertId(socket.id)].gold = 10000;
 
-  change = true;
+  redisClient.set('change', 'true');
   console.log('Client connected');
 
   lastFullState = Date.now() - 1000 * 10 + 500;
@@ -135,26 +118,31 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
 
   socket.on('entityPathRequest', (data) => {
+
+  	data.startX = entities[data.id].x;
+  	data.startY = entities[data.id].y;
   	pathSocketConnection.emit('pathRequest', data);
   });
 
   socket.on('attacks', (data) => {
-    change = true;
-    attacks.push(data.attacks);
+ 	 redisClient.set('change', 'true');
+     attacks.push(data.attacks);
   });
 
   socket.on('addEntity', (data) => {
-    change = true;
     if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost) {
 
       playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
       playerInfoChange = true;
       //console.log(playerInfo[convertId(socket.id)].gold);
 
-      allEntities[data.entity.id] = data.entity;
-      Attacks.setEntitiesMap(allEntities[data.entity.id], true);
+      setChange(data.entity.id, 'wholeEntity', data.entity)
 
-      changes[data.entity.id] = data.entity;
+
+	  Attacks.setEntitiesMap(data.entity, true);
+
+
+
 
     }
 
@@ -164,29 +152,61 @@ io.on('connection', (socket) => {
 
 
 /*******************Server Actions ************************************/
-var redisClient = redis.createClient(process.env.REDIS_URL);
+
 
 //addAICharacters();
+var entities = {};
+var changes = {};
+var change = true;
 
 setInterval(() => {
+    redisClient.get('change', function(err, outsideChange) {
+            if (!err) {
+                if (change || outsideChange === 'true') {
+                    change = mainServer(entities);
+                    if (!change) {
+                        redisClient.set('change', 'false');
+                    }
+                }
+                if (Date.now() > lastAttacks + 1000) {
 
+                	clearAttacks(entities)
+                    doAttacks(entities); //has built in set redis for attacks
+                }
+                if (Date.now() > lastFullState + 1000) {
+                    sendFullState(entities);
 
-  if (change) {
-    walkingSlowDown++;
-    addAttacks();
+                }
+                redisClient.set('entities', JSON.stringify(entities));
+            } else {
+                console.err(err);
+            }
+        });
 
-    /*for(var i in playerInfo){
-    	console.log(i + ': ' + playerInfo[i].gold + ' gold')
-    }*/
-    /*console.log(counter + '. ' +process.hrtime());
-    counter++;*/
-    change = false;
+}, 1000 / tickRate);
 
-    /*console.log('User Entities: ');
-    console.log(userEntities);*/
+function setCastleColors(castles){
+	var changes = {};
+	for(var c in castles){
+		castles.entities.teams['orange'].length() > castles.entities.teams['blue'].length() ? castles[c].color = 'orange' : castles[c].color = 'blue';
+		//test if above has actually done anything
+		changes[c] = castles[c].color;
+	}
+	io.emit('castleColors', changes);
 
-    //console.log(attacks);
-    if (Date.now() > lastAttacks + 1000) {
+}
+
+function sendFullState(entities){
+	
+	    io.emit('allEntities', entities);
+	    console.log('full state')
+	    lastFullState = Date.now();
+	
+
+}
+
+function doAttacks(entities){
+
       redisClient.get('attacks', function(err, attacks) {
         if (err) {
           console.err(err);
@@ -194,64 +214,91 @@ setInterval(() => {
         attacks = JSON.parse(attacks);
         //console.log(attacks);
         //console.log(attacks.length);
+        console.log('attacks: ', attacks)
         if (attacks && attacks.length > 0) {
           var val = JSON.stringify([]);
           redisClient.set('attacks', val);
-          applyAttacks(attacks, allEntities);
+          applyAttacks(attacks, entities);
         }
       });
       lastAttacks = Date.now();
-    }else change = true; 
+    
+}
+//make them walk and emit changes
+function mainServer(entities){
+    addAttacks(entities);
 
 
+    var moreMoves = moveEntities(entities);
 
 
-    var maybeChange = moveEntities(allEntities);
-    if (!change) {
-      change = maybeChange;
-    }
+    //Send out changes to clients
 
     if (!(Object.keys(changes).length === 0 && changes.constructor === Object)) {
-      io.emit('changes', changes);
+        io.emit('changes', changes);
+        changes = {};
+        redisClient.set('changes', JSON.stringify({}));
 
     }
-    changes = {};
+
 
     if (playerInfoChange) {
       io.emit('playerInfo', playerInfo);
       playerInfoChange = false;
     }
+    return moreMoves;
 
-  }
-  if (Date.now() > lastFullState + 1000) {
-    io.emit('allEntities', allEntities);
-    console.log('full state')
-    lastFullState = Date.now();
-
-  }
-
-  if (walkingSlowDown > gapStep) {
-    walkingSlowDown = 0;
-  }
-
-}, 1000 / tickRate);
-
-
-
+  
+  
+}
 
 
 /******************Function Definition ************************************/
 
-function addAttacks(){
-	var attacks = [];
-	for (var entity in allEntities){
-		var attack = Attacks.attackableEntities(allEntities[entity], allEntities);
-		attacks.push(attack);
-	}
-	//console.log('************', attacks)
-	redisClient.set('attacks', JSON.stringify(attacks));
+function addAttacks(entities) {
+    var attacks = [];
+    for (var entity in entities) {
+        var attack = Attacks.attackableEntities(entities[entity], entities);
+        if (attack.length > 0 && attack.attacker && attack.attacker.length() > 0 && attack.victim && attack.victim.length() > 0) {
+            attacks.push(attack);
+        }
+    }
+    redisClient.set('attacks', JSON.stringify(attacks));
 }
 
+function clearEntitiesInCastles(castles){
+	  for(var c in castles){
+  		if(!castles[c]['entities']){
+  			castles[c]['entities'] = {};
+  		}
+  		if(!castles[c]['entities']['teams']){
+  			castles[c]['entities']['teams'] = {};
+  		}
+  		for(var t in teams){
+	  		if(!castles[c]['entities']['teams'][teams[t]]){
+	  			castles[c]['entities']['teams'][teams[t]] = {};
+	  		}
+  		}
+  	}
+  
+
+}
+
+
+
+
+function setEntitiesInCastles(e, castles){
+  var rx = castleRadius / 2.5;
+  var ry = castleRadius / 3;
+  for(var c in castles){
+  	if (e.playerId != -1 && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1){
+  		castles[c]['entities']['teams'][e.team][e.id] = e;
+
+  	}
+  }
+
+
+}
 function setPlayerEntityAtCastle(e, playerCastles) {
 
   var rx = castleRadius / 2.5;
@@ -276,138 +323,15 @@ function setPlayerEntityAtCastle(e, playerCastles) {
 
 }
 
-function getPath(startX, startY, endX, endY, id) {
-  var coords = {
-    startX: ~~startX,
-    startY: ~~startY,
-    endX: ~~endX,
-    endY: ~~endY,
-    id: id
-  }
- // pathSocket.emit('pathRequest', coords);
-
-  //request('https://aiserve.herokuapp.com/path?startX=' + startX + '&startY=' + startY + '&endX=' + endX + '&endY=' + endY, function(error, response, body) {
-/*  var pub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
-  var sub = redis.createClient(process.env.REDIS_URL); //type 'redis-server' in the file in mydocs
-
-  pub.publish('requestPath', JSON.stringify(coords), function(err) {
-    sub.subscribe('path' + id, function(err, reply) {
-      sub.on("message", function(channel, message) {
-        console.log("sub channel " + channel + ": " + message);
-        if (channel === 'path' + id) {
-          addPath({
-            id: id,
-            heading: {
-              x: endX,
-              y: endY
-            },
-            path: message
-          });
-          sub.unsubscribe();
-          sub.quit();
-          pub.quit();
-        }
-      });
-    });
-  })*/
-}
 
 function addPath(data) {
-  change = true;
-  if (allEntities[data.id]) {
-    allEntities[data.id].path = data.path;
-    allEntities[data.id].heading = data.heading;
-    allEntities[data.id].attacking = false;
-  } else console.log(data.id + '. No such entity');
+
+    setChange(data.id, 'path', data.path);
+    setChange(data.id, 'heading', data.heading);
+    setChange(data.id, 'attacking', false);
+
 
 }
-
-function addAICharacters() {
-  var aiEnt = {
-    "attackType": "none",
-    "color": "#808080",
-    "playerId": "-1",
-    "type": "quarry",
-    "x": 300,
-    "y": 487,
-    "health": 100,
-    "directionPointing": "S",
-    "heading": {
-      "x": 292,
-      "y": 487
-    },
-    "attacking": false,
-    "walking": false,
-    "walkingState": 0,
-    "size": 70,
-    "height": 70,
-    "width": 70,
-    "loaded": true,
-    "team": "red",
-    "ai": false,
-    "selected": false,
-    "path": [],
-    "id": 1475712082519,
-    "nextNode": null
-  }
-  var quar = JSON.stringify(aiEnt);
-
-  var hydraId; // just for testing
-  for (var i = 0; i < 500; i++) {
-
-    var newQuar = JSON.parse(quar);
-    newQuar.x = ~~(Math.random() * levelWidthPixels);
-    newQuar.y = ~~(Math.random() * levelHeightPixels);
-    while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
-      newQuar.x = ~~(Math.random() * levelWidthPixels);
-      newQuar.y = ~~(Math.random() * levelHeightPixels);
-    }
-    newQuar.heading.x = newQuar.x;
-    newQuar.heading.y = newQuar.y;
-
-    newQuar.id = Date.now() + i * 200;
-    allEntities[newQuar.id] = newQuar;
-
-  }
-
-  aiEnt.type = 'hydra';
-  aiEnt.height = 175;
-  aiEnt.width = 220;
-  quar = JSON.stringify(aiEnt);
-
-  for (var i = 0; i < 100; i++) {
-
-    var newQuar = JSON.parse(quar);
-    newQuar.x = ~~(Math.random() * levelWidthPixels);
-    newQuar.y = ~~(Math.random() * levelHeightPixels);
-    while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
-      newQuar.x = ~~(Math.random() * levelWidthPixels);
-      newQuar.y = ~~(Math.random() * levelHeightPixels);
-    }
-    newQuar.heading.x = newQuar.x;
-    newQuar.heading.y = newQuar.y;
-
-    newQuar.id = Date.now() + i * 200;
-    allEntities[newQuar.id] = newQuar;
-
-    hydraId = newQuar.id; //just for testing
-
-    var nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
-    var nextY = ~~(Math.random() * 200) + newQuar.y / 2;
-    while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
-      nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
-      nextY = ~~(Math.random() * 200) + newQuar.y / 2;
-    }
-
-    getPath(allEntities[hydraId].x, allEntities[hydraId].y, nextX, nextY, hydraId);
-
-  }
-
-}
-
-
-
-
 
 
 function clearAttacks(entities) {
@@ -416,18 +340,24 @@ function clearAttacks(entities) {
   }
 }
 
+
 function setChange(entityId, key, value) {
-  change = true;
-  redisClient.set('entities', JSON.stringify(allEntities));
-
-
-  if (!changes[entityId]) {
-    changes[entityId] = {};
-  }
-  changes[entityId][key] = value;
+    if (key === 'wholeEntity') {
+        entities[entityId] = value;
+        changes[entityId] = value;
+    } else {
+        entities[entityId][key] = value;
+        if (!changes[entityId]) {
+            changes[entityId] = {};
+        }
+        changes[entityId][key] = value;
+    }
+    change = true;
 }
 
-function applyAttacks(attacks, entities) {
+
+
+function applyAttacks(attacks, allEntities) {
   //make this faster by indexing entities by id
   //check to make sure attack is ok
   //customize attacks for different kinds of entities
@@ -486,7 +416,8 @@ function moveEntities(entities) {
   var more = false;  //If there are still entities walking after the move, several other ways to do this, like an array of walkers
 
   //console.log(entities.length);
-  playerCastles = {};
+  //playerCastles = {};
+  clearEntitiesInCastles(castles);
   for (var e in entities) {
 
     var entity = entities[e];
@@ -604,10 +535,103 @@ function moveEntities(entities) {
       }
 
     }
-    setPlayerEntityAtCastle(entity, playerCastles);
+    //setPlayerEntityAtCastle(entity, playerCastles);
+    setEntitiesInCastles(entity, castles);
+
 
   }
-  //console.log(JSON.stringify(playerCastles));
   return more;
 
+}
+
+
+
+
+function addAICharacters() {
+  var aiEnt = {
+    "attackType": "none",
+    "color": "#808080",
+    "playerId": "-1",
+    "type": "quarry",
+    "x": 300,
+    "y": 487,
+    "health": 100,
+    "directionPointing": "S",
+    "heading": {
+      "x": 292,
+      "y": 487
+    },
+    "attacking": false,
+    "walking": false,
+    "walkingState": 0,
+    "size": 70,
+    "height": 70,
+    "width": 70,
+    "loaded": true,
+    "team": "red",
+    "ai": false,
+    "selected": false,
+    "path": [],
+    "id": 1475712082519,
+    "nextNode": null
+  }
+  var quar = JSON.stringify(aiEnt);
+
+  var hydraId; // just for testing
+  for (var i = 0; i < 500; i++) {
+
+    var newQuar = JSON.parse(quar);
+    newQuar.x = ~~(Math.random() * levelWidthPixels);
+    newQuar.y = ~~(Math.random() * levelHeightPixels);
+    while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
+      newQuar.x = ~~(Math.random() * levelWidthPixels);
+      newQuar.y = ~~(Math.random() * levelHeightPixels);
+    }
+    newQuar.heading.x = newQuar.x;
+    newQuar.heading.y = newQuar.y;
+
+    newQuar.id = Date.now() + i * 200;
+    allEntities[newQuar.id] = newQuar;
+
+  }
+
+  aiEnt.type = 'hydra';
+  aiEnt.height = 175;
+  aiEnt.width = 220;
+  quar = JSON.stringify(aiEnt);
+
+  for (var i = 0; i < 100; i++) {
+
+    var newQuar = JSON.parse(quar);
+    newQuar.x = ~~(Math.random() * levelWidthPixels);
+    newQuar.y = ~~(Math.random() * levelHeightPixels);
+    while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
+      newQuar.x = ~~(Math.random() * levelWidthPixels);
+      newQuar.y = ~~(Math.random() * levelHeightPixels);
+    }
+    newQuar.heading.x = newQuar.x;
+    newQuar.heading.y = newQuar.y;
+
+    newQuar.id = Date.now() + i * 200;
+    allEntities[newQuar.id] = newQuar;
+
+    hydraId = newQuar.id; //just for testing
+
+    var nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
+    var nextY = ~~(Math.random() * 200) + newQuar.y / 2;
+    while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
+      nextX = ~~(Math.random() * 200) + newQuar.x / 2; //200 pixels around the current
+      nextY = ~~(Math.random() * 200) + newQuar.y / 2;
+    }
+
+    getPath(allEntities[hydraId].x, allEntities[hydraId].y, nextX, nextY, hydraId);
+
+  }
+
+}
+
+Object.prototype.length = function(){
+	if(this.constructor === Object){
+		return Object.keys(this).length;
+	}else return 0;
 }

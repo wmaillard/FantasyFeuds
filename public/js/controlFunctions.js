@@ -156,7 +156,7 @@ function clickGameContainer(e){
     var entityAtClick = entityIsThere(x, y);
     if(entityAtClick && !entityAtClick.dead && entityAtClick.playerId === playerId){ 
         deselectAllEntities();
-        entityAtClick.selected = true;
+        selectedEntities[entityAtClick.id] = entityAtClick;
         if(!$('#allEntities').hasClass('buttonDown')){
             $('#allEntities').toggleClass('buttonDown')
         }
@@ -180,11 +180,11 @@ function clickGameContainer(e){
             boughtEntity = false;
     }
       else if(!entityIsBlocked(x, y)){ 
-      	var selectedEntities = entityIsSelected();
+      	
       	//console.log('spot is free');
-       	if(selectedEntities.length > 0){
+       	if((Object.keys(selectedEntities).length > 0 && selectedEntities.constructor === Object)){
        		//console.log('there is a selected entity');
-       		for(var i = 0; i < selectedEntities.length; i++){
+       		for(var i in selectedEntities){
                 var entity = selectedEntities[i];
                 entity.path = []; //kill path early
        			/*console.log('x:', ~~(x / 32), 'ex:', ~~(selectedEntities[i].x / 32));
@@ -273,11 +273,9 @@ function entityIsThere(x, y, rangeX, rangeY){ //This does testing if something i
 }
 
 function deselectAllEntities(){
-    for(var i in entities){
-        entities[i].selected = false;
-    }
+    selectedEntities = {};
 }
-
+//not using
 function selectMulti(x, y, originalX, originalY){
     ctxI.clearRect(0, 0, $("#info").width(), $("#info").height())
     ctxI.beginPath();
@@ -289,7 +287,7 @@ function selectMulti(x, y, originalX, originalY){
 
 
 }
-
+//not using?
 function selectEntities(x, y, oldX, oldY){
     x = ~~(x / zoom - backgroundOffset.x + 16 * zoom);
     y = ~~(y / zoom - backgroundOffset.y + 16 * zoom);
@@ -310,7 +308,7 @@ function selectAllVisiblePlayerEntities(entities, playerId){
     var playersEntities = onlyPlayerEntities(entities, playerId);
     for(e in playersEntities){
         if(isInWindow(playersEntities[e].x, playersEntities[e].y)){
-            playersEntities[e].selected = true;
+            selectedEntities[playersEntities[e].id] = playersEntities[e];
         }
     }
 

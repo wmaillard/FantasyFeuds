@@ -1,8 +1,7 @@
 var Attacks = {
 	entitiesMap: {},
 	removeFromEntityMap(x, y, id){
-		console.log('testing to delete x:', x, 'y: ', y, 'id: ', id);
-		console.log('from: ', Attacks.entitiesMap)
+
 		 if(Attacks.entitiesMap[x] && Attacks.entitiesMap[x][y]){
 	      for(var i in Attacks.entitiesMap[x][y]){
 	          if(Attacks.entitiesMap[x][y][i] == id){

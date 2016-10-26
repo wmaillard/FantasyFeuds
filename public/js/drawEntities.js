@@ -73,7 +73,7 @@ function drawEntities(entities, ctx, lock, clear) {
 
 
 			var whichImage = entities[entity].type;
-			if(entities[entity].dead || (entities[entity].attacking && entities[entity].walkingState !== 2)){
+			if(entities[entity].dead || entities[entity].attacking){
 				whichImage += 'Pose';
 			}
 			if(entities[entity].team === 'orange' || entities[entity].team === 'blue'){
@@ -114,7 +114,7 @@ function cutOutCharacter(newCan, img, x, y, width, height, entity){
 	newCan.width = width;
 	newCan.height = height * 2;
 	var ctx = newCan.getContext('2d');
-  if(entity.selected === true){  
+  if(selectedEntities[entity.id]){  
         //void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
         drawHighlight(entity, newCan);
   }
@@ -216,7 +216,7 @@ function drawHealthBar(entity, canvas){
 function animateEntity(entity){
   /*console.log(entity.id);
   console.log(entity.attacking);*/
-  if(!entity.walking && !entity.attacking && entity.type !== 'quarry'){  
+  if(!entity.dead && !entity.walking && !entity.attacking && entity.type !== 'quarry'){  
       if(entity.walkingState !== 1){
 	      entity.walkingState = 1;  
       }
@@ -260,91 +260,27 @@ function animateEntity(entity){
 }
 
 
-function setDirectionFacing(current, entity, victim){
-
-
-
-    if(victim !== null){
-	if(victim.x !== current.x || victim.y !== current.y){
-	      if(current.x === victim.x){
-		if(current.y < victim.y){
-		  entity.directionPointing = 'S';
-		}else{
-		  entity.directionPointing = 'N'
-		}
-	      }else{
-		if(current.x < victim.x){
-		  entity.directionPointing = 'E'
-		}else{
-		  entity.directionPointing = 'W';
-		}
-	      }
-	    }
-	  }
-
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-    /*    var angle = 90;
-	//easy calculations
-	if(current.x === victim.x){
-		if(current.y > victim.y){
-			angle = 270;
-		}else if(current.y < victim.y){
-			angle = 90;
-		}
-	}else if(current.y === victim.y){
-		if(current.x > victim.x){
-			angle = 180;
-		}else if(current.x < victim.x){
-			angle = 360;
-		}
+function setDirectionFacing(current, entity, victim) {
+	if(entity.dead){
+		return;
 	}
-  	//Advanced, probably can optimize if needed.
-      else{angle = Math.atan2(victim.y - current.y, victim.x - current.x); //entity x, y is the origin
-	      angle = angle * 360 / (2 * Math.PI); 
-	      angle < 0 ? angle = 180 - angle : null;  
-	    //  console.log(angle);
-	  }
-  
-          90e
-   0e       victim         180e
-          270 e
-  
-
-      if(angle > 45 && angle <= 135){
+    if (victim !== null) {
+        if (victim.x !== current.x || victim.y !== current.y) {
+            if (current.x === victim.x) {
+                if (current.y < victim.y) {
+                    entity.directionPointing = 'S';
+                } else {
+                    entity.directionPointing = 'N'
+                }
+            } else {
+                if (current.x < victim.x) {
+                    entity.directionPointing = 'E'
+                } else {
+                    entity.directionPointing = 'W';
+                }
+            }
+        }
+    } else if (entity.directionPointing !== 'S' && !entity.dead) {
         entity.directionPointing = 'S';
-      }else if(angle > 135 && angle <= 225){
-        entity.directionPointing = 'W';
-      }else if(angle > 225 && angle <= 315){
-        entity.directionPointing = 'N';
-      }else if(angle > 315 || angle <= 45){
-        entity.directionPointing = 'E';
-      }
     }
-
-
-*/
-  
-  else if(entity.directionPointing !== 'S' && !entity.dead){
-	
-    entity.directionPointing = 'S';
-  }
-
-
 }
