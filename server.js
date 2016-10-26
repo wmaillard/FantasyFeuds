@@ -359,7 +359,10 @@ function clearEntitiesInCastles(castles){
 	  		if(!castles[c]['entities']['teams'][teams[t]]){
 	  			castles[c]['entities']['teams'][teams[t]] = {};
 	  		}
+	  	    castles[c]['entities']['teams'][teams[t]] = {};
+
   		}
+
   	}
   
 
