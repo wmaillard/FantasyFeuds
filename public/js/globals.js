@@ -1,6 +1,8 @@
 var animationPerSecond = 5;
 var boughtEntity = null;
+var castleRadius = 2500;
 var currentEntity = null;  //What entity is currently focused on in the window
+var currentZoomResolution = 1;
 var canvasWidth; 
 var canvasHeight;
 var characterImages = {};
@@ -12,6 +14,7 @@ var lastAnimation = Date.now();
 var level = 'megaMap';
 var levelWidth = 1000;  //Dimensions of level in squares
 var levelHeight = 1000;
+var newCan = document.createElement('canvas');  //Canvas used for drawing entities
 var playerColor = 'black'; //like my soul :)
 var playerId;
 var selectedEntities = {};
@@ -21,6 +24,9 @@ var socket;
 var zoom = 1; //starting zoom of map
 var playerGold = 1000;
 var zoomSpeed = .10;  //How fast to zoom in/out
+
+var rows = 20;  //Rows and columns map is broken up into
+var columns = 20;
 
 
 var backgroundOffset = {

@@ -165,3 +165,29 @@ CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidt
   if (dx  < canvasWidth && dy < canvasHeight && dx >= 0 && dy >= 0)
         this.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 }
+
+
+function createVector(panTime, oldCoords, newCoords){
+    var swipeRatio = 0.9;
+    var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
+    if(length / panTime > swipeRatio){
+            alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
+    }
+
+}
+
+function entityIsSelected(){
+    var selectedEntities = [];
+    for(var i in entities){
+        if(entities[i].selected === true){
+            selectedEntities.push(entities[i])
+        }
+    }
+    return selectedEntities;
+}
+
+function LOO(theObject){  //Length of Object
+    if(theObject.constructor === Object){
+        return Object.keys(theObject).length;
+    }else return 0;
+}

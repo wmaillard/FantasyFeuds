@@ -1,4 +1,3 @@
-
 function Entity(xyStart, health, type, playerId, color) {
     this.attackType = 'sword'; //extend this sometime
     this.color = color
@@ -13,40 +12,16 @@ function Entity(xyStart, health, type, playerId, color) {
     this.heading.y = this.y;
     this.attacking = false;
     this.gore = {};
-    this.movedCount = 0;
+    this.path = [];
+    this.id = Date.now();
     this.walking = true;
     this.walkingState = '0';
-/*    this.alreadyBeen = [];
-    this.alreadyBeen[this.x] = [];
-    this.alreadyBeen[this.x][this.y] = true;*/
-    this.size = characterImages[this.type].height / 4; //obsolete
-
-    this.height = characterImages[this.type].height / 4;//obsolete
-    this.width = characterImages[this.type].width / 3;//obsolete
-
-    this.loaded = true; //Need to check if relavent
-    if (Math.random() >= 0.5){
+    this.size = characterImages[this.type].height / 4;
+    this.height = characterImages[this.type].height / 4;
+    this.width = characterImages[this.type].width / 3;
+    if (Math.random() >= 0.5) {
         this.team = 'orange';
-    }else{
+    } else {
         this.team = 'blue';
     }
-    this.ai = false; //not used
-    // kim add
-    this.selected = false;
-    this.fighting = false;  //obsolete
-    this.pathStart = {};
-    this.pathStart.x = 0;
-    this.pathStart.y = 0;
-    this.dest = []; //don't know if used
-    this.dest.x = 0;//don't know if used
-    this.dest.y = 0;//don't know if used
-    this.dest.distance = 0; //don't know if used
-    this.pathDist = 0;//don't know if used
-    this.path = [];
-    
-
-    this.id = Date.now();
-
-
-
 };
