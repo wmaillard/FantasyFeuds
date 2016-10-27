@@ -133,3 +133,35 @@ function isInWindow(x, y){
         return true;
     }else return false;
 }
+
+function getTanDeg(deg) {
+  var rad = deg * Math.PI/180;
+  return Math.tan(rad);
+}
+
+
+function convertScreenToMapPoint(x, y, zoom) {
+    var mapPoint = {
+        x: x / zoom - backgroundOffset.x,
+        y: y / zoom - backgroundOffset.y
+    }
+    return mapPoint;
+}
+
+function mapToScreenPoint(x, y) {
+    var screenPoint = {
+        x: x * zoom + backgroundOffset.x * zoom,
+        y: y * zoom + backgroundOffset.y * zoom
+    }
+    return screenPoint;
+}
+
+
+CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight){
+  if(!canvasWidth || !canvasHeight){
+    canvasWidth = $('#gameContainer').width();
+    canvasHeight = $('#gameContainer').height();
+  }
+  if (dx  < canvasWidth && dy < canvasHeight && dx >= 0 && dy >= 0)
+        this.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+}

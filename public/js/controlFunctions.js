@@ -17,13 +17,6 @@
     var changeX = Math.abs(e.pointers[0].clientX - currentCoords.x);
     var changeY = Math.abs(e.pointers[0].clientY - currentCoords.y);
 
-  /*  if (fullOnPanning && !panning) {
-        fullOnPanning = false;
-        scene.load(level, ctxB, zoom);  //Reload, possible fix dragging bug
-    }*/
-
-    //if (fullOnPanning || (panning && (changeY > pixelChangeForPan || changeX > pixelChangeForPan))) {
-
         if(e.pointers[0].ctrlKey){
             //console.log('ctrl down');
             selectMulti(e.clientX, e.clientY, currentCoords.x, currentCoords.y);
@@ -40,7 +33,6 @@
             currentCoords.x = e.pointers[0].clientX;
             currentCoords.y = e.pointers[0].clientY;
 
-            //fullOnPanning = true;
         }
         //click = false;
 
@@ -52,93 +44,16 @@
 
 }
 function createVector(panTime, oldCoords, newCoords){
-    /*console.log('old: ')
-    console.log(oldCoords);
-    console.log('new: ');
-    console.log(newCoords);*/
+    var swipeRatio = 0.9;
     var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
 	if(length / panTime > swipeRatio){
     		alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
 	}
 
 }
-var oldBackgroundOffset = {};
-oldBackgroundOffset.x =    backgroundOffset.x;
-oldBackgroundOffset.y = backgroundOffset.y;
 
 
 
-//Obsolete
-function releasePressMap(e, mobile) {
-    /*console.log("on release: ");
-    console.log(backgroundOffset);*/
-    lockOldBO = false;
-
-/*    var d = new Date; //Swipe test is here, swipping
-    panTime = d.getTime() - panTime;
-
-    createVector(panTime, oldBackgroundOffset, backgroundOffset);*/ 
-
-
-
-    oldBackgroundOffset.x = backgroundOffset.x;
-    oldBackgroundOffset.y = backgroundOffset.y;
-
-
-
-    e = switchEventToMobile(e);
-
-    panning = false;
-    fullOnPanning = false;
-    scene.load(level, ctxB, zoom);  //Reload, possible fix dragging bug
-
-    $('#gameContainer').css('cursor', 'auto');
-    
-    if(wasCtrl){
-        ctxI.clearRect(0, 0, $("#info").width(), $("#info").height())
-        selectEntities(e.clientX, e.clientY, currentCoords.x, currentCoords.y);
-        wasCtrl = false;
-    }
-    if(click){
-        //clickGameContainer(e);
-    }
-
-}
-//Obsolete
-function pressMap(e, mobile) {
-   /* console.log("on Press: ");
-    console.log(backgroundOffset);*/
-    console.log('clicking');
-
-    var d = new Date;
-    panTime = d.getTime();
-    
-
-    e = switchEventToMobile(e);
-
-    currentCoords.x = e.clientX ;
-    currentCoords.y = e.clientY;
-    ////console.log(isBlocked(~~((currentCoords.x - backgroundOffset.x) / zoom),
-    //~~((currentCoords.y - backgroundOffset.y) / zoom)));
-    panning = true;
-}
-
-function zoomIn() {
-    zoom = zoom + .25;
-    zoomHappened = true;
-    clearBackground = true;
-}
-
-function zoomOut() {
-    zoom = zoom - .25;
-    zoomHappened = true;
-    clearBackground = true;
-}
-
-
-function kill(){ //Incase the program is out of control
-    entities = [];
-}
 function entityIsSelected(){
 	var selectedEntities = [];
 	for(var i in entities){
@@ -196,29 +111,16 @@ function clickGameContainer(e){
                 entity.heading.y = y;
                 entity.heading.y -= (zoom - 1) * entity.width * .4;
                 
-       			if(debugPathfinding){
-					selectedEntities[i].path = AI.drawTestDots({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain, ctxI);
-       			}
-       			else{
-       				//entity.path = AI.AStar({x: ~~(selectedEntities[i].x / 32), y: ~~(selectedEntities[i].y / 32)}, {x: ~~(x / 32), y: ~~(y / 32)}, blockingTerrain);
-                    var coords = {
-                        startX: entity.x,
-                        startY: entity.y,
-                        endX: entity.heading.x,
-                        endY: entity.heading.y,
-                        id: entity.id
-                      }
+var coords = {
+    startX: entity.x,
+    startY: entity.y,
+    endX: entity.heading.x,
+    endY: entity.heading.y,
+    id: entity.id
+}
+socket.emit('entityPathRequest', coords);
 
-
-                        socket.emit('entityPathRequest', coords);
-                        //entity.walking = true;
-                
-                    
-
-
-
-       			}
-       			//console.log(selectedEntities[i].path);
+ 
        		}
        		}
 
@@ -236,11 +138,6 @@ function clickGameContainer(e){
    // click = true;
 
   
-    oldEntities = JSON.stringify(onlyPlayerEntities(entities, playerId));
-    //can I send oldEntities instead of onlyPlayerEntities
-    /*socket.emit('clientEntities', {entities: onlyPlayerEntities(entities, playerId), attacks: attacks});
-    attacks = [];*/
-        //console.timeEnd("clickGameContainer");
 
   
    
@@ -463,3 +360,30 @@ function goToPreviousEntity(){
 }
 
 
+function slideMap(slope){
+    if(slope > 0){
+        backgroundOffset.x += 10;
+        backgroundOffset.y = backgroundOffset.x * slope + backgroundOffset.x;
+    }else{
+        backgroundOffset.x -= 10;
+        backgroundOffset.y = backgroundOffset.x * slope + backgroundOffset.x;
+
+    }
+    redrawBackground();
+}
+
+function setWindowResizeProperties() {
+    $("#background").attr("height", window.innerHeight);
+    $("#background").attr("width", window.innerWidth);
+    $("#foreground").attr("height", window.innerHeight);
+    $("#foreground").attr("width", window.innerWidth);
+    $("#info").attr("height", window.innerHeight);
+    $("#info").attr("width", window.innerWidth);
+    $("#explosions").attr("height", window.innerHeight);
+    $("#explosions").attr("width", window.innerWidth);
+    ctxF = $("#foreground")[0].getContext("2d");
+    ctxB = $("#background")[0].getContext("2d");
+    ctxI = $("#info")[0].getContext("2d");
+    canvasWidth = $('#gameContainer').width();
+    canvasHeight = $('#gameContainer').height();
+}

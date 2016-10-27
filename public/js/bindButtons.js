@@ -1,7 +1,6 @@
 var BindButtons = { 
  bindAll: function(){
 
- 	$('#gameContainer').dblclick(function(e){doubleClickZoom(e)});
  	
  	 $('#gameContainer').bind('mousewheel', function(e){
 
@@ -34,6 +33,15 @@ var BindButtons = {
  	 	return false;
  	 	
  	 })
+
+   
+    $( window ).resize(function() {
+        setWindowResizeProperties()
+        bottomNavCenter();
+        limitBackgroundOffset();
+        redrawBackground();
+
+    });
 
  	$('#showShop').click(function() {
  	    if ($('#shop').is(":visible")) {

@@ -112,10 +112,6 @@ var scene = {
     },
 
     load: function(name, ctx, zoom) {
-        if (clearBackground) {
-            clearBackground = false;
-            ctx.clearRect(0, 0, $("#background").width(), $("#background").height());
-        }
 
         scene.zoom = 1 / zoom;
         scene.context = ctx;

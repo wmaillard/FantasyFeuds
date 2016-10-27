@@ -43,18 +43,9 @@ function drawEntities(entities, ctx, lock, clear) {
         'E': 2,
         'N': 3
     }
-
-/* var scratchCanvas = ctx.canvas.cloneNode();    
- scratchCanvas = scratchCanvas.getContext("2d");
-    scratchCanvas.canvas.height = levelHeight * 32;  //Right now we are drawing the entire level worth of entities, then cutting a piece of that, super wasteful
-    scratchCanvas.canvas.width = levelWidth * 32 ;*/
     
-   for(var a in attackEffects){
-      if(!attackEffects[a].active){
-        delete attackEffects[a];
-      }
-    }	
-	if(!canvasWidth || !canvasHeight || windowResize){
+
+	if(!canvasWidth || !canvasHeight){
 	    canvasWidth = $('#gameContainer').width();
 	    canvasHeight = $('#gameContainer').height();
 	  }
@@ -80,10 +71,7 @@ function drawEntities(entities, ctx, lock, clear) {
         x = entities[entity].x;
         y = entities[entity].y;
         nodeX = ~~(x / size);
-        nodeY = ~~(y / size);
-        
-       // entities[entity].moved = setNodeXY(entities[entity], entitiesMap,  entitiesLastNode);  //need to store last node and need to run this every time we get new entities with if(lastNode !== currentNode)
-        
+        nodeY = ~~(y / size);        
 
 
 			var whichImage = entities[entity].type;
