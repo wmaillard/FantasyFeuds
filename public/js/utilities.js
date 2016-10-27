@@ -5,83 +5,13 @@ function getEntitiesMap(x, y){
 }
 
 
-function deepCloneArray(array){
-  var newArray = $.extend(true, [], array);
-  newArray.shift().shift();
-  return newArray;
-}
 
-function limitBackgroundOffset(){
-    var returnValue = {x: false, y: false};
-    if(backgroundOffset.x > 0){
-        backgroundOffset.x = 0
-        returnValue.x = true;
-    }
-    if(backgroundOffset.y > 0 ){
-       backgroundOffset.y = 0;
-       returnValue.y = true; 
-    }
-    if($('#gameContainer').width() - backgroundOffset.x * zoom > levelWidth * size * zoom){
-         backgroundOffset.x = $('#gameContainer').width() / zoom - levelWidth * size;
-         returnValue.x = true;
-     }
-    if($('#gameContainer').height()- backgroundOffset.y * zoom > levelHeight * size * zoom){
-        backgroundOffset.y = $('#gameContainer').height() / zoom - levelHeight * size;
-        returnValue.y = true;
-    } 
-    return returnValue;
 
-}
 
-function roughSizeOfObject( object ) {
 
-    var objectList = [];
-    var stack = [ object ];
-    var bytes = 0;
 
-    while ( stack.length ) {
-        var value = stack.pop();
 
-        if ( typeof value === 'boolean' ) {
-            bytes += 4;
-        }
-        else if ( typeof value === 'string' ) {
-            bytes += value.length * 2;
-        }
-        else if ( typeof value === 'number' ) {
-            bytes += 8;
-        }
-        else if
-        (
-            typeof value === 'object'
-            && objectList.indexOf( value ) === -1
-        )
-        {
-            objectList.push( value );
 
-            for( var i in value ) {
-                stack.push( value[ i ] );
-            }
-        }
-    }
-    return bytes;
-}
-
-function testAttackRange(){
-      for(e in entities){
-        console.log('\nEntity with id: ' + entities[e].id + 'can attack the following \n')
-        attackableEntities(entities[e], entitiesMap)
-    }
-}
-
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
 
 function isBlocked(x, y) {
     if(!blockingTerrain[~~(x / 32)] || !blockingTerrain[~~(x / 32)][~~(y / 32)]){
@@ -100,20 +30,6 @@ function onlyPlayerEntities(entities, playerId){
 }
 
 
-function cantor(a, b){
-  a = Number(a);
-  b = Number(b);
-  return ~~(1 / 2 * (a+b) * (a+b+1)) + b;
-}
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [
-        parseInt(result[1], 16),
-        parseInt(result[2], 16),
-        parseInt(result[3], 16), 
-        1
-    ] : null;
-}
 function compare(a, b){
     if(a.id < b.id){
         return -1;
@@ -134,10 +50,6 @@ function isInWindow(x, y){
     }else return false;
 }
 
-function getTanDeg(deg) {
-  var rad = deg * Math.PI/180;
-  return Math.tan(rad);
-}
 
 
 function convertScreenToMapPoint(x, y, zoom) {
@@ -157,15 +69,6 @@ function mapToScreenPoint(x, y) {
 }
 
 
-CanvasRenderingContext2D.prototype.drawSafeImage = function(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight){
-  if(!canvasWidth || !canvasHeight){
-    canvasWidth = $('#gameContainer').width();
-    canvasHeight = $('#gameContainer').height();
-  }
-  if (dx  < canvasWidth && dy < canvasHeight && dx >= 0 && dy >= 0)
-        this.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-}
-
 
 function createVector(panTime, oldCoords, newCoords){
     var swipeRatio = 0.9;
@@ -175,6 +78,8 @@ function createVector(panTime, oldCoords, newCoords){
     }
 
 }
+
+
 
 function entityIsSelected(){
     var selectedEntities = [];
@@ -186,11 +91,7 @@ function entityIsSelected(){
     return selectedEntities;
 }
 
-function LOO(theObject){  //Length of Object
-    if(theObject.constructor === Object){
-        return Object.keys(theObject).length;
-    }else return 0;
-}
+
 
 
 function entityIsBlocked(x, y) {
