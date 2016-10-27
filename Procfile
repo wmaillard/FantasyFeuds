@@ -1,2 +1,2 @@
-web: node server.js
-worker: node aiserver.js
+web: node webServer/webServer.js
+worker: node aiServer/aiServer.js

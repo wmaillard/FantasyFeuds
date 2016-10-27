@@ -1,0 +1,35 @@
+//Stress test!
+
+
+
+var j = 0;
+
+function oneThousand(quad){
+/*console.log(j);
+j++;*/
+for(var i = 0; i < 1000; i++){
+      var entity;
+      boughtEntity = 'orcPeon';
+	    var health = 100;
+      var x = ~~(Math.random() * (levelWidth * size * 1 / 4 - 1) + levelWidth * size * quad / 4 );
+      var y = ~~(Math.random() * (levelHeight * size * 1 / 4 - 1) + levelHeight * size * quad / 4 );
+      while(isBlocked(x, y)){
+        x = ~~(Math.random() * (levelWidth * size * 1 / 4 - 1) + levelWidth * size * quad / 4 );
+        y = ~~(Math.random() * (levelHeight * size * 1 / 4 - 1) + levelHeight * size * quad / 4 );
+      }
+      entity = new Entity({
+          'x': x,
+          'y': y
+      }, health, boughtEntity, playerId, playerColor);
+      entity.id = cantor(Date.now(), ~~(performance.now()*1000))
+      socket.emit('addEntity', {entity: entity});
+      boughtEntity = false;}
+     /* if(j < 1001){
+        setTimeout(oneThousand, 500);
+      }else{
+        console.log('Success, j = ', j);
+      }*/
+}
+
+
+setTimeout(oneThousand, 500);
