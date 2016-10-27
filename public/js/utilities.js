@@ -191,3 +191,12 @@ function LOO(theObject){  //Length of Object
         return Object.keys(theObject).length;
     }else return 0;
 }
+
+
+function entityIsBlocked(x, y) {
+    if (isBlocked(x, y) === true || isBlocked(x + 16, y) === true || isBlocked(x, y + 16) === true || isBlocked(x + 16, y + 16) === true) {
+        return true;
+    }else if(isBlocked(x, y) === undefined || isBlocked(x + 16, y) === undefined || isBlocked(x, y + 16) === undefined || isBlocked(x + 16, y + 16) === undefined){
+        return true;
+    }else return false;
+}
