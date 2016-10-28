@@ -24,6 +24,8 @@ var socket;
 var zoom = 1; //starting zoom of map
 var playerGold = 1000;
 var zoomSpeed = .10;  //How fast to zoom in/out
+var zoomPanTimeoutRunning = false;
+var zoomPanCompletelyDone = true;
 
 var rows = 20;  //Rows and columns map is broken up into
 var columns = 20;

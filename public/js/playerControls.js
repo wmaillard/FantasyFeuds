@@ -92,15 +92,16 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
     var diffRangeY = 100;
     var diffChangeY = 50;
     var stuck = true;
-    while (diffX < diffRangeX && diffX > 5) {
+    var endRange = 5 / (zoom);
+    while (diffX < diffRangeX && diffX > endRange) {
         diffRangeX /= 2;
         diffChangeX /= 2;
     }
-    while (diffY < diffRangeY && diffY > 5) {
+    while (diffY < diffRangeY && diffY > endRange) {
         diffRangeY /= 2;
         diffChangeY /= 2;
     }
-    if (!limits.x && (diffX > 5 || point.x < 0)) {
+    if (!limits.x && (diffX > endRange || point.x < 0)) {
         stuck = false;
         if (midPoint.x > point.x) {
             backgroundOffset.x += diffChangeX;
@@ -108,7 +109,7 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
             backgroundOffset.x -= diffChangeX;
         }
     }
-    if (!limits.y && (diffY > 5 || point.y < 0)) {
+    if (!limits.y && (diffY > endRange || point.y < 0)) {
         stuck = false;
         if (midPoint.y > point.y) {
             backgroundOffset.y += diffChangeY;
@@ -129,16 +130,36 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
     if (newLimits.y === true) {
         limits.y = true;
     }
-    if (!stuck && !(limits.x && limits.y) && (diffX > 5 || diffY > 5 || point.x < 0 || point.y < 0)) {
-        setTimeout(function() {
-            zoomPanTo(x, y, zoom, limits)
-        }, 1000 / 30);
+    if (!stuck && !(limits.x && limits.y) && (diffX > endRange || diffY > endRange || point.x < 0 || point.y < 0)) {
+        if (!zoomPanTimeoutRunning) {
+            zoomPanTimeoutRunning = true;
+            setTimeout(function() {
+                zoomPanTimeoutRunning = false;
+                zoomPanTo(x, y, zoom, limits)
+            }, 1000 / 30);
+        }
     } else if (zoom < 1) {
-        setTimeout(function() {
-            zoomToOne(x, y);
-        })
+        if (!zoomPanTimeoutRunning) {
+            zoomPanTimeoutRunning = true;
+            setTimeout(function() {
+                zoomPanTimeoutRunning = false;
+                zoomToOne(x, y);
+            })
+        }
+    }
+    if (!isInWindow(x, y)) {
+        if (!zoomPanTimeoutRunning) {
+            zoomPanTimeoutRunning = true;
+            setTimeout(function() {
+                zoomPanTimeoutRunning = false;
+                zoomPanTo(x, y, zoom)
+            }, 1000 / 30);
+        }
+    }else{
+        zoomPanCompletelyDone = true;
     }
 }
+
 
 function zoomToOne(x, y, finalZoom) {
     var scale = 2;
@@ -166,6 +187,9 @@ function zoomToOne(x, y, finalZoom) {
 }
 
 function goToNextEntity() {
+    if(!zoomPanCompletelyDone){
+        return;
+    }
     var playerEntities = onlyPlayerEntities(entities, playerId);
     var index = -1;
     for (var i in playerEntities) {
@@ -185,10 +209,23 @@ function goToNextEntity() {
     }
     var nextEntity = playerEntities[index];
     currentEntity = nextEntity.id;
+
+    zoomPanCompletelyDone = false;
     zoomPanTo(nextEntity.x, nextEntity.y, zoom);
+
+    var chaseInterval = setInterval(function(){
+        if(!isInWindow(nextEntity.x, nextEntity.y) && zoomPanCompletelyDone) {
+            zoomPanCompletelyDone = false;
+            zoomPanTo(nextEntity.x, nextEntity.y, zoom);
+            clearInterval(chaseInterval);
+        }
+    }, 1000 / 60);
 }
 
 function goToPreviousEntity() {
+    if(!zoomPanCompletelyDone){
+        return;
+    }
     var playerEntities = onlyPlayerEntities(entities, playerId);
     var index = -1;
     for (var i in playerEntities) {
@@ -208,8 +245,21 @@ function goToPreviousEntity() {
     }
     var nextEntity = playerEntities[index];
     currentEntity = nextEntity.id;
+
+    zoomPanCompletelyDone = false;
     zoomPanTo(nextEntity.x, nextEntity.y, zoom);
+
+    var chaseInterval = setInterval(function(){
+        if(!isInWindow(nextEntity.x, nextEntity.y) && zoomPanCompletelyDone) {
+            zoomPanCompletelyDone = false;
+            zoomPanTo(nextEntity.x, nextEntity.y, zoom);
+            console.log('clearing interval', chaseInterval);
+            clearInterval(chaseInterval);
+        }
+    }, 1000 / 60);
 }
+
+
 
 function slideMap(slope) {
     if (slope > 0) {

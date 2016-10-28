@@ -35,6 +35,8 @@ var moveEntities = { //Currently mutates entities
                     x: ~~(entity.path[entity.path.length - 1].x * 32),
                     y: ~~(entity.path[entity.path.length - 1].y * 32)
                 };
+
+                //entity.previousNode.x === entity.nextNode.x is so that we don't move from current to a node in the wrong direction, ie we don't actually want to go to nodes sometimes
                 if ((Math.abs(dest.x - entity.x) <= howClose || entity.previousNode.x === entity.nextNode.x) && (Math.abs(dest.y - entity.y) <= howClose || entity.previousNode.y === entity.nextNode.y)) {
                     entity.previousNode = entity.nextNode;
                     entity.nextNode = entity.path.pop();
