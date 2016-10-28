@@ -31,7 +31,7 @@ function drawScoreBar(){
         var maxPoints = 1000;
 
 
-        var sizeOfBar = .5 - 1.03 * ($('#playerGold span').offset().left + $('#playerGold span').width()) / canvasWidth;
+        var sizeOfBar = .5 - ($('#playerGold span').offset().left) / canvasWidth;
 
         var swordHeight = $('#sword span').height();
         var swordWidth = $('#sword span').width();
@@ -105,6 +105,8 @@ function bottomNavCenter(){
     $('#allEntities').css({marginLeft: leftMargin});
     leftMargin = canvasWidth * .5  - $('#sword').outerWidth() / 2 - $('nav').css('padding-right').slice(0, -2);
     $('#sword').css({marginLeft: leftMargin});
+
+    $('#topNav nav').css({marginTop: $('#sword span').height()})
 }
 
 

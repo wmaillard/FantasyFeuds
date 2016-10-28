@@ -70,6 +70,8 @@ canvas, #shop {
       color:  #262626;
     padding-right: 5%;
     padding-left: 5%;
+    padding-top:0;
+    padding-bottom: 0;
 }
 nav {
   font-size: 30px;
@@ -112,6 +114,9 @@ i {
   pointer-events: auto; /*allows clicking on nav buttons*/
 }
 
-#topNav nav {
-  margin-top: 1%;
+#scoreNav nav{
+  padding-top: 0;
+}
+#topNav nav{
+  padding-top: 0;
 }
