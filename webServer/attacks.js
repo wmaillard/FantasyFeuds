@@ -34,7 +34,6 @@ var Attacks = {  //This mutates entities in setChange
                 console.err(err);
             }
             attacks = JSON.parse(attacks);
-            console.log(attacks);
             if (attacks && attacks.length > 0) {
                 var val = JSON.stringify([]);
                 Attacks.redisClient.set('attacks', val);
@@ -48,6 +47,7 @@ var Attacks = {  //This mutates entities in setChange
         }
     },
     commitAttacks(entities) {
+        this.playerMoneyChanges = [];
         this.clearAttacks(entities)
         this.doAttacks(entities); //has built in set redis for attacks
         return {changes: this.changes, playerMoneyChanges: this.playerMoneyChanges};
@@ -66,10 +66,10 @@ var Attacks = {  //This mutates entities in setChange
         var newY = ~~(entity.y / 32);
         var oldX = null;
         var oldY = null;
-        if (entity.previousNode) {
+        if (entity.previousMapNode) {
             //if there is a previous node then we will delete it and add in the new one
-            oldX = (entity.previousNode.x);
-            oldY = (entity.previousNode.y);
+            oldX = (entity.previousMapNode.x);
+            oldY = (entity.previousMapNode.y);
             if (oldX !== newX || oldY !== newY) {
                 Attacks.removeFromEntityMap(oldX, oldY, entity.id);
                 if (!Attacks.entitiesMap[newX]) {
@@ -89,6 +89,7 @@ var Attacks = {  //This mutates entities in setChange
                 Attacks.entitiesMap[newX][newY] = [];
             }
             Attacks.entitiesMap[newX][newY].push(entity.id);
+            entity.previousMapNode = {x : newX, y: newY}
         }
     },
     attackableEntities(entity, entities) {
@@ -130,7 +131,6 @@ var Attacks = {  //This mutates entities in setChange
         return attacks;
     },
     applyAttacks(attacks, allEntities) { //mutates allEntities ;()
-        this.playerMoneyChanges = [];
         this.changes = {};
         var attackList;
         while (attackList = attacks.shift()) {

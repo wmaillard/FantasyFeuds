@@ -88,6 +88,9 @@ setInterval(() => {
 
             }
             if (Date.now() > lastAttacks + 1000) { //Send out attacks
+                for(var e in entities){
+                    Attacks.setEntitiesMap(entities[e]);
+                }
                 Attacks.addAttacks(entities);
                 var attackChanges = Attacks.commitAttacks(entities);
                 Object.assign(changes, attackChanges.changes);

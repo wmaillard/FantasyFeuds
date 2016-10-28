@@ -26,6 +26,13 @@ var moveEntities = {  //Currently mutates entities
             for (var e in entities) {
                 var entity = entities[e];
                 if (entity.path.length > 0) { //If the entity has a path
+                    if(entity.nextNode.x === entity.previousNode.x && entity.nextNode.y === entity.previousNode.y){
+                        entity.nextNode = entity.path.pop();
+                        if(entity.path.length === 0){
+                            continue;
+                        }
+
+                    }
                     var dest = {
                         x: ~~(entity.path[entity.path.length - 1].x * 32),
                         y: ~~(entity.path[entity.path.length - 1].y * 32)

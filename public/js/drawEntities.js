@@ -115,7 +115,7 @@ function drawHealthBar(entity, canvas) {
     ctx.fillRect((1 - health / 100) * canvas.width, 0, (health / 100) * canvas.width, canvas.height / 15);
 }
 
-function animateEntity(entity) {
+function animateEntity(entity, entities) {
     if (!entity.dead && !entity.walking && !entity.attacking && entity.type !== 'quarry') {
         if (entity.walkingState !== 1) {
             entity.walkingState = 1;
@@ -128,49 +128,47 @@ function animateEntity(entity) {
         entity.walkingState === 0 ? entity.walkingState = 2 : entity.walkingState = 0;
     }
     var victim = null;
-    var current = null;
     if (entity.attacking) {
-        current = {};
-        current.x = entity.x;
-        current.y = entity.y
         victim = {};
-        victim.x = entity.victim.x;
-        victim.y = entity.victim.y;
-    } else if (entity.walking || (entity.path && entity.path.length > 0)) {
+        victim.x = entities[entity.victim].x;
+        victim.y = entities[entity.victim].y;
+    } else if (entity.walking) {
         victim = {};
-        victim.x = entity.nextNode.x * 32;
-        victim.y = entity.nextNode.y * 32;
-        current = {};
-        if (!entity.previousNode) {
-            entity.previousNode = {};
-            entity.previousNode.x = entity.nextNode.x;
-            entity.previousNode.y = entity.nextNode.y;
+        if(entity.previousNode.x < entity.nextNode.x){ //100 is abitrary, just send it way out
+            victim.x = entity.x + 100;
+        }else if(entity.previousNode.x > entity.nextNode.x){
+           victim.x = entity.x - 100;
         }
-        current.x = entity.previousNode.x * 32;
-        current.y = entity.previousNode.y * 32;
+        else{
+            victim.x = entity.heading.x;
+        }
+        if(entity.previousNode.y < entity.nextNode.y){
+            victim.y = entity.y + 100;
+        }else if(entity.previousNode.x > entity.nextNode.x){
+           victim.y = entity.y - 100;
+        
+        }else{
+            victim.y = entity.heading.y;
+        }
     }
-    setDirectionFacing(current, entity, victim);
+    setDirectionFacing(entity, victim);
 }
 
-function setDirectionFacing(current, entity, victim) {
+function setDirectionFacing(entity, victim) {
     if (entity.dead) {
         return;
     }
-    if (victim !== null) {
-        if (victim.x !== current.x || victim.y !== current.y) {
-            if (current.x === victim.x) {
-                if (current.y < victim.y) {
-                    entity.directionPointing = 'S';
-                } else {
-                    entity.directionPointing = 'N'
-                }
-            } else {
-                if (current.x < victim.x) {
-                    entity.directionPointing = 'E'
-                } else {
-                    entity.directionPointing = 'W';
-                }
-            }
+    if (victim) {
+        var angleDeg = Math.atan2(victim.y - entity.y, victim.x - entity.x) * 180 / Math.PI;
+        angleDeg = Math.abs(angleDeg);
+        if (angleDeg >= 45 && angleDeg < 135) {
+            entity.directionPointing = 'N';
+        } else if (angleDeg >= 135 && angleDeg < 225) {
+            entity.directionPointing = 'W'
+        } else if (angleDeg >= 225 && angleDeg < 315) {
+            entity.directionPointing = 'S'
+        } else {
+            entity.directionPointing = 'E';
         }
     } else if (entity.directionPointing !== 'S' && !entity.dead) {
         entity.directionPointing = 'S';

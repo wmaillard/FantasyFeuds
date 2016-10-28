@@ -87,7 +87,7 @@ function drawFrame() {
         serverSentFullState = false;
         for (var e in entities) {
             if (isInWindow(entities[e].x, entities[e].y)) {
-                animateEntity(entities[e]);
+                animateEntity(entities[e], entities);
             }
         }
     }
