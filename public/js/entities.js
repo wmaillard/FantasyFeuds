@@ -7,9 +7,7 @@ function Entity(xyStart, health, type, playerId, color) {
     this.y = xyStart.y;
     this.health = health;
     this.directionPointing = 'S'; //N, W, E, S
-    this.heading = {};
-    this.heading.x = this.x;
-    this.heading.y = this.y;
+    this.heading = {x : xyStart.x, y: xyStart.y};
     this.attacking = false;
     this.gore = {};
     this.path = [];
@@ -19,6 +17,8 @@ function Entity(xyStart, health, type, playerId, color) {
     this.size = characterImages[this.type].height / 4;
     this.height = characterImages[this.type].height / 4;
     this.width = characterImages[this.type].width / 3;
+    this.previousNode = {x : xyStart.x, y: xyStart.y};
+    this.nextNode = {x : xyStart.x, y: xyStart.y};
     if (Math.random() >= 0.5) {
         this.team = 'orange';
     } else {
