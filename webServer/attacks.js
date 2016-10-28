@@ -70,7 +70,7 @@ var Attacks = {  //This mutates entities in setChange
             //if there is a previous node then we will delete it and add in the new one
             oldX = (entity.previousMapNode.x);
             oldY = (entity.previousMapNode.y);
-            if (oldX !== newX || oldY !== newY) {
+            if (!(oldX === newX && oldY === newY)) {
                 Attacks.removeFromEntityMap(oldX, oldY, entity.id);
                 if (!Attacks.entitiesMap[newX]) {
                     Attacks.entitiesMap[newX] = {};
@@ -79,6 +79,7 @@ var Attacks = {  //This mutates entities in setChange
                     Attacks.entitiesMap[newX][newY] = [];
                 }
                 Attacks.entitiesMap[newX][newY].push(entity.id);
+                entity.previousMapNode = {x : newX, y: newY}
                 return true; //moved
             }
         } else if (newEntity) {

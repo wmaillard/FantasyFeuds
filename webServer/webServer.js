@@ -71,16 +71,28 @@ io.on('connection', (socket) => {
 
 /*******************Main Server Loop ************************************/
 setInterval(() => {
-    redisClient.get('change', function(err, outsideChange) {
+    redisClient.get('changes', function(err, outsideChanges) {
+        outsideChanges = JSON.stringify(outsideChanges);
         if (!err) {
-            if (LOO(changes) > 0 || outsideChange === 'true') { //If anything interesting changed
-                Object.assign(changes, moveEntities(entities));  //merge changes and results from moveEntities
+
+            outsideChanges = JSON.stringify(outsideChanges);
+            if(LOO(outsideChanges) > 0){
+                Object.assign(changes, outsideChanges)  //Apply outside changes
+                redisClient.set('changes', JSON.stringify({}));
+            }
+
+            Object.assign(changes, moveEntities(entities)); //Move entities
+
+            if (LOO(changes) > 0) { //If anything interesting changed
+
                 if (LOO(changes) > 0) {
                     io.emit('changes', changes);
-                    changes = {};
-                    redisClient.set('changes', JSON.stringify({}));
                     
                 }
+                
+                changes = {};
+
+
                 if (playerInfoChange) {
                     io.emit('playerInfo', playerInfo);
                     playerInfoChange = false;

@@ -134,21 +134,23 @@ function animateEntity(entity, entities) {
         victim.y = entities[entity.victim].y;
     } else if (entity.walking) {
         victim = {};
-        if(entity.previousNode.x < entity.nextNode.x){ //100 is abitrary, just send it way out
-            victim.x = entity.x + 100;
+        if(entity.previousNode.x < entity.nextNode.x){ //1000000 is abitrary, just send it way out
+            victim.x = entity.x + 1000000;
         }else if(entity.previousNode.x > entity.nextNode.x){
-           victim.x = entity.x - 100;
+           victim.x = entity.x - 1000000;
         }
         else{
-            victim.x = entity.heading.x;
+            //victim.x = entity.heading.x;
+            victim.x = 0;
         }
         if(entity.previousNode.y < entity.nextNode.y){
-            victim.y = entity.y + 100;
-        }else if(entity.previousNode.x > entity.nextNode.x){
-           victim.y = entity.y - 100;
+            victim.y = entity.y + 1000000;
+        }else if(entity.previousNode.y > entity.nextNode.y){
+           victim.y = entity.y - 1000000;
         
         }else{
-            victim.y = entity.heading.y;
+            //victim.y = entity.heading.y;
+            victim.y = 0;
         }
     }
     setDirectionFacing(entity, victim);
@@ -158,17 +160,20 @@ function setDirectionFacing(entity, victim) {
     if (entity.dead) {
         return;
     }
-    if (victim) {
+    if (victim && (victim.x || victim.y)) {
         var angleDeg = Math.atan2(victim.y - entity.y, victim.x - entity.x) * 180 / Math.PI;
-        angleDeg = Math.abs(angleDeg);
+        if(angleDeg < 0){
+            angleDeg = Math.abs(angleDeg) + 180
+        }
+        console.log(angleDeg);
         if (angleDeg >= 45 && angleDeg < 135) {
-            entity.directionPointing = 'N';
+            entity.directionPointing = 'S';
         } else if (angleDeg >= 135 && angleDeg < 225) {
-            entity.directionPointing = 'W'
+            entity.directionPointing = 'E'
         } else if (angleDeg >= 225 && angleDeg < 315) {
-            entity.directionPointing = 'S'
+            entity.directionPointing = 'N'
         } else {
-            entity.directionPointing = 'E';
+            entity.directionPointing = 'W';
         }
     } else if (entity.directionPointing !== 'S' && !entity.dead) {
         entity.directionPointing = 'S';
