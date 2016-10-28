@@ -28,7 +28,7 @@ canvas, #shop {
 }
 
 #info{
-	z-index: 3;
+	z-index: 6;
 	display: inline;
 }
 #foreground {
@@ -91,6 +91,9 @@ nav {
 }
 
 .icon-coins:before {
+  content: "\e901";
+}
+.icon-sword:before {
   content: "\e900";
 }
 
@@ -107,4 +110,8 @@ nav { /*Inner shadow on nav items*/
 /*Override bootstrap navbar active and focus*/
 i {
   pointer-events: auto; /*allows clicking on nav buttons*/
+}
+
+#topNav nav {
+  margin-top: 1%;
 }

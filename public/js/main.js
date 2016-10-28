@@ -19,10 +19,36 @@ $(function() {
 
     scene.load(level, ctxB, zoom);
     window.requestAnimationFrame(drawFrame);
+    window.requestAnimationFrame(drawScoreBar);
+
 });
 
 
+function drawScoreBar(){
 
+        var orangePoints = 1000;
+        var bluePoints = 1000;
+        var maxPoints = 1000;
+
+
+        var sizeOfBar = .5 - 1.03 * ($('#playerGold span').offset().left + $('#playerGold span').width()) / canvasWidth;
+
+        var swordHeight = $('#sword span').height();
+        var swordWidth = $('#sword span').width();
+        var swordCenter = {y: $('#sword span').offset().top + swordHeight / 2, x: $('#sword span').offset().left + swordWidth / 2};
+
+        ctxI.fillStyle = 'orange';
+        var leftSide = (.5 - sizeOfBar) * canvasWidth + sizeOfBar * canvasWidth * ( 1 - orangePoints / maxPoints);
+        console.log(leftSide);
+        console.log(swordCenter);
+        ctxI.fillRect(leftSide, swordCenter.y, swordCenter.x - leftSide, swordHeight / 7);
+
+        
+        ctxI.fillStyle = 'blue';
+        rightWidth = sizeOfBar * canvasWidth * (bluePoints / maxPoints) 
+        ctxI.fillRect(swordCenter.x, swordCenter.y, rightWidth, swordHeight / 7);
+
+}
 
 
 function buildStore() {
@@ -75,8 +101,10 @@ function zoomAction(e) {
 }
 
 function bottomNavCenter(){
-    var leftMargin = canvasWidth * .46  - $('#allEntities').outerWidth() / 2 - $('#previousEntity').outerWidth();
+    var leftMargin = canvasWidth * .5  - $('#allEntities').outerWidth() / 2 - $('#previousEntity').outerWidth() - $('nav').css('padding-right').slice(0, -2);
     $('#allEntities').css({marginLeft: leftMargin});
+    leftMargin = canvasWidth * .5  - $('#sword').outerWidth() / 2 - $('nav').css('padding-right').slice(0, -2);
+    $('#sword').css({marginLeft: leftMargin});
 }
 
 
