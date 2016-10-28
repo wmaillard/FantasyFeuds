@@ -2,15 +2,6 @@ var moveEntities = {  //Currently mutates entities
     microMove: 4, //How far each step for an entity is.  Could make entity specific
     changes: {},
     entities: {},
-        init() {
-
-            Array.prototype.peak = function() {
-                if (this.length === 0) {
-                    return undefined;
-                }
-                return this[this.length - 1];
-            }
-        },
         setChange(entityId, key, value) {
             if (key === 'wholeEntity') {
                 this.entities[entityId] = value;
@@ -36,8 +27,8 @@ var moveEntities = {  //Currently mutates entities
                 var entity = entities[e];
                 if (entity.path.length > 0) { //If the entity has a path
                     var dest = {
-                        x: ~~(entity.path.peak().x * 32),
-                        y: ~~(entity.path.peak().y * 32)
+                        x: ~~(entity.path[entity.path.length - 1].x * 32),
+                        y: ~~(entity.path[entity.path.length - 1].y * 32)
                     };
                     if (Math.abs(dest.x - entity.x) <= howClose && Math.abs(dest.y - entity.y) <= howClose) {
                         entity.previousNode = entity.nextNode;

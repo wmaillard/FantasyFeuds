@@ -1,13 +1,9 @@
 "use strict"
 var redis = require('redis');
-//var client = require('redis').createClient('http://localhost:6379');
 var castles = require('./castles.js').castles
-const blockingTerrainFile = require('./blockingTerrain.js');
-const blockingTerrain = blockingTerrainFile.blockingTerrain;
-const attacksFile = require('./attacks.js');
-const Attacks = attacksFile.Attacks;
-const entityInfoFile = require('./entityInfo.js');
-const entityInfo = entityInfoFile.entityInfo;
+const blockingTerrain = require('./blockingTerrain.js').blockingTerrain;
+const Attacks = require('./attacks.js').Attacks;
+const entityInfo = require('./entityInfo.js').entityInfo;
 const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path'); //What is this?
@@ -17,28 +13,29 @@ const PORT = process.env.PORT || 3000;
 const server = express()
     .use(express.static(path.join(__dirname, '../public')))
     .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
 const ioWorker = require('socket.io')(server, {
     path: '/socket.io-client'
 });
 ioWorker.set('transports', ['websocket']);
+
 const io = socketIO(server);
 const pathSocket = ioWorker.of('/path');
+
 var tickRate = 30; // in hz
-var change = true;
 var changes = {};
 var attacks = [];
 var entities = {};
 var playerInfo = {};
 var playerInfoChange = false;
 var lastAttacks = Date.now() + 500;
-var lastFullState = 0;
+var lastFullState = Date.now() - 1001;
 var clientSocketConnection; //Used to talk with the client
 var pathSocketConnection;
 const startGold = 10000;
 var redisClient = redis.createClient(process.env.REDIS_URL);
 var LOO = require('./generalUtilities').LOO;
 var moveEntitiesFile = require('./moveEntities.js').moveEntities;
-moveEntitiesFile.init();
 var moveEntities = moveEntitiesFile.moveEntities;
 
 /************** Web Worker Sockets **********************/
@@ -78,22 +75,23 @@ setInterval(() => {
         if (!err) {
             if (LOO(changes) > 0 || outsideChange === 'true') { //If anything interesting changed
                 Object.assign(changes, moveEntities(entities));  //merge changes and results from moveEntities
-                if (LOO(changes) !== 0) {
+                if (LOO(changes) > 0) {
                     io.emit('changes', changes);
                     changes = {};
                     redisClient.set('changes', JSON.stringify({}));
+                    
                 }
                 if (playerInfoChange) {
                     io.emit('playerInfo', playerInfo);
                     playerInfoChange = false;
                 }
-                if (!change) {
-                    redisClient.set('change', 'false');
-                }
+
             }
             if (Date.now() > lastAttacks + 1000) { //Send out attacks
                 Attacks.addAttacks(entities);
-                Attacks.commitAttacks();
+                var attackChanges = Attacks.commitAttacks(entities);
+                Object.assign(changes, attackChanges.changes);
+                addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
                 lastAttacks = Date.now();
                 emitCastles(io);
             }
@@ -108,7 +106,7 @@ setInterval(() => {
 }, 1000 / tickRate);
 
 
-/************* functions to send/modify info sent to client *******************/
+/************* Functions to send/modify info sent to client *******************/
 function setChange(entityId, key, value) {
     if (key === 'wholeEntity') {
         entities[entityId] = value;
@@ -120,7 +118,6 @@ function setChange(entityId, key, value) {
         }
         changes[entityId][key] = value;
     }
-    change = true;
 }
 
 function emitCastles(io) {
@@ -143,3 +140,11 @@ function addPath(data) {
 }
 
 
+function addPlayerMoneyChanges(playerMoneyChanges){
+  if(playerMoneyChanges.length > 0){
+    playerInfoChange = true;
+  }
+  for(var i in playerMoneyChanges){
+    playerInfo[playerMoneyChanges[i].id] +=  playerMoneyChanges[i].gold;
+  }
+}
