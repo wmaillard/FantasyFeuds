@@ -1,22 +1,22 @@
 {
-  "name": "GOTRTS",
+  "name": "Fantasy Feuds",
   "version": "1.0.0",
-  "description": "##Post Midterm Check -------------------------------------------------------------------------------------------------------------------------------- ##U.I. - [ ] Things to get rid of once in production: travel south, travel south by load (made need to add kims stuff), the already been array - [ ] Add Kim's stuff to the save state and load it.  Including base health.",
+  "description": "Capture the flag fantasy game",
   "main": "index.js",
   "scripts": {
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wmaillard/GOTRTS.git"
+    "url": "git+https://github.com/wmaillard/fantasyfeuds.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wmaillard/GOTRTS/issues"
+    "url": "https://github.com/wmaillard/fantasyfeuds/issues"
   },
-  "homepage": "https://github.com/wmaillard/GOTRTS#readme",
+  "homepage": "https://github.com/wmaillard/fantasyfeuds#readme",
   "engines": {
     "node": "6.2.0"
   },
