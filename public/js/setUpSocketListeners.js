@@ -32,6 +32,9 @@ function setUpSocketListeners() {
         }
         entities = serverEntities;
     })
+    socket.on('team', function(team){
+        playerTeam = team;
+    })
     socket.on('connect', function() {
         playerId = socket.id;
     })

@@ -27,6 +27,7 @@ var zoomSpeed = .10;  //How fast to zoom in/out
 var zoomPanTimeoutRunning = false;
 var zoomPanCompletelyDone = true;
 var scores = {orange: 1000, blue: 1000};
+var playerTeam = null;
 
 
 

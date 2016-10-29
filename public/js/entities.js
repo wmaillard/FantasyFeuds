@@ -19,9 +19,5 @@ function Entity(xyStart, health, type, playerId, color) {
     this.width = characterImages[this.type].width / 3;
     this.previousNode = {x : xyStart.x, y: xyStart.y};
     this.nextNode = {x : xyStart.x, y: xyStart.y};
-    if (Math.random() >= 0.5) {
-        this.team = 'orange';
-    } else {
-        this.team = 'blue';
-    }
+    this.team = color;
 };

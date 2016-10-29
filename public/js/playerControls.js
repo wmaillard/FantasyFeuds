@@ -24,13 +24,14 @@ function clickGameContainer(e) {
         if (!$('#allEntities').hasClass('buttonDown')) {
             $('#allEntities').toggleClass('buttonDown')
         }
-    } else if (boughtEntity) {
+    } else if (boughtEntity && playerTeam) {
+        //add if entity is in player castle
         var entity;
         var health = 100;
         entity = new Entity({
             'x': x,
             'y': y
-        }, health, boughtEntity, playerId, playerColor);
+        }, health, boughtEntity, playerId, playerTeam);
         //shift left a little?
         entity.x += zoom * entity.width * .1;
         entity.y -= (zoom - 1) * entity.width * .4;

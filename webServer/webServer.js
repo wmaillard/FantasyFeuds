@@ -42,9 +42,9 @@ var moveEntitiesFile = require('./moveEntities.js').moveEntities;
 var moveEntities = moveEntitiesFile.moveEntities;
 var lastScores = Date.now() - 10000;
 var scores = {'orange': 1000, 'blue': 1000}
-var blankGameLength = 1; //minutes
-var pointsPerCastle = 1000 / blankGameLength / 60 / 5;  //5 = num start castles, 1000 points 60 seconds
-
+var blankGameLength = 20; //minutes
+var pointsPerCastle = 1000 / 60 / 5 / blankGameLength;  //5 = num start castles, 1000 points 60 seconds
+var nextPlayer = 'orange';
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
     pathSocketConnection = socket;
@@ -59,6 +59,14 @@ io.on('connection', (socket) => {
         playerInfo[convertId(socket.id)] = {};
     }
     playerInfo[convertId(socket.id)].gold = startGold;
+    playerInfo[convertId(socket.id)].team = nextPlayer;
+    io.emit('team', nextPlayer);
+    if(nextPlayer === 'orange'){
+    	nextPlayer = 'blue';
+    }else{
+    	nextPlayer = 'orange';
+    }
+
     redisClient.set('change', 'true');
     socket.on('entityPathRequest', (data) => {
         data.startX = entities[data.id].x;
@@ -98,8 +106,8 @@ const startGold = 10000;
  moveEntities = moveEntitiesFile.moveEntities;
  lastScores = Date.now() - 10000;
  scores = {'orange': 1000, 'blue': 1000}
-blankGameLength = 1; //minutes
-pointsPerCastle = 1000 / blankGameLength / 60 / 5;  //5 = num start castles, 1000 points 60 seconds
+blankGameLength = 20; //minutes
+pointsPerCastle = 1000 / 60 / 5 / blankGameLength;  //5 = num start castles, 1000 points 60 seconds
 
 
 
