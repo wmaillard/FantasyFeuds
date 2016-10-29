@@ -22,33 +22,6 @@ const server = express()
 
 
 
-/*Trying cloudamqp
-// Consumer
-
-var q = 'tasks';
-
-var url = process.env.CLOUDAMQP_URL || "amqp://localhost";
-var open = require('amqplib').connect(url);
-
-
-setTimeout(function(){
-open.then(function(conn) {
-  var ok = conn.createChannel();
-  ok = ok.then(function(ch) {
-    ch.assertQueue(q);
-    ch.consume(q, function(msg) {
-      if (msg !== null) {
-        console.log(msg.content.toString());
-        ch.ack(msg);
-      }
-    });
-  });
-  return ok;
-}).then(null, console.warn);
-
-}, 5000);
-
-*/
 
 var socketURL = 'http://localhost:5000/path';
 if(process.env.ON_HEROKU){
@@ -83,7 +56,7 @@ setTimeout(function(){
 		})
 	});
 
-	}, 1000)
+	}, 10000)
 
 
 function setPathfinding() {
