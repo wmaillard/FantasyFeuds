@@ -52,7 +52,7 @@ open.then(function(conn) {
 
 var socketURL = 'http://localhost:5000/path';
 if(process.env.ON_HEROKU){
-  socketURL = 'https://fantasyfeuds.herokuapp.com/path';
+  socketURL = 'http://fantasyfeuds.com/path';
 }
 
 setTimeout(function(){
