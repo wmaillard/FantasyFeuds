@@ -1,6 +1,7 @@
 "use strict"
 var redis = require('redis');
-var castles = require('./castles.js').castles
+var Castles = require('./castles.js').castles;
+var castles = Castles.castles;
 const blockingTerrain = require('./blockingTerrain.js').blockingTerrain;
 const Attacks = require('./attacks.js').Attacks;
 const entityInfo = require('./entityInfo.js').entityInfo;
@@ -22,21 +23,27 @@ ioWorker.set('transports', ['websocket']);
 const io = socketIO(server);
 const pathSocket = ioWorker.of('/path');
 
+var clientSocketConnection; //Used to talk with the client
+var pathSocketConnection;
+var playerInfo = {};
+var playerInfoChange = false;
 var tickRate = 30; // in hz
 var changes = {};
 var attacks = [];
 var entities = {};
-var playerInfo = {};
-var playerInfoChange = false;
+
 var lastAttacks = Date.now() + 500;
 var lastFullState = Date.now() - 1001;
-var clientSocketConnection; //Used to talk with the client
-var pathSocketConnection;
+
 const startGold = 10000;
 var redisClient = redis.createClient(process.env.REDIS_URL);
 var LOO = require('./generalUtilities').LOO;
 var moveEntitiesFile = require('./moveEntities.js').moveEntities;
 var moveEntities = moveEntitiesFile.moveEntities;
+var lastScores = Date.now() - 10000;
+var scores = {'orange': 1000, 'blue': 1000}
+var blankGameLength = 1; //minutes
+var pointsPerCastle = 1000 / blankGameLength / 60 / 5;  //5 = num start castles, 1000 points 60 seconds
 
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
@@ -69,8 +76,35 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
+runServer();
+
+function runServer(){
+
+
+ playerInfo = {};
+ playerInfoChange = false;
+ tickRate = 30; // in hz
+ changes = {};
+ attacks = [];
+ entities = {};
+
+ lastAttacks = Date.now() + 500;
+ lastFullState = Date.now() - 1001;
+
+const startGold = 10000;
+ redisClient = redis.createClient(process.env.REDIS_URL);
+ LOO = require('./generalUtilities').LOO;
+ moveEntitiesFile = require('./moveEntities.js').moveEntities;
+ moveEntities = moveEntitiesFile.moveEntities;
+ lastScores = Date.now() - 10000;
+ scores = {'orange': 1000, 'blue': 1000}
+blankGameLength = 1; //minutes
+pointsPerCastle = 1000 / blankGameLength / 60 / 5;  //5 = num start castles, 1000 points 60 seconds
+
+
+
 /*******************Main Server Loop ************************************/
-setInterval(() => {
+var mainInterval = setInterval(() => {
     redisClient.get('changes', function(err, outsideChanges) {
         outsideChanges = JSON.stringify(outsideChanges);
         if (!err) {
@@ -92,7 +126,6 @@ setInterval(() => {
                 
                 changes = {};
 
-
                 if (playerInfoChange) {
                     io.emit('playerInfo', playerInfo);
                     playerInfoChange = false;
@@ -113,6 +146,22 @@ setInterval(() => {
             if (Date.now() > lastFullState + 1000) { //Send out a full state to keep in sync
                 sendFullState(entities);
             }
+            if(Date.now() > lastScores + 1000){
+            	lastScores = Date.now();
+            	setScores(castles, scores);
+            	io.emit('scores', scores);
+            	if(scores.blue <= 0 || scores.orange <= 0){
+            		var winner;
+            		if(scores.blue <= 0){
+            			winner = 'orange';
+            		}else{
+            			winnder = 'blue';
+            		}
+            		
+            		clearInterval(mainInterval);
+            		gameOver(winner);
+            	}
+	            }
             redisClient.set('entities', JSON.stringify(entities));
         } else {
             console.err(err);
@@ -120,6 +169,34 @@ setInterval(() => {
     });
 }, 1000 / tickRate);
 
+}
+
+function gameOver(winner){
+	io.emit('gameOver', {winner: winner});
+	console.log('gameOver');
+	setTimeout(runServer, 1000 * 15);
+}
+
+function setScores(castles, scores){
+
+	var numOrangeCastles = 0;
+	var numBlueCastles = 0;
+
+	for(var c in castles){
+		for(var i in castles[c].color){
+			if(castles[c].color[i].percent >= 1){
+				if(castles[c].color[i].color === 'orange'){
+					numOrangeCastles++;
+				}else if(castles[c].color[i].color === 'blue'){
+					numBlueCastles++;
+				}
+			}
+		}
+	}
+	scores.blue -= (numOrangeCastles * pointsPerCastle);
+	scores.orange -= (numBlueCastles * pointsPerCastle);
+
+}
 
 /************* Functions to send/modify info sent to client *******************/
 function setChange(entityId, key, value) {
@@ -136,11 +213,11 @@ function setChange(entityId, key, value) {
 }
 
 function emitCastles(io) {
-    castles.clearEntitiesInCastles();
+    Castles.clearEntitiesInCastles();
     for (var e in entities) {
-        castles.setEntitiesInCastles(entities[e]);
+        Castles.setEntitiesInCastles(entities[e]);
     }
-    io.emit('castleColors', castles.setCastleColors());
+    io.emit('castleColors', Castles.setCastleColors());
 }
 
 function sendFullState(entities) {

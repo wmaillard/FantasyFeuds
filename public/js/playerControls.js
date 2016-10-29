@@ -213,13 +213,7 @@ function goToNextEntity() {
     zoomPanCompletelyDone = false;
     zoomPanTo(nextEntity.x, nextEntity.y, zoom);
 
-    var chaseInterval = setInterval(function(){
-        if(!isInWindow(nextEntity.x, nextEntity.y) && zoomPanCompletelyDone) {
-            zoomPanCompletelyDone = false;
-            zoomPanTo(nextEntity.x, nextEntity.y, zoom);
-            clearInterval(chaseInterval);
-        }
-    }, 1000 / 60);
+    
 }
 
 function goToPreviousEntity() {
@@ -249,14 +243,6 @@ function goToPreviousEntity() {
     zoomPanCompletelyDone = false;
     zoomPanTo(nextEntity.x, nextEntity.y, zoom);
 
-    var chaseInterval = setInterval(function(){
-        if(!isInWindow(nextEntity.x, nextEntity.y) && zoomPanCompletelyDone) {
-            zoomPanCompletelyDone = false;
-            zoomPanTo(nextEntity.x, nextEntity.y, zoom);
-            console.log('clearing interval', chaseInterval);
-            clearInterval(chaseInterval);
-        }
-    }, 1000 / 60);
 }
 
 

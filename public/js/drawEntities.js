@@ -3,7 +3,14 @@ function drawCastleCircles(castles, ctx) {
         //currently only works for two colors
         if (castles[i].color[0].percent !== 0) {
             ctx.save();
-            ctx.lineWidth = 12 * zoom;
+            var width = 1.5 / Math.cbrt(zoom);
+ /*           var width = 1 / (zoom * 5);
+            if(zoom > .1 && zoom < 1){
+                width = 1 / (zoom * 2.5 )
+            }else if(zoom > 1){
+                width = zoom
+            }*/
+            ctx.lineWidth = width;
             ctx.globalAlpha = .6; //opacity
             ctx.beginPath();
             ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom, (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, 0, Math.PI * 2 * castles[i].color[0].percent);
@@ -13,7 +20,14 @@ function drawCastleCircles(castles, ctx) {
         }
         if (castles[i].color[1].percent !== 0) {
             ctx.save();
-            ctx.lineWidth = 12 * zoom;
+            var width = 1.5 / Math.cbrt(zoom);
+            /*var width = 1 / (zoom * 5);
+            if(zoom > .1 && zoom < 1){
+                width = 1 / (zoom * 2.5 )
+            }else if(zoom > 1){
+                width = 1 / (zoom * 1.25)
+            }*/
+            ctx.lineWidth = width;
             ctx.globalAlpha = .6; //opacity
             ctx.beginPath();
             ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom, (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, -Math.PI * 2 * castles[i].color[1].percent, 0);

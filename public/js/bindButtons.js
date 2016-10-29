@@ -28,6 +28,7 @@ var BindButtons = {
             bottomNavCenter();
             limitBackgroundOffset();
             redrawBackground();
+            drawScoreBar(scores);
         });
         $('#showShop').click(function() {
             if ($('#shop').is(":visible")) {

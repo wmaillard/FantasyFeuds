@@ -19,36 +19,28 @@ $(function() {
 
     scene.load(level, ctxB, zoom);
     window.requestAnimationFrame(drawFrame);
-    window.requestAnimationFrame(drawScoreBar);
+    window.requestAnimationFrame(function(){drawScoreBar(scores)});
 
 });
 
 
-function drawScoreBar(){
-
-        var orangePoints = 1000;
-        var bluePoints = 1000;
-        var maxPoints = 1000;
-
-
-        var sizeOfBar = .5 - ($('#playerGold span').offset().left) / canvasWidth;
-
-        var swordHeight = $('#sword span').height();
-        var swordWidth = $('#sword span').width();
-        var swordCenter = {y: $('#sword span').offset().top + swordHeight / 2, x: $('#sword span').offset().left + swordWidth / 2};
-
-        ctxI.fillStyle = 'orange';
-        var leftSide = (.5 - sizeOfBar) * canvasWidth + sizeOfBar * canvasWidth * ( 1 - orangePoints / maxPoints);
-        console.log(leftSide);
-        console.log(swordCenter);
-        ctxI.fillRect(leftSide, swordCenter.y, swordCenter.x - leftSide, swordHeight / 7);
-
-        
-        ctxI.fillStyle = 'blue';
-        rightWidth = sizeOfBar * canvasWidth * (bluePoints / maxPoints) 
-        ctxI.fillRect(swordCenter.x, swordCenter.y, rightWidth, swordHeight / 7);
-
+function drawScoreBar(scores) {
+    ctxI.clearRect(0, 0, canvasWidth, canvasHeight);
+    var orangePoints = scores.orange;
+    var bluePoints = scores.blue;
+    var maxPoints = 1000;
+    var sizeOfBar = .5 - ($('#playerGold span').offset().left) / canvasWidth;
+    var swordHeight = $('#sword span').height();
+    var swordWidth = $('#sword span').width();
+    var swordCenter = { y: $('#sword span').offset().top + swordHeight / 2, x: $('#sword span').offset().left + swordWidth / 2 };
+    ctxI.fillStyle = 'orange';
+    var leftSide = (.5 - sizeOfBar) * canvasWidth + sizeOfBar * canvasWidth * (1 - orangePoints / maxPoints);
+    ctxI.fillRect(leftSide, swordCenter.y, swordCenter.x - leftSide, swordHeight / 7);
+    ctxI.fillStyle = 'blue';
+    rightWidth = sizeOfBar * canvasWidth * (bluePoints / maxPoints)
+    ctxI.fillRect(swordCenter.x, swordCenter.y, rightWidth, swordHeight / 7);
 }
+
 
 
 function buildStore() {

@@ -26,6 +26,8 @@ var playerGold = 1000;
 var zoomSpeed = .10;  //How fast to zoom in/out
 var zoomPanTimeoutRunning = false;
 var zoomPanCompletelyDone = true;
+var scores = {orange: 1000, blue: 1000};
+
 
 
 var rows = 20;  //Rows and columns map is broken up into

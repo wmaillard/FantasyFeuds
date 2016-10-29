@@ -35,4 +35,12 @@ function setUpSocketListeners() {
     socket.on('connect', function() {
         playerId = socket.id;
     })
+    socket.on('scores', function(newScores){
+        scores = newScores;
+        window.requestAnimationFrame(function(){drawScoreBar(scores)});
+    })
+    socket.on('gameOver', function(data){
+        alert('Game Over, ' + data.winner + 'won');
+        entities = {};
+    })
 }
