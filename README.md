@@ -1,20 +1,13 @@
-# GOTRTS (name pending, should change this soon)
+# Fantasy Feuds
 
 ##Quick Description
-- The goal of this project is to eventually create a Massively Multiplayer Online Real Time Strategy Game from scratch (i.e. without the user of a written game engine or game development environment).
-- This game is currently in development (alpha) and the main branch is live here: http://gotrtswm.herokuapp.com/ and the 'working' branch periodically live here: http://gotrtswm.herokuapp.com/
-
-###Plan of attack
-- The general flow of the game will be as follows (This will be eventually made clearer with a nice chart):
- - The user adds and controls their characters
- - The server (connected using socket.io, probably) checks that all changes are valid compared to the last state that the user submitted (what is checked and how often is still up for debate).  The server gives the all clear periodically or forces the client into a state.
-  -The only issue here is that much of the code on the client and server will be redundant, which might not be a bad thing, since both will be running in Javascript.
-- The hope is to set this structure up as a backbone, then slowly branch off and take care of details.  There needs to be careful planning to ensure that everything is scalable (from the number of calculations given to the server to the graphics processing by the client.)
+- This is a multiplayer capture the flag type game in the which the user purchases characters and then uses them to capture castles.  The more castle each team owns, the faster the other team's healthbar will diminish.  The first team to destroy the other team's healthbar wins.
+- This game is currently in development (beta) and the main branch is live here: fantasyfeuds.com and the 'working' branch periodically live here: http://fantasyfeudsworking.herokuapp.com/
 
 
 
 ##How to modify images for team colors
 	-New layer and select
 	-61% contrast
-	- -25% shift edge
-	- fill at 20% with #0d2ce7 or #e7790d
+	-25% shift edge
+	-fill at 20% with #0d2ce7 or #e7790d
