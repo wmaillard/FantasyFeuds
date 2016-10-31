@@ -43,7 +43,7 @@ function setUpSocketListeners() {
         window.requestAnimationFrame(function(){drawScoreBar(scores)});
     })
     socket.on('gameOver', function(data){
-        alert('Game Over, ' + data.winner + 'won');
+        $('#gameOver').modal('show');
         entities = {};
     })
 }
