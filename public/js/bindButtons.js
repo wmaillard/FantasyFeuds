@@ -2,9 +2,9 @@ var BindButtons = {
     bindAll: function() {
         $('#gameContainer').bind('mousewheel', function(e) {
             if (e.originalEvent.wheelDelta / 120 > 0) {
-                zoomAction({ scale: 1.10, center: { x: e.originalEvent.clientX, y: e.originalEvent.clientY } })
+                zoomAction({ scale: 1.20, center: { x: e.originalEvent.clientX, y: e.originalEvent.clientY } })
             } else {
-                zoomAction({ scale: .90, center: { x: e.originalEvent.clientX, y: e.originalEvent.clientY } })
+                zoomAction({ scale: .80, center: { x: e.originalEvent.clientX, y: e.originalEvent.clientY } })
             }
         });
         $('#previousEntity').click(function() {
