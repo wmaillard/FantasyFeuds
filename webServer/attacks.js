@@ -48,7 +48,6 @@ var Attacks = {  //This mutates entities in setChange
     },
     commitAttacks(entities) {
         this.playerMoneyChanges = [];
-        this.clearAttacks(entities)
         this.doAttacks(entities); //has built in set redis for attacks
         return {changes: this.changes, playerMoneyChanges: this.playerMoneyChanges};
     },
