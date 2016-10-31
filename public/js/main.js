@@ -3,7 +3,7 @@ $(function() {
 
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-
+    $('#startInfo').modal('show');
     loadImages();
 
     playerColor = getRandomColor();
