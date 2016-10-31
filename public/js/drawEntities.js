@@ -110,7 +110,7 @@ function drawHighlight(entity, canvas) {
 
 function drawHealthBar(entity, canvas) {
     var ctx = canvas.getContext('2d');
-    ctx.fillStyle = entity.color;
+    ctx.fillStyle = entity.healthbarColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height / 15);
     ctx.fillStyle = "red";
     var health = 100 - entity.health;
