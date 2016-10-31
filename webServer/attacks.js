@@ -145,7 +145,7 @@ var Attacks = {  //This mutates entities in setChange
                         attacking = true;
                         allEntities[k].victim = j;
                         Attacks.setChange(k, 'victim', j, allEntities);
-                        allEntities[j].health -= Attacks.entityInfo[allEntities[k].type].attack * attack.power;
+                        allEntities[j].health -= Attacks.entityInfo[allEntities[k].type].attack * attack.power * Math.random();
                         allEntities[j].health < 0 ? allEntities[j].health = 0 : null;
                         Attacks.setChange(j, 'health', allEntities[j].health, allEntities)
                     } else {
