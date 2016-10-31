@@ -122,5 +122,9 @@ i {
 #bug{
     position: fixed;
     bottom: 20%;
-    right: 0;
+    right: 1%;
+    z-index: 8;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+    font-size: 30px;
+    color: #262626;
 }
