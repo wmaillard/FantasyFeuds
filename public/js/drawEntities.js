@@ -177,9 +177,8 @@ function setDirectionFacing(entity, victim) {
     if (victim && (victim.x || victim.y)) {
         var angleDeg = Math.atan2(victim.y - entity.y, victim.x - entity.x) * 180 / Math.PI;
         if(angleDeg < 0){
-            angleDeg = Math.abs(angleDeg) + 180
+            angleDeg += 360;
         }
-        console.log(angleDeg);
         if (angleDeg >= 45 && angleDeg < 135) {
             entity.directionPointing = 'S';
         } else if (angleDeg >= 135 && angleDeg < 225) {
