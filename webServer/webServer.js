@@ -34,7 +34,7 @@ var entities = {};
 var lastAttacks = Date.now() + 500;
 var lastFullState = Date.now() - 1001;
 
-const startGold = 10000;
+const startGold = 500;
 var redisClient = redis.createClient(process.env.REDIS_URL);
 var LOO = require('./generalUtilities').LOO;
 var moveEntitiesFile = require('./moveEntities.js').moveEntities;
@@ -84,12 +84,16 @@ io.on('connection', (socket) => {
 });
 
 runServer();
-
+function clearPlayerInfo(playerInfo){
+	for(var player in playerInfo){
+		playerInfo[player].gold = startGold;
+	}
+}
 function runServer(){
 
-
- playerInfo = {};
- playerInfoChange = false;
+clearPlayerInfo(playerInfo);
+	
+ playerInfoChange = true;
  tickRate = 30; // in hz
  changes = {};
  attacks = [];
@@ -98,7 +102,6 @@ function runServer(){
  lastAttacks = Date.now() + 500;
  lastFullState = Date.now() - 1001;
 
-const startGold = 10000;
  redisClient = redis.createClient(process.env.REDIS_URL);
  LOO = require('./generalUtilities').LOO;
  moveEntitiesFile = require('./moveEntities.js').moveEntities;
@@ -107,7 +110,7 @@ const startGold = 10000;
  scores = {'orange': 1000, 'blue': 1000}
 blankGameLength = 20; //minutes
 pointsPerCastle = 1000 / 60 / 5 / blankGameLength;  //5 = num start castles, 1000 points 60 seconds
-
+var castles = Castles.castles;
 
 
 /*******************Main Server Loop ************************************/
