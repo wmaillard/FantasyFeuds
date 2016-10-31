@@ -119,3 +119,9 @@ i {
 #topNav nav{
   padding-top: 0;
 }
+#bug{
+    position: fixed;
+    bottom: 20%;
+    right: 0;
+    width: 300px;
+}
