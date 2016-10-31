@@ -4,12 +4,6 @@ function drawCastleCircles(castles, ctx) {
         if (castles[i].color[0].percent !== 0) {
             ctx.save();
             var width = 1.5 / Math.cbrt(zoom);
- /*           var width = 1 / (zoom * 5);
-            if(zoom > .1 && zoom < 1){
-                width = 1 / (zoom * 2.5 )
-            }else if(zoom > 1){
-                width = zoom
-            }*/
             ctx.lineWidth = width;
             ctx.globalAlpha = .6; //opacity
             ctx.beginPath();
@@ -21,12 +15,6 @@ function drawCastleCircles(castles, ctx) {
         if (castles[i].color[1].percent !== 0) {
             ctx.save();
             var width = 1.5 / Math.cbrt(zoom);
-            /*var width = 1 / (zoom * 5);
-            if(zoom > .1 && zoom < 1){
-                width = 1 / (zoom * 2.5 )
-            }else if(zoom > 1){
-                width = 1 / (zoom * 1.25)
-            }*/
             ctx.lineWidth = width;
             ctx.globalAlpha = .6; //opacity
             ctx.beginPath();
