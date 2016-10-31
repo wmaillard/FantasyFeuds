@@ -131,9 +131,9 @@ var mainInterval = setInterval(() => {
 
                 if (LOO(changes) > 0) {
                     io.emit('changes', changes);
-                    
-                }
-                
+                    Attacks.clearAttacks(entities)
+
+                }                
                 changes = {};
 
                 if (playerInfoChange) {
