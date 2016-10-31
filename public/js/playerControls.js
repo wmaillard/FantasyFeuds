@@ -25,13 +25,14 @@ function clickGameContainer(e) {
             $('#allEntities').toggleClass('buttonDown')
         }
     } else if (boughtEntity && playerTeam) {
-        //add if entity is in player castle
+        //add iff entity is in player castle
         var entity;
         var health = 100;
         entity = new Entity({
             'x': x,
             'y': y
         }, health, boughtEntity, playerId, playerTeam);
+        entity.healthbarColor = playerColor;
         //shift left a little?
         entity.x += zoom * entity.width * .1;
         entity.y -= (zoom - 1) * entity.width * .4;
