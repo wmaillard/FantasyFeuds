@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "amqplib": "*",
+    "compression": "^1.6.2",
     "express": "4.14.0",
     "grunt": "1.0.1",
     "grunt-cli": "1.2.0",

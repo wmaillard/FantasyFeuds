@@ -10,9 +10,12 @@ const socketIO = require('socket.io');
 const path = require('path'); 
 const convertId = require('./generalUtilities.js').convertId;
 const PORT = process.env.PORT || 3000;
-const server = express()
-    .use(express.static(path.join(__dirname, '../public')))
-    .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+var compression = require('compression')
+
+const server = express();
+server.use(compression());
+server.use(express.static(path.join(__dirname, '../public')))
+server.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 const ioWorker = require('socket.io')(server, {
     path: '/socket.io-client'
