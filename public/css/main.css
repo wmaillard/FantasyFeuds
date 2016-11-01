@@ -90,6 +90,9 @@ nav {
 #allEntities{
   margin-left: 30%;
 }
+#sword{
+  margin-left: 45%;
+}
 
 .icon-coins:before {
   content: "\e901";

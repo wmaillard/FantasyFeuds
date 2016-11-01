@@ -18,6 +18,18 @@ $(function() {
     setUpSocketListeners();
 
     scene.load(level, ctxB, zoom);
+    
+    if(playerTeam === "blue"){
+        backgroundOffset = {x: -558, y: -81};
+        zoom = 0.424;
+    }else if(playerTeam === "orange"){
+        backgroundOffset = {x: -17541.792109572416, y: -30058.033589069597};
+        zoom = 0.48
+    }else{
+        backgroundOffset = {x: -2929.1425191861085, y: -8798.232238003477};
+        zoom = 0.045;
+    }
+   
     window.requestAnimationFrame(drawFrame);
     window.requestAnimationFrame(function(){drawScoreBar(scores)});
 
