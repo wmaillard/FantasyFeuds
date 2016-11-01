@@ -42,21 +42,23 @@ function clickGameContainer(e) {
         if (LOO(selectedEntities) > 0) {
             for (var i in selectedEntities) {
                 var entity = selectedEntities[i];
-                entity.path = []; //kill path early
-                entity.walking = true;
-                entity.heading = {};
-                entity.heading.x = x;
-                entity.heading.x += entity.width * .1;
-                entity.heading.y = y;
-                entity.heading.y -= (zoom - 1) * entity.width * .4;
-                var coords = {
-                    startX: entity.x,
-                    startY: entity.y,
-                    endX: entity.heading.x,
-                    endY: entity.heading.y,
-                    id: entity.id
+                if(!entity.dead){
+                    entity.path = []; //kill path early
+                    entity.walking = true;
+                    entity.heading = {};
+                    entity.heading.x = x;
+                    entity.heading.x += entity.width * .1;
+                    entity.heading.y = y;
+                    entity.heading.y -= (zoom - 1) * entity.width * .4;
+                    var coords = {
+                        startX: entity.x,
+                        startY: entity.y,
+                        endX: entity.heading.x,
+                        endY: entity.heading.y,
+                        id: entity.id
+                    }
+                    socket.emit('entityPathRequest', coords);
                 }
-                socket.emit('entityPathRequest', coords);
             }
         }
     } else {
@@ -75,7 +77,7 @@ function deselectAllEntities() {
 function selectAllVisiblePlayerEntities(entities, playerId) {
     var playersEntities = onlyPlayerEntities(entities, playerId);
     for (e in playersEntities) {
-        if (isInWindow(playersEntities[e].x, playersEntities[e].y)) {
+        if (isInWindow(playersEntities[e].x, playersEntities[e].y) && !playersEntities[e].dead) {
             selectedEntities[playersEntities[e].id] = playersEntities[e];
         }
     }
