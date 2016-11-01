@@ -149,6 +149,8 @@ var Attacks = {  //This mutates entities in setChange
                         allEntities[j].health < 0 ? allEntities[j].health = 0 : null;
                         Attacks.setChange(j, 'health', allEntities[j].health, allEntities)
                     } else {
+                        allEntities[k].attacking = false;
+                        Attacks.setChange(k, 'attacking', false, allEntities);
                         Attacks.removeFromEntityMap(allEntities[j].x, allEntities[j].y, allEntities[j].id, allEntities)
                         allEntities[j].dead = true;
                         Attacks.setChange(j, 'dead', true, allEntities);
