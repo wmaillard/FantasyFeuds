@@ -24,7 +24,7 @@ function entityIsThere(x, y, rangeX, rangeY) {
 }
 
 
-function setWindowResizeProperties() {
+var function setWindowResizeProperties () {
     $("#background").attr("height", window.innerHeight);
     $("#background").attr("width", window.innerWidth);
     $("#foreground").attr("height", window.innerHeight);
