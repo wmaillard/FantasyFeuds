@@ -16,9 +16,11 @@ var http = require('http');
 const app = express();
 app.use(compression());
 app.use(express.static(path.join(__dirname, '../public')));
-app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
 
 var server = http.createServer(app);
+server.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
 const ioWorker = require('socket.io')(server, {
     path: '/socket.io-client'
 });
