@@ -19,11 +19,23 @@ module.exports = function(grunt) {
             'public/js/build/game.min.js': files
           }
     }
+    },
+    compress: {
+  main: {
+    options: {
+      mode: 'gzip'
+    },
+    files: {
+      'public/js/build/game.min.gz.js' : 'public/js/build/game.min.js'
     }
+  }
+}
   });
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  
+  grunt.loadNpmTasks('grunt-contrib-compress');
 
   // Default task(s).
   grunt.registerTask('default', ['uglify']);
