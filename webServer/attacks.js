@@ -138,7 +138,7 @@ var Attacks = {  //This mutates entities in setChange
                 var attack = attackList[a];
                 var j = attack.victim.id;
                 var k = attack.attacker.id;
-                var attacking = false;
+
                 if (allEntities[j] && allEntities[k]) {
                     if (allEntities[j].health > 0) {
                         allEntities[k].attacking = true;
@@ -156,7 +156,7 @@ var Attacks = {  //This mutates entities in setChange
                         Attacks.setChange(j, 'walkingState', 2, allEntities);
                         this.playerMoneyChanges.push({id: attack.attacker.playerId, gold : Attacks.entityInfo[allEntities[j].type].value});
                     }
-                    allEntities[k].attacking = attacking;
+
                 }
             }
         }
