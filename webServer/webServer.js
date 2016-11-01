@@ -11,12 +11,14 @@ const path = require('path');
 const convertId = require('./generalUtilities.js').convertId;
 const PORT = process.env.PORT || 3000;
 var compression = require('compression')
+var http = require('http');
 
-const server = express();
-server.use(compression());
-server.use(express.static(path.join(__dirname, '../public')))
-server.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+const app = express();
+app.use(compression());
+app.use(express.static(path.join(__dirname, '../public')));
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
+var server = http.createServer(app);
 const ioWorker = require('socket.io')(server, {
     path: '/socket.io-client'
 });
