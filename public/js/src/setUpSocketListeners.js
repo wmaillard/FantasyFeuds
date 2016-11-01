@@ -34,6 +34,14 @@ function setUpSocketListeners() {
     })
     socket.on('team', function(team){
         playerTeam = team;
+        if(playerTeam === "blue"){ //this could be breaking because of timing issues, we'll see
+             backgroundOffset = {x: -558, y: -81};
+             zoom = 0.424;
+        }else if(playerTeam === "orange"){
+            backgroundOffset = {x: -17541.792109572416, y: -30058.033589069597};
+            zoom = 0.48
+        }
+        redrawBackground();
     })
     socket.on('connect', function() {
         playerId = socket.id;

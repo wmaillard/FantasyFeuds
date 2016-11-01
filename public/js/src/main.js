@@ -18,6 +18,12 @@ $(function() {
     setUpSocketListeners();
 
     scene.load(level, ctxB, zoom);
+    
+
+    backgroundOffset = {x: -2929.1425191861085, y: -8798.232238003477};
+    zoom = 0.045;
+    
+   
     window.requestAnimationFrame(drawFrame);
     window.requestAnimationFrame(function(){drawScoreBar(scores)});
 
