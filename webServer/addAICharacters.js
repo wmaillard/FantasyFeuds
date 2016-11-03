@@ -1,31 +1,7 @@
+var Entity = require('./entities');
+
 function addAICharacters() {
-  var aiEnt = {
-    "attackType": "none",
-    "color": "#808080",
-    "playerId": "-1",
-    "type": "quarry",
-    "x": 300,
-    "y": 487,
-    "health": 100,
-    "directionPointing": "S",
-    "heading": {
-      "x": 292,
-      "y": 487
-    },
-    "attacking": false,
-    "walking": false,
-    "walkingState": 0,
-    "size": 70,
-    "height": 70,
-    "width": 70,
-    "loaded": true,
-    "team": "red",
-    "ai": false,
-    "selected": false,
-    "path": [],
-    "id": 1475712082519,
-    "nextNode": null
-  }
+
   var quar = JSON.stringify(aiEnt);
 
   var hydraId; // just for testing
