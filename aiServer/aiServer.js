@@ -1,4 +1,4 @@
-//Server paths over redis right now with a request coming from sockets.
+//Serves paths over redis right now with a request coming from sockets.
 
 "use strict"
 var redis = require('redis');
