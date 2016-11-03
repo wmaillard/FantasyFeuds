@@ -80,7 +80,7 @@ io.on('connection', (socket) => {
         pathSocketConnection.emit('pathRequest', data);
     });
     socket.on('addEntity', (data) => {
-        if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost) {
+        if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost  && Castles.canAddHere(data.entity)) {
             playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
             playerInfoChange = true;
             setChange(data.entity.id, 'wholeEntity', data.entity)
