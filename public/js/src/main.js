@@ -1,9 +1,17 @@
 
+
 $(function() {
 
+    Pace.on('done', function() {
+        $('#closeIntro').click(function(e) {
+            $('#startInfo').toggle();
+        })
+        $('#closeIntro').removeClass('disabled');
+    });
+   
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-    $('#startInfo').modal('show');
+
     loadImages();
 
     playerColor = getRandomColor();
@@ -26,6 +34,8 @@ $(function() {
    
     window.requestAnimationFrame(drawFrame);
     window.requestAnimationFrame(function(){drawScoreBar(scores)});
+
+
 
 });
 
@@ -122,6 +132,7 @@ function drawFrame() {
     if (entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight) {
         drawEntities(entities, ctxF, true);
     }
+
     window.requestAnimationFrame(drawFrame);
 }
 

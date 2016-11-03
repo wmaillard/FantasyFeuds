@@ -60,7 +60,7 @@ function zoomURL(url, scale) {
     return newURL
 }
 
-function clearURLImages(tiles, currentZoomR) {
+function clearURLImages (tiles, currentZoomR) {
     for (var i in tiles.url) {
         if (tiles.img[i]) {
             tiles.img[i] = null;
@@ -179,7 +179,7 @@ function drawFromArray(layerName, rows, columns) {
     zoom = saveZoom;
 }
 
-function loadEightAround(current, rows, columns) {
+function loadEightAround (current, rows, columns) {
     var eight = [];
     if (current - columns >= 0) {
         eight.push(current - columns);
