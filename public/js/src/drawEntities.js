@@ -1,27 +1,26 @@
-function drawCastleCircles(castles, ctx) {
-    for (var i in castles) {
-        //currently only works for two colors
-        if (castles[i].color[0].percent !== 0) {
-            ctx.save();
-            var width = 1.5 / Math.cbrt(zoom);
-            ctx.lineWidth = width;
-            ctx.globalAlpha = .6; //opacity
-            ctx.beginPath();
-            ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom, (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, 0, Math.PI * 2 * castles[i].color[0].percent);
-            ctx.strokeStyle = castles[i].color[0].color;
-            ctx.stroke();
-            ctx.restore();
+function drawCastleCircles(a, b) {
+    for (var c in a) {
+        if (0 !== a[c].color[0].percent) {
+            b.save();
+            var d = 1.5 / Math.cbrt(zoom);
+            b.lineWidth = d;
+            b.globalAlpha = .1;
+            b.beginPath();
+            b.ellipse((a[c].x + backgroundOffset.x) * zoom, (a[c].y + backgroundOffset.y) * zoom, castleRadius / 2.5 * zoom, castleRadius / 3 * zoom, 0, 0, 2 * Math.PI * a[c].color[0].percent),
+            b.strokeStyle = a[c].color[0].color, b.fillStyle = a[c].color[0].color, b.fill();
+            b.stroke(),
+            b.restore()
         }
-        if (castles[i].color[1].percent !== 0) {
-            ctx.save();
-            var width = 1.5 / Math.cbrt(zoom);
-            ctx.lineWidth = width;
-            ctx.globalAlpha = .6; //opacity
-            ctx.beginPath();
-            ctx.ellipse((castles[i].x + backgroundOffset.x) * zoom, (castles[i].y + backgroundOffset.y) * zoom, (castleRadius / 2.5) * zoom, (castleRadius / 3) * zoom, 0, -Math.PI * 2 * castles[i].color[1].percent, 0);
-            ctx.strokeStyle = castles[i].color[1].color;
-            ctx.stroke();
-            ctx.restore();
+        if (0 !== a[c].color[1].percent) {
+            b.save();
+            var d = 1.5 / Math.cbrt(zoom);
+            b.lineWidth = d,
+            b.globalAlpha = .1,
+            b.beginPath(),
+            b.ellipse((a[c].x + backgroundOffset.x) * zoom, (a[c].y + backgroundOffset.y) * zoom, castleRadius / 2.5 * zoom, castleRadius / 3 * zoom, 0, 2 * -Math.PI * a[c].color[1].percent, 0),
+            b.strokeStyle = a[c].color[1].color, b.fillStyle = a[c].color[1].color, b.fill(),
+            b.stroke(),
+            b.restore()
         }
     }
 }
