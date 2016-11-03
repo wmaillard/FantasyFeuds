@@ -92,9 +92,9 @@ var castles = {
         }
     },
     setEntitiesInCastles: function(e) {
-        var castles = castles.castles;
-        var rx = castles.castleRadius / 2.5;
-        var ry = castles.castleRadius / 3;
+        var castles = this.castles;
+        var rx = this.castleRadius / 2.5;
+        var ry = this.castleRadius / 3;
         for (var c in castles) {
             if (e.playerId != -1 && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1) {
                 castles[c]['entities']['teams'][e.team][e.id] = e;
@@ -102,8 +102,8 @@ var castles = {
         }
     },
     canAddHere : function(e) {
-        var rx = castles.castleRadius / 2.5;
-        var ry = castles.castleRadius / 3;
+        var rx = this.castleRadius / 2.5;
+        var ry = this.castleRadius / 3;
         for(var c in castles){
             if(e.color === castles[c].ownedBy && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1){
                 return true;
