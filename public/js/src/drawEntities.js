@@ -27,7 +27,24 @@ function drawCastleCircles(castles, ctx) {
         }
     }
 }
+function drawEntityCircles(entities, ctx, playerColor){
+    var entityRadius = 250;
+    for(var e in entities){
+     if(entities[e].team === playerColor){
+        ctx.save();
+        var width = 1.5 / Math.cbrt(zoom);
+        ctx.lineWidth = width;
+        ctx.globalAlpha = .1; //opacity
+        ctx.beginPath();
+        ctx.ellipse((entities[e].x + backgroundOffset.x) * zoom, (entities[e].y + backgroundOffset.y) * zoom, (entityRadius / 2.5) * zoom, (entityRadius / 3) * zoom, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = ctx.fillStyle = entities[e].team;
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
+    }
 
+}
 function drawEntities(entities, ctx, lock, clear) {
     var directions = {
         'S': 0,
@@ -63,6 +80,9 @@ function drawEntities(entities, ctx, lock, clear) {
             drawHealthBar(entities[entity], newCan);
         }
         ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height, x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size * zoom, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
+    }
+    if(boughtEntity){
+     drawEntityCircles(entities, ctx, playerColor);
     }
     drawCastleCircles(castles, ctx);
 }
