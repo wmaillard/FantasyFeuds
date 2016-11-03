@@ -106,7 +106,7 @@ var castles = {
         var rx = this.castleRadius / 2.5;
         var ry = this.castleRadius / 3;
         for(var c in castles){
-            if(e.color === castles[c].ownedBy && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1){
+            if(e.team === castles[c].ownedBy && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1){
                 return true;
             }
         }
