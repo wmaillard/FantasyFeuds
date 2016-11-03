@@ -35,11 +35,11 @@ function setUpSocketListeners() {
     socket.on('team', function(team){
         playerTeam = team;
         if(playerTeam === "blue"){ //this could be breaking because of timing issues, we'll see
-             backgroundOffset = {x: -558, y: -81};
-             zoom = 0.424;
+             backgroundOffset = {x: -781, y: -91};
+             zoom = 0.3;
         }else if(playerTeam === "orange"){
-            backgroundOffset = {x: -17541.792109572416, y: -30058.033589069597};
-            zoom = 0.48
+            backgroundOffset = {x: -17615, y: -30061};
+            zoom = 0.3
         }
         redrawBackground();
     })

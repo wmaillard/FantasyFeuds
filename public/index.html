@@ -10,13 +10,14 @@
     <title>Fantasy Feuds</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/pace.css">
     <link href="fonts/font-awesome-4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="fonts/icomoon/style.css" rel="stylesheet" type="text/css">
     <link href="css/main.css" rel="stylesheet">
     <link rel='shortcut icon' href='img/favicon.ico' type='image/x-icon'/ >
 </head>
 
-<body>
+<body class='modal-open'>
     <!--a id='bug' href=""><i class="fa fa-bug" aria-hidden="true"></i></a-->
     <div id="scoreNav" class="container">
         <nav class="navbar navbar-fixed-top navbar-light bg-faded">
@@ -52,19 +53,14 @@
     </div>
     </div>
     <!--Need portfolio-modal css -->
-    <div class="portfolio-modal modal fade" id="startInfo" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="portfolio-modal modal fade in" id="startInfo" tabindex="-1" role="dialog" style="display: block;" aria-hidden="true">
         <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
+            
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2">
                         <div class="modal-body">
-                            <h2>Welcome</h2>
+                            <h2><span class="icon-sword" aria-hidden="true"></span> Fantasy Feuds <span class="icon-sword" aria-hidden="true"></span></h2>
                             <hr class="star-primary">
                             <p>Welcome to Fantasy Feuds!  This game is currently in pre-beta, so there may be some minor bugs. <!-- If you find a problem please report it by clicking the <i class="icon-bug"></i> button.--></p>
                             <h3>Gameplay</h3>
@@ -75,14 +71,16 @@
                                 
                             <p>Get more gold by defeating anything with a healthbar.  You will also recieve gold over time based on the number of castles your team owns.</p>  
                             <h3>Move the Camera</h3>
-                            <p>Zoom to your characters by pressing <i class="fa fa-chevron-left" aria-hidden="true"></i> or <i class="fa fa-chevron-right" aria-hidden="true"></i> or zoom and pan around by pinching and dragging (scroll to zoom if you have a mouse). </p> 
+                            <p>Double tap the map to quickly zoom in and out.</p>
+                            <p>Zoom to your characters by pressing <i class="fa fa-chevron-left" aria-hidden="true"></i> or <i class="fa fa-chevron-right" aria-hidden="true"></i> </p>
+                            <p>Zoom and pan around by pinching and dragging (scroll to zoom if you have a mouse). </p> 
                             <h3>Control Your Characters</h3>
                             <p>Select your characters by clicking on them or press <i class="fa fa-users" aria-hidden="true"></i> to select all visible characters, or to deselect all of your characters.</p>
                             <p>After a character is selected, you can move it by clicking on where you would like it to go on the map.  Your phone will vibrate (if your volume is on) if your spot is blocked.
                             <h3>Attacking</h3>
                             <p>Characters will automatically attack anything that is attackable nearby.</p>
                             
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                            <button id="closeIntro"  type="button" class="btn btn-success disabled" >Play!</button>
                         </div>
                     </div>
                 </div>
@@ -103,21 +101,23 @@
                         <div class="modal-body">
                             <h2>Game Over</h2>
                             <hr class="star-primary">
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                            <button  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
     <script src="js/libraries/jquery-3.0.0.min.js" ></script>
     <script src="js/libraries/tether.min.js"></script>
     <script src="js/libraries/bootstrap.min.js"></script>
     <script src="js/libraries/hammer.min.js"></script>
+    <script src="js/libraries/pace.min.js"></script>
     <!--script src="js/libraries/particle.js"></script-->
     <script src="js/libraries/socket.io.js"></script>
     <!--script src="js/build/libraries/cookie.min.js"></script-->
-    
     
     <script src = 'js/build/game.min.js'></script>
 </body>

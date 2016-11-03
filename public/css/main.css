@@ -1,6 +1,10 @@
 body {
     font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
     overflow: hidden;
+    /*background-image: url("img/loader.svg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;*/
 }
 
 .header {
@@ -27,20 +31,20 @@ canvas, #shop {
 }
 
 #info{
-	z-index: 6;
+	z-index: 5;
 	display: inline;
 }
 #foreground {
-  z-index: 1;
-}
-#background {
-  z-index: 0;
-}
-#explosions{
   z-index: 2;
 }
-#menu-toggle {
+#background {
+  z-index: 1;
+}
+#explosions{
   z-index: 3;
+}
+#menu-toggle {
+  z-index: 4;
 }
 
 #signUpForm, #shop, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{
@@ -130,4 +134,66 @@ i {
     text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
     font-size: 30px;
     color: #262626;
+}
+
+/*Portfolio Modal Stuff*/
+
+.portfolio-modal .modal-content {
+  border-radius: 0;
+  background-clip: border-box;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  min-height: 100%;
+  padding: 5%;
+  text-align: center;
+}
+.portfolio-modal .modal-content h2 {
+  margin: 0;
+  font-size: 3em;
+}
+.portfolio-modal .modal-content img {
+  margin-bottom: 30px;
+}
+.portfolio-modal .modal-content .item-details {
+  margin: 30px 0;
+}
+.portfolio-modal .close-modal {
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  background-color: transparent;
+  top: 25px;
+  right: 25px;
+  cursor: pointer;
+}
+.portfolio-modal .close-modal:hover {
+  opacity: 0.3;
+}
+.portfolio-modal .close-modal .lr {
+  height: 75px;
+  width: 1px;
+  margin-left: 35px;
+  background-color: #2C3E50;
+  transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  /* IE 9 */
+  -webkit-transform: rotate(45deg);
+  /* Safari and Chrome */
+  z-index: 1051;
+}
+.portfolio-modal .close-modal .lr .rl {
+  height: 75px;
+  width: 1px;
+  background-color: #2C3E50;
+  transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  /* IE 9 */
+  -webkit-transform: rotate(90deg);
+  /* Safari and Chrome */
+  z-index: 1052;
+}
+.portfolio-modal .modal-backdrop {
+  opacity: 0;
+  display: none;
 }
