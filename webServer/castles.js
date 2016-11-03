@@ -102,6 +102,7 @@ var castles = {
         }
     },
     canAddHere : function(e) {
+        var castles = this.castles;
         var rx = this.castleRadius / 2.5;
         var ry = this.castleRadius / 3;
         for(var c in castles){
