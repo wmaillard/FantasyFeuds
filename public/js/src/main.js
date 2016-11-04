@@ -6,9 +6,9 @@ $(function() {
         $('#closeIntro').click(function(e) {
             $('#startInfo').toggle();
             setTimeout(function(){
-                $('#introTeamBox').fadeOut();
+                $('#introTeamBox').fadeOut('slow');
             }, 1000
-        })
+        )
         $('#closeIntro').removeClass('disabled');
     });
     $('#playerGold span').css({color: playerColor})
