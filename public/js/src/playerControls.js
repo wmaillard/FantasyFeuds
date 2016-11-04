@@ -15,9 +15,8 @@ function mapMove(e) {
 }
 
 function clickGameContainer(e) {
-    var x = ~~(e.pointers[0].clientX / zoom - backgroundOffset.x);
-    var y = ~~(e.pointers[0].clientY / zoom - backgroundOffset.y);
-    var entityAtClick = entityIsThere(x, y);
+    var point = convertScreenToMapPoint(e.pointers[0].clientX, e.pointers[0].clientY)
+    var entityAtClick = entityIsThere(point.x, point.y);
     if (entityAtClick && !entityAtClick.dead && entityAtClick.playerId === playerId) {
         deselectAllEntities();
         selectedEntities[entityAtClick.id] = entityAtClick;
@@ -29,8 +28,8 @@ function clickGameContainer(e) {
         var entity;
         var health = 100;
         entity = new Entity({
-            'x': x,
-            'y': y
+            'x': point.x,
+            'y': point.y
         }, health, boughtEntity, playerId, playerTeam);
         entity.healthbarColor = playerColor;
         //shift left a little?
@@ -46,9 +45,9 @@ function clickGameContainer(e) {
                     entity.path = []; //kill path early
                     entity.walking = true;
                     entity.heading = {};
-                    entity.heading.x = x;
+                    entity.heading.x = point.x;
                     entity.heading.x += entity.width * .1;
-                    entity.heading.y = y;
+                    entity.heading.y = point.y;
                     entity.heading.y -= (zoom - 1) * entity.width * .4;
                     var coords = {
                         startX: entity.x,
