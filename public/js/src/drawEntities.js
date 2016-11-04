@@ -76,8 +76,8 @@ function drawEntities(entities, ctx, lock, clear) {
             whichImage += ('_' + entities[e].team)
         }
         cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entityInfo[type].width, entityInfo[type].height, entities[e]);
-        if (!entities[entity].dead) {
-            drawHealthBar(entities[entity], newCan);
+        if (!entities[e].dead) {
+            drawHealthBar(entities[e], newCan);
         }
         var entityCenter = {};
         entityCenter.x = entities[e].x - (newCan.width * entitySize - entity.width / 2);
