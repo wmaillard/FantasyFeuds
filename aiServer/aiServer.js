@@ -29,6 +29,7 @@ if(process.env.ON_HEROKU){
   if(process.env.WEB_URL){
 	socketURL = process.env.WEB_URL;
   }
+  console.log('**************' + socketURL + '*****************');
 }
 
 setTimeout(function(){
