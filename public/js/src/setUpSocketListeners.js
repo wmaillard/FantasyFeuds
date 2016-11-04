@@ -34,13 +34,14 @@ function setUpSocketListeners() {
     })
     socket.on('team', function(team){
         playerTeam = team;
-        if(playerTeam === "blue"){ //this could be breaking because of timing issues, we'll see
+        if(playerTeam === "blue"){ 
              backgroundOffset = {x: -781, y: -91};
              zoom = 0.3;
         }else if(playerTeam === "orange"){
             backgroundOffset = {x: -17615, y: -30061};
             zoom = 0.3
         }
+        $('#introTeam').text(playerTeam).css({color: playerTeam});
         redrawBackground();
     })
     socket.on('connect', function() {
