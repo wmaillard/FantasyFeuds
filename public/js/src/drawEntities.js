@@ -57,7 +57,7 @@ function drawEntities(entities, ctx, lock, clear) {
     for (var e in entities) {
         var type = entities[e].type;
         if (!isInWindow(entities[e].x, entities[e].y, entityInfo[type].width, entityInfo[type].height)) {
-            console.log('entity', entities[e].id, ' is not in the window);
+            console.log('entity', entities[e].id, ' is not in the window');
             continue;
         }
         if (!entityInfo[type]) {
