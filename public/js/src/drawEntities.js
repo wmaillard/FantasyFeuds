@@ -53,33 +53,42 @@ function drawEntities(entities, ctx, lock, clear) {
         'N': 3
     }
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    for (var entity in entities) {
-        if (!isInWindow(entities[entity].x, entities[entity].y)) {
+    for (var e in entities) {
+        if (!isInWindow(entities[e].x, entities[e].y)) {
             continue;
         }
-        var type = entities[entity].type;
+        var type = entities[e].type;
         if (!entityInfo[type]) {
             return; //Takes care of race conditions when loading
         }
-        var img_x = entities[entity].walkingState * entityInfo[type].width;
-        var img_y = directions[entities[entity].directionPointing] * entityInfo[type].height;
+        var img_x = entities[e].walkingState * entityInfo[type].width;
+        var img_y = directions[entities[e].directionPointing] * entityInfo[type].height;
         var x, y, nodeX, nodeY;
-        x = entities[entity].x;
-        y = entities[entity].y;
+        x = entities[e].x;
+        y = entities[e].y;
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
-        var whichImage = entities[entity].type;
-        if (entities[entity].dead || entities[entity].attacking) {
+        var whichImage = entities[e].type;
+        if (entities[e].dead || entities[e].attacking) {
             whichImage += 'Pose';
         }
-        if (entities[entity].team === 'orange' || entities[entity].team === 'blue') {
-            whichImage += ('_' + entities[entity].team)
+        if (entities[e].team === 'orange' || entities[e].team === 'blue') {
+            whichImage += ('_' + entities[e].team)
         }
-        cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entityInfo[type].width, entityInfo[type].height, entities[entity]);
+        cutOutCharacter(newCan, characterImages[whichImage], img_x, img_y, entityInfo[type].width, entityInfo[type].height, entities[e]);
         if (!entities[entity].dead) {
             drawHealthBar(entities[entity], newCan);
         }
-        ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height, x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size * zoom, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
+        var entityCenter = {};
+        entityCenter.x = entities[e].x - (newCan.width * entitySize - entity.width / 2);
+        entityCenter.y = entities[e].y - (newCan.width * entitySize - entity.height / 2);
+        var point = mapToScreenPoint(entityCenter.x, entityCenter.y);
+        var center = mapToScreenPoint(entities[e].x, entities[e].y);
+        ctx.drawSafeImage(newCan, point.x, point.y, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
+        ctx.rect(center.x, center.y, 3, 3);
+        ctx.stroke();
+        ctx.fill();
+    
     }
     if(boughtEntity){
        drawEntityCircles(entities, ctx, playerTeam);
