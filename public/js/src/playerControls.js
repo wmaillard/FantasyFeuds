@@ -15,7 +15,7 @@ function mapMove(e) {
 }
 
 function clickGameContainer(e) {
-    var point = convertScreenToMapPoint(e.pointers[0].clientX, e.pointers[0].clientY)
+    var point = convertScreenToMapPoint(e.pointers[0].clientX, e.pointers[0].clientY, zoom)
     var entityAtClick = entityIsThere(point.x, point.y);
     if (entityAtClick && !entityAtClick.dead && entityAtClick.playerId === playerId) {
         deselectAllEntities();
