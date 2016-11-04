@@ -5,6 +5,9 @@ $(function() {
     Pace.on('done', function() {
         $('#closeIntro').click(function(e) {
             $('#startInfo').toggle();
+            setTimeout(function(){
+                $('#introTeamBox').fadeOut();
+            }, 1000
         })
         $('#closeIntro').removeClass('disabled');
     });
