@@ -27,7 +27,7 @@ var socketURL = 'http://localhost:5000/path';
 if(process.env.ON_HEROKU){
   socketURL = 'https://fantasyfeuds.herokuapp.com/path';
   if(process.env.WEB_URL){
-	socketURL = WEB_URL;
+	socketURL = process.env.WEB_URL;
   }
 }
 
