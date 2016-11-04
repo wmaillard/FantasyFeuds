@@ -84,7 +84,7 @@ function drawEntities(entities, ctx, lock, clear) {
         entityCenter.y = entities[e].y - (newCan.width * entitySize - entity.height / 2);
         var point = mapToScreenPoint(entityCenter.x, entityCenter.y);
         var center = mapToScreenPoint(entities[e].x, entities[e].y);
-        ctx.drawSafeImage(newCan, point.x, point.y, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
+        ctx.drawImage(newCan, point.x, point.y, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
         ctx.rect(center.x, center.y, 3, 3);
         ctx.stroke();
         ctx.fill();
