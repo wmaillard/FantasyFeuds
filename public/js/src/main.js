@@ -7,11 +7,11 @@ $(function() {
             $('#startInfo').toggle();
             setTimeout(function(){
                 $('#introTeamBox').fadeOut('slow');
-            }, 1000
-        )
+            }, 1000)
+        });
         $('#closeIntro').removeClass('disabled');
     });
-    $('#playerGold span').css({color: playerColor})
+    $('#playerGold span').css({color: playerColor});
    
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
