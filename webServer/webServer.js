@@ -53,6 +53,7 @@ var pointsPerCastle = 1000 / 60 / 5 / blankGameLength;  //5 = num start castles,
 var nextPlayer = 'orange';
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
+    console.log('********* web worker connected **********');
     pathSocketConnection = socket;
     socket.on('path', (data) => {
         addPath(data);
