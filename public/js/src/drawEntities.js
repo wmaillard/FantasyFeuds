@@ -27,10 +27,10 @@ function drawCastleCircles(castles, ctx) {
         }
     }
 }
-function drawEntityCircles(entities, ctx, playerColor){
+function drawEntityCircles(entities, ctx, playerTeam){
     var entityRadius = 250;
     for(var e in entities){
-     if(entities[e].team === playerColor){
+     if(entities[e].team === playerTeam){
         ctx.save();
         var width = 1.5 / Math.cbrt(zoom);
         ctx.lineWidth = width;
@@ -82,7 +82,7 @@ function drawEntities(entities, ctx, lock, clear) {
         ctx.drawSafeImage(newCan, 0, 0, newCan.width, newCan.height, x * zoom + backgroundOffset.x * zoom - size * zoom, y * zoom + backgroundOffset.y * zoom - size * zoom, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
     }
     if(boughtEntity){
-     drawEntityCircles(entities, ctx, playerColor);
+       drawEntityCircles(entities, ctx, playerTeam);
     }
     drawCastleCircles(castles, ctx);
 }
