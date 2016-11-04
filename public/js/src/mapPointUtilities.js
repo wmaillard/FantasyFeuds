@@ -1,10 +1,9 @@
 
 
-function isInWindow(x, y){
-      if(!canvasWidth || !canvasHeight){
-        canvasWidth = $('#gameContainer').width();
-        canvasHeight = $('#gameContainer').height();
-      }
+function isInWindow(x, y, width, height){
+    if(width && height){
+      return isInWindow(x, y) || isInWindow(x + width, y) || isInWindow(x + width, y + height) || isInWindow(x, y + height);
+    }
     if(x + backgroundOffset.x < canvasWidth / zoom && y + backgroundOffset.y < canvasHeight / zoom && x + backgroundOffset.x >= 0 &&  y + backgroundOffset.y >= 0){
         return true;
     }else return false;
