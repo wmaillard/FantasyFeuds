@@ -55,10 +55,11 @@ function drawEntities(entities, ctx, lock, clear) {
     }
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     for (var e in entities) {
-        if (!isInWindow(entities[e].x, entities[e].y)) {
+        var type = entities[e].type;
+        if (!isInWindow(entities[e].x, entities[e].y, entityInfo[type].width, entityInfo[type].height)) {
+            console.log('entity', entities[e].id, ' is not in the window);
             continue;
         }
-        var type = entities[e].type;
         if (!entityInfo[type]) {
             return; //Takes care of race conditions when loading
         }
