@@ -102,8 +102,6 @@ var castles = {
         }
     },
     canAddHere : function(e) {
-        console.log(JSON.stringify(this.castles));
-        console.log(e.team);
         var castles = this.castles;
         var rx = this.castleRadius / 2.5;
         var ry = this.castleRadius / 3;
