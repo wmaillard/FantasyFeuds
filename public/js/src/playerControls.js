@@ -37,7 +37,7 @@ function clickGameContainer(e) {
         entity.y -= (zoom - 1) * entity.width * .4;
         socket.emit('addEntity', { entity: entity });
         boughtEntity = false;
-    } else if (!entityIsBlocked(x, y)) {
+    } else if (!entityIsBlocked(point.x, point.y)) {
         if (LOO(selectedEntities) > 0) {
             for (var i in selectedEntities) {
                 var entity = selectedEntities[i];
