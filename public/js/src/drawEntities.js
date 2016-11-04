@@ -56,7 +56,7 @@ function drawEntities(entities, ctx, lock, clear) {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     for (var e in entities) {
         var type = entities[e].type;
-        if (!isInWindow(entities[e].x, entities[e].y, entityInfo[type].width, entityInfo[type].height)) {
+        if (!entities[e].id || !isInWindow(entities[e].x, entities[e].y, entityInfo[type].width, entityInfo[type].height)) {
             continue;
         }
         if (!entityInfo[type]) {
