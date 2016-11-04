@@ -1,10 +1,6 @@
 body {
     font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
     overflow: hidden;
-    /*background-image: url("img/loader.svg");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;*/
 }
 
 .header {
@@ -199,7 +195,5 @@ i {
 }
 #introTeamBox {
     position: fixed;
-    top: 50%;
-    right: 50%;
     z-index: 8;
 }
