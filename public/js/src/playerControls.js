@@ -32,9 +32,6 @@ function clickGameContainer(e) {
             'y': point.y
         }, health, boughtEntity, playerId, playerTeam);
         entity.healthbarColor = playerColor;
-        //shift left a little?
-        entity.x += zoom * entity.width * .1;
-        entity.y -= (zoom - 1) * entity.width * .4;
         socket.emit('addEntity', { entity: entity });
         boughtEntity = false;
     } else if (!entityIsBlocked(point.x, point.y)) {
