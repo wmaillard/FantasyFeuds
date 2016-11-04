@@ -41,7 +41,7 @@ function setUpSocketListeners() {
             backgroundOffset = {x: -17615, y: -30061};
             zoom = 0.3
         }
-        $('#introTeam').text(playerTeam).css({color: playerTeam});
+        $('#introTeam').text(playerTeam.charAt(0).toUpperCase() + playerTeam.slice(1)).css({color: playerTeam});
         redrawBackground();
     })
     socket.on('connect', function() {
