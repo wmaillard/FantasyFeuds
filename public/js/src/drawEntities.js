@@ -81,8 +81,8 @@ function drawEntities(entities, ctx, lock, clear) {
             drawHealthBar(entities[e], newCan);
         }
         var entityCenter = {};
-        entityCenter.x = entities[e].x - (newCan.width * entitySize - entityInfo[type].width / 2);
-        entityCenter.y = entities[e].y - (newCan.width * entitySize - entityInfo[type].height); //unclear why this is no /2, has to do with canvas cutting
+        entityCenter.x = entities[e].x - (newCan.width * entitySize - entityInfo[type].width * entitySize / 2);
+        entityCenter.y = entities[e].y - (newCan.height * entitySize - entityInfo[type].height * entitySize); //unclear why this is no /2, has to do with canvas cutting
         var point = mapToScreenPoint(entityCenter.x, entityCenter.y);
         var center = mapToScreenPoint(entities[e].x, entities[e].y);
         ctx.drawImage(newCan, point.x, point.y, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
