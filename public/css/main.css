@@ -197,3 +197,9 @@ i {
   opacity: 0;
   display: none;
 }
+#introTeamBox {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    z-index: 8;
+}
