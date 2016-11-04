@@ -24,6 +24,7 @@ const server = express()
 
 
 var socketURL = 'http://localhost:5000/path';
+console.log(process.env);
 if(process.env.ON_HEROKU){
   socketURL = 'https://fantasyfeuds.herokuapp.com/path';
   if(process.env.WEB_URL){
