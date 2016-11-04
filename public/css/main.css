@@ -197,4 +197,6 @@ i {
     position: fixed;
     z-index: 8;
     top: 40%;
+    user-select: none;
+    pointer-events: none;
 }
