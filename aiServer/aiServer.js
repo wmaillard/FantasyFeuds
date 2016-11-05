@@ -61,7 +61,7 @@ setTimeout(function(){
 		})
 	});
 
-	}, 10000)
+	}, 1000)
 
 
 function setPathfinding() {

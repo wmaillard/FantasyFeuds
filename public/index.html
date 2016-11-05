@@ -29,7 +29,8 @@
     <div id="topNav" class="container">
         <nav class="navbar navbar-fixed-top navbar-light bg-faded">
             <div class="nav navbar-nav">
-                <div class="nav-item nav-link pull-xs-left" id='playerGold'><span class="icon-coins"></span> 500</div>
+                <div class="nav-item nav-link pull-xs-left" id='playerGold'><span class="icon-coins"></span>
+                <span id= 'goldAmount'> 500</span></div>
                 <a class="nav-item nav-link pull-xs-right" id='showShop' href=""><i class="fa fa-bars" aria-hidden="true"></i></a>
             </div>
         </nav>
@@ -43,7 +44,9 @@
             </div>
         </nav>
     </div>
-    <div id = "introTeamBox" class = "col-xs-8 offset-xs-2 text-xs-center"><h1>You Have Joined Team <span id="introTeam"></span></h1></div>
+    <div id = "introTeamBox" class = "infoBoxes col-xs-8 offset-xs-2 text-xs-center"><h1>You Have Joined Team <span class="teamName"></span></h1></div>
+    <div id = "badSpot" class = "infoBoxes col-xs-8 offset-xs-2 text-xs-center"><h1>Sorry, you can only add characters in areas that are <span class="teamName"></span></h1></div>
+    <div id = "blockedSpot" class = "infoBoxes col-xs-8 offset-xs-2 text-xs-center"><h1>Sorry, that spot is blocked</h1></div>
     <div id="gameContainer" class="header">
         <canvas id="background"></canvas>
         <canvas id="foreground"></canvas>
@@ -67,10 +70,11 @@
                             <h3>Gameplay</h3>
                             <p>Each player is placed on either the orange or blue team.  Your goal is to deplete the opposite team's health bar by conquering the most castles</p>
                             <h3>Buying characters</h3>
-                            <p>Buy characters by clicking the <i class="fa fa-bars" aria-hidden="true"></i> button. Your gold is shown next to the <span class="icon-coins"></span> icon.  Each of your characters will have the same color healthbar.</p>
+                            <p>Buy characters by clicking the <i class="fa fa-bars" aria-hidden="true"></i> button. Your gold is shown next to the <span class="icon-coins"></span> icon which is the same color as the healthbar above each of your characters.</p>
+                            <p>Add your characters by tapping the map anywhere that is the <span class='teamColor'>color of your team</span>.  This is either at conquered castles or near characters that are not attacking</p>
                                 <h3>Getting Gold</h3>
                                 
-                            <p>Get more gold by defeating anything with a healthbar.  You will also recieve gold over time based on the number of castles your team owns.</p>  
+                            <p>Get more gold by defeating anything with a healthbar.</p>  
                             <h3>Move the Camera</h3>
                             <p>Double tap the map to quickly zoom in and out.</p>
                             <p>Zoom to your characters by pressing <i class="fa fa-chevron-left" aria-hidden="true"></i> or <i class="fa fa-chevron-right" aria-hidden="true"></i> </p>
@@ -90,17 +94,12 @@
     </div>
         <div class="portfolio-modal modal fade" id="gameOverInfo" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2">
                         <div class="modal-body">
                             <h2>Game Over</h2>
+                            <p>The <span id='winningTeam'></span> team won!</p>
                             <hr class="star-primary">
                             <button  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
@@ -119,30 +118,9 @@
     <!--script src="js/libraries/particle.js"></script-->
     <script src="js/libraries/socket.io.js"></script>
     <!--script src="js/build/libraries/cookie.min.js"></script-->
-    <!--script src = 'js/build/game.min.js'></script-->
+    <script src = 'js/build/game.min.js'></script>
     
-    <!--         Development Scripts                -->
-    <script src="js/src/blockingTerrain.js"></script>
-    <script src="js/src/generalUtilities.js"></script>
-    <script src="js/src/drawingUtilities.js"></script>
-    <script src="js/src/entityUtilities.js"></script>
-
-
-
-    <script src="js/src/castles.js"></script>
-    <script src="js/src/entityInfo.js"></script>
-    <script src="js/src/globals.js"></script>
-    <script src="js/src/mapPointUtilities.js"></script>
-    <script src="js/src/controlFunctions.js"></script>
-    <script src="js/src/drawMap.js"></script>
-    <script src="js/src/drawEntities.js"></script>
-    <script src="js/src/bindButtons.js"></script>
-    <script src="js/src/entities.js"></script>
-    <script src="js/src/flameController.js"></script>
-    <script src="js/src/hammerSetup.js"></script>
-    <script src="js/src/setUpSocketListeners.js"></script>
-    <script src="js/src/playerControls.js"></script>
-    <script src="js/src/main.js"></script>
+  
 </body>
 
 </html>

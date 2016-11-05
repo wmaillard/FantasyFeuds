@@ -193,10 +193,13 @@ i {
   opacity: 0;
   display: none;
 }
-#introTeamBox {
+.infoBoxes {
     position: fixed;
     z-index: 8;
     top: 40%;
     user-select: none;
     pointer-events: none;
+}
+#badSpot, #blockedSpot {
+  display: none;
 }

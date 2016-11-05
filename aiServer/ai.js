@@ -219,30 +219,23 @@ function entityIsBlocked(x, y) {
 }
 
 function attackableEntities(entity, entitiesMap){
-  //Check if entities on nodes that are within range, then check if they are specifically within range via entity.x/.y
-  if(entity.attackType === 'sword'){
+  if(entity.attackType === 'sword' && !entity.dead){
     var nearbyEntities = [];
-    //console.log('z');
     var nodeX = ~~(entity.x / 32);
     var nodeY = ~~(entity.y / 32);
 
     for(var i = nodeX - 1; i <= nodeX + 1; i++){
 
-      //console.log('a')
       for(var j = nodeY - 1; j <= nodeY + 1; j++){
         if(!getEntitiesMap(i, j)){
           continue;
         }
-              //console.log('b')
         if(entitiesMap[i][j].length > 0){
-           //console.log('c')
           var entitiesAtNode = entitiesMap[i][j]
           for(var e in entitiesAtNode){
-            //console.log('d')
             var charact = entities[entitiesAtNode[e]];
-            if(!charact.dead && charact.playerId !== entity.playerId){ //don't attack yourself, could use this logic to heal
+            if(!charact.dead && charact.team !== entity.team){ //don't attack yourself, could use this logic to heal
               nearbyEntities.push(charact);
-              //console.log('e')
               if(!entity.attacking){
                 entity.attacking = true;
               }
@@ -252,61 +245,11 @@ function attackableEntities(entity, entitiesMap){
       }
     }
   }
-/*  console.log('nearbyEntities: ');
-  console.log(nearbyEntities);*/
-/*  entity.betweenVictims = [];
-  entity.gore = {};
-  var toDelete = {};
-  var found = false;
-  if(!entity.nearbyEntities){
-    entity.nearbyEntities = nearbyEntities;  //This doesn't need to be this big, if that becomes an issue
-  }
-  for(var j in entity.nearbyEntities){
-    for(var i in nearbyEntities){
-      if(entity.nearbyEntities[j].id === nearbyEntities[i].id){
-        found = true;
-        break;
-      }
-    }
-    if(!found){
-      toDelete[entity.nearbyEntities[j].id] = true;
-    }
-  }
-  for(var i in toDelete){
-    console.log('i in toDelete loop: ' + i);
-    console.log('entity in toDelete loop: ');
-    console.log(entity);
-    console.log('id: ' + entity.id);
 
-    var cantorNum = cantor(entity.id, i);
-   console.log('heeeyo: ' + cantor(entity.id, i));
-    console.log('wtf: ' + cantor(0, 1));
-    if(controller.particles[cantorNum]){
-     controller.particles[cantorNum].stop() //Need to make this right
-     delete controller.particles[cantorNum];
-    }
-  }
-  entity.nearbyEntities = nearbyEntities;
-*/
+
   for(var i in nearbyEntities){
 
     var victim = nearbyEntities[i];
-   /* var betweenFighters = {x : (entity.x + nearbyEntities[i].x) / 2, 
-                                y : (entity.y + nearbyEntities[i].y) / 2};
-   // entity.betweenVictims.push(betweenFighters);
-    if(!controller.particles[(cantor(entity.id, victim.id))]){
-      controller.init(betweenFighters.x, betweenFighters.y, cantor(entity.id, victim.id));
-      entity.gore[nearbyEntities[i].id] = true;
-    }
-    else if(entity.moved && entity.movedCount > 3){
-      controller.particles[cantor(entity.id, victim.id)].stop() //Need to make this right
-      delete controller.particles[(cantor(entity.id, victim.id))];
-      controller.init(betweenFighters.x, betweenFighters.y,  cantor(entity.id, victim.id));
-      entity.gore[nearbyEntities[i].id] = true;
-      entity.movedCount = 0;
-    }else if(entity.moved){
-      entity.movedCount++;
-    }*/
 
 
     if(!attackEffects[(cantor(entity.id, victim.id))]){
@@ -326,29 +269,6 @@ function attackableEntities(entity, entitiesMap){
 
   }
 
- /* for(var effect in attackEffects){
-    var goodEffect = false;
-    for(var attack in attacks){
-      if(effect == cantor(attacks[attack].attacker.id, attacks[attack].victim.id)){
-        console.log('goodEffect');
-        goodEffect = true;
-        break;  //attack exists for an effect
-      }
-    }
-    if(!goodEffect){
-      console.log('badEffect');
-      attackEffects[effect].stop();
-      delete attackEffects[effect];
-    }
-  }*/
- /* for(effect in attackEffects){
-    if(attackEffects[effect].alive  === true){
-      attackEffects[effect].alive = false;
-    }else{
-      attackEffects[effect].stop();
-      delete attackEffects[effect];
-    }
-  }*/
 
 
   

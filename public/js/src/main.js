@@ -11,14 +11,12 @@ $(function() {
         });
         $('#closeIntro').removeClass('disabled');
     });
-    $('#playerGold span').css({color: playerColor});
+    $('.icon-coins').css({color: playerColor});
    
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
     loadImages();
-
-    playerColor = getRandomColor();
 
     hammerSetup();
 

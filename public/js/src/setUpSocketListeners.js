@@ -2,7 +2,7 @@ function setUpSocketListeners() {
     socket = io();
     socket.on('playerInfo', function(data) {
         playerGold = data[playerId].gold;
-        $('#playerGold span').text(" " + data[playerId].gold)
+        $('#goldAmount').text(" " + data[playerId].gold)
     });
     socket.on('changes', function(changes) {
         for (var i in changes) {
@@ -24,10 +24,9 @@ function setUpSocketListeners() {
     })
     socket.on('allEntities', function(serverEntities) {
         serverSentFullState = true;
-        var selected = entityIsSelected();
-        for (var i in selected) {
-            if (!serverEntities[selected[i].id].dead) {
-                serverEntities[selected[i].id].selected = true;
+        for (var i in selectedEntities) {
+            if (serverEntities[i].dead) {
+                delete selectedEntities[i];
             }
         }
         entities = serverEntities;
@@ -41,7 +40,15 @@ function setUpSocketListeners() {
             backgroundOffset = {x: -17615, y: -30061};
             zoom = 0.3
         }
-        $('#introTeam').text(playerTeam.charAt(0).toUpperCase() + playerTeam.slice(1)).css({color: playerTeam});
+        $('.teamName').text(playerTeam.charAt(0).toUpperCase() + playerTeam.slice(1)).css({color: playerTeam});
+        $('.teamColor').css({color: playerTeam});
+        if($('#introTeamBox:visible').length === 0){
+            $('#introTeamBox').fadeIn();
+            setTimeout(function(){
+                    $('#introTeamBox').fadeOut('slow');
+                }, 1000)
+            
+        }
         redrawBackground();
     })
     socket.on('connect', function() {
@@ -52,7 +59,19 @@ function setUpSocketListeners() {
         window.requestAnimationFrame(function(){drawScoreBar(scores)});
     })
     socket.on('gameOver', function(data){
-        $('#gameOver').modal('show');
+        $('#winningTeam').text(data.winner.charAt(0).toUpperCase() + data.winner.slice(1)).css({color: data.winner});
+        $('#gameOverInfo').modal('show');
         entities = {};
+    })
+    socket.on('addEntityFailure', function(data){
+
+        boughtEntity = data.entity.type;
+        $('#badSpot').fadeIn('fast', function(){
+            setTimeout(function(){$('#badSpot').fadeOut('slow')}, 1000);
+        })
+    })
+    socket.on('addEntitySuccess', function(data){
+
+        entities[data.entity.id] = data.entity;
     })
 }

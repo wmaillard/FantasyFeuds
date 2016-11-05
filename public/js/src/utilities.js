@@ -82,13 +82,13 @@ function createVector(panTime, oldCoords, newCoords){
 
 
 function entityIsSelected(){
-    var selectedEntities = [];
+    var sEntities = [];
     for(var i in entities){
         if(entities[i].selected === true){
-            selectedEntities.push(entities[i])
+            sEntities.push(entities[i])
         }
     }
-    return selectedEntities;
+    return sEntities;
 }
 
 

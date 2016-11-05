@@ -23,8 +23,7 @@ function clickGameContainer(e) {
         if (!$('#allEntities').hasClass('buttonDown')) {
             $('#allEntities').toggleClass('buttonDown')
         }
-    } else if (boughtEntity && playerTeam) {
-        //add iff entity is in player castle
+    } else if (boughtEntity && playerTeam && !entityIsBlocked(point.x, point.y)) {
         var entity;
         var health = 100;
         entity = new Entity({
@@ -58,11 +57,16 @@ function clickGameContainer(e) {
             }
         }
     } else {
+        if(boughtEntity || LOO(selectedEntities) > 0){
+            $('#blockedSpot').fadeIn('fast', function(){
+                setTimeout(function(){$('#blockedSpot').fadeOut('slow')}, 1000);
+            })
+        }
         $('#gameContainer').css('cursor', 'not-allowed');
         if (navigator.vibrate) {
             navigator.vibrate(125);
         }
-        setTimeout(function() { $('#gameContainer').css('cursor', 'default'); }, 125);
+        setTimeout(function() { $('#gameContainer').css('cursor', 'default'); }, 400);
     }
 }
 
