@@ -147,7 +147,7 @@ function runServer() {
                     redisClient.set('changes', JSON.stringify({}));
                 }
                 //Move entities 
-                if(LOO(walkingEntities){
+                if(LOO(walkingEntities) > 0){
                     Object.assign(changes, moveEntities(walkingEntities)); 
                 }
                 //If anything interesting changed
