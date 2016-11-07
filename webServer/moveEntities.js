@@ -1,5 +1,5 @@
 var moveEntities = { //Currently mutates entities
-    microMove: 4, //How far each step for an entity is.  Could make entity specific
+    microMove: 8, //How far each step for an entity is.  Could make entity specific
     changes: {},
     entities: {},
     setChange(entityId, key, value) {
@@ -15,6 +15,9 @@ var moveEntities = { //Currently mutates entities
         }
     },
     moveEntities(entities) { //This is global scope for some reason, maybe because it is called
+        if(!moveEntities.microMove){
+            return {};
+        }
         moveEntities.changes = [];
         moveEntities.entities = entities;
         //NextNode is actually the current node, but called nextNode because currentNode should be derived from x, y

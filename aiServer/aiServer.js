@@ -73,7 +73,7 @@ setTimeout(function(){
 
   })
 
-	}, 5000)
+	}, 500)
 
 function controlAI(socket, entities){
   var Entity = require('./entities').Entity;

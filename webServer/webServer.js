@@ -115,7 +115,7 @@ function clearPlayerInfo(playerInfo) {
 function runServer() {
     clearPlayerInfo(playerInfo);
     playerInfoChange = true;
-    tickRate = 30; // in hz
+    tickRate = 15; // in hz
     changes = {};
             redisClient.set('changes', JSON.stringify(changes));
 
