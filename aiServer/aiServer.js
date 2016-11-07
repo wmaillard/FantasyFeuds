@@ -62,7 +62,7 @@ setTimeout(function(){
 
 		})
 	});
-  var aiSocket = io2.connect('http://localhost:5000', {'force new connection': true});
+  var aiSocket = io2.connect(socketURL, {'force new connection': true});
 
   aiSocket.on('connect', function(){
     console.log('AISocket connected: ')
