@@ -196,7 +196,7 @@ i {
 .infoBoxes {
     position: fixed;
     z-index: 8;
-    top: 40%;
+    top: 33%;
     user-select: none;
     pointer-events: none;
 }

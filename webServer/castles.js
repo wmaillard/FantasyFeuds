@@ -2,7 +2,7 @@ var castles = {
     castles: require('./castlesData.js').castles,
     playerCastles: {},
     castleRadius: 2500,
-    teams: ['orange', 'blue'],
+    teams: ['orange', 'blue', 'ai'],
     percentPerEntity: 0.05,
     attackCastle: function(castle) {
         var teams = this.teams;

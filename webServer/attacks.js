@@ -139,7 +139,6 @@ var Attacks = {  //This mutates entities in setChange
                 var k = attack.attacker.id;
 
                 if (allEntities[j] && allEntities[k]) {
-                    console.log(allEntities[j].health);
                     if (allEntities[j].health > 0) {
                         Attacks.setChange(k, 'attacking', true, allEntities);
                         Attacks.setChange(k, 'victim', j, allEntities);
