@@ -116,7 +116,7 @@ function clearPlayerInfo(playerInfo) {
 function runServer() {
     clearPlayerInfo(playerInfo);
     playerInfoChange = true;
-    tickRate = 15; // in hz
+    tickRate = 30; // in hz
     changes = {};
             redisClient.set('changes', JSON.stringify(changes));
 
@@ -141,36 +141,42 @@ function runServer() {
             outsideChanges = JSON.stringify(outsideChanges);
             if (!err) {
                 outsideChanges = JSON.stringify(outsideChanges);
+                 //Apply outside changes, not currently used
                 if (LOO(outsideChanges) > 0) {
-                    Object.assign(changes, outsideChanges) //Apply outside changes
+                    Object.assign(changes, outsideChanges)
                     redisClient.set('changes', JSON.stringify({}));
                 }
-                Object.assign(changes, moveEntities(walkingEntities)); //Move entities, 
-                if (LOO(changes) > 0) { //If anything interesting changed
+                //Move entities 
+                if(LOO(walkingEntities){
+                    Object.assign(changes, moveEntities(walkingEntities)); 
+                }
+                //If anything interesting changed
+                if (LOO(changes) > 0) { 
+                    //Loop through entities that have changed
                     for (var i in changes) {
                         if (entities[i]) {
+                            //Loop through changes per entity
                             for (var j in changes[i]) {
                                 entities[i][j] = changes[i][j]
-                                if(entities[i][j] === 'path'){
+                                if(j === 'path'){
                                     walkingEntities[i] = entities[i];
-                                }else if(entities[i][j] === 'walking' && changes[i][j] === false){
+                                }else if(j === 'walking' && changes[i][j] === false){
                                     delete walkingEntities[i];
                                 }
                             }
                         } else {
+                            entities[i].walking = false;  //Start as walking then kill
                             entities[i] = changes[i];
                         }
-                    }
-                    if (LOO(changes) > 0) {
                         io.emit('changes', changes);
+                        changes = {};
                     }
-                    changes = {};
                     if (playerInfoChange) {
                         io.emit('playerInfo', playerInfo);
                         playerInfoChange = false;
                     }
                 }
-                if (Date.now() > lastAttacks + 750) { //Send out attacks
+                if (Date.now() > lastAttacks + 1000) { //Send out attacks
                     for (var e in entities) {
                         Attacks.setEntitiesMap(entities[e]);
                     }
@@ -181,7 +187,7 @@ function runServer() {
                     lastAttacks = Date.now();
                     emitCastles(io);
                 }
-                if (Date.now() > lastFullState + 1000) { //Send out a full state to keep in sync
+                if (Date.now() > lastFullState + 10000) { //Send out a full state to keep in sync
                     sendFullState(entities);
                 }
                 if (Date.now() > lastScores + 1000) {
