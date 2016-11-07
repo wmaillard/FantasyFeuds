@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
-
+const numberOfQuarries = 1000;
 
 
 
@@ -84,7 +84,7 @@ function controlAI(socket, entities){
 function addQuarries(Entity, socket, entities){
     var levelWidth = 1000;
   var levelHeight = 1000;
-  for (var i = 0; i < 250; i++) {
+  for (var i = 0; i < numberOfQuarries; i++) {
     var start = {};
     start.x = ~~(Math.random() * levelWidth * 32);
     start.y = ~~(Math.random() * levelHeight * 32);
