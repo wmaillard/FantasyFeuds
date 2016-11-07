@@ -44,6 +44,7 @@ var blankGameLength = 20; //minutes
 var pointsPerCastle = 1000 / 60 / 5 / blankGameLength; //5 = num start castles, 1000 points 60 seconds
 var nextPlayer = 'orange';
 var pw = 'password';
+var walkingEntities = {};
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
     console.log('********* web worker connected **********');
@@ -144,12 +145,14 @@ function runServer() {
                     Object.assign(changes, outsideChanges) //Apply outside changes
                     redisClient.set('changes', JSON.stringify({}));
                 }
-                Object.assign(changes, moveEntities(entities)); //Move entities, 
+                Object.assign(changes, moveEntities(walkingEntities)); //Move entities, 
                 if (LOO(changes) > 0) { //If anything interesting changed
                     for (var i in changes) {
                         if (entities[i]) {
                             for (var j in changes[i]) {
                                 entities[i][j] = changes[i][j]
+                                if(entities[i][j] === 'path'){
+                                    walkingEntities[i] = entities[i];
                             }
                         } else {
                             entities[i] = changes[i];
