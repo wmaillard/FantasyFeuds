@@ -43,6 +43,7 @@ var scores = { 'orange': 1000, 'blue': 1000 }
 var blankGameLength = 20; //minutes
 var pointsPerCastle = 1000 / 60 / 5 / blankGameLength; //5 = num start castles, 1000 points 60 seconds
 var nextPlayer = 'orange';
+var pw = 'password';
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
     console.log('********* web worker connected **********');
@@ -53,6 +54,7 @@ pathSocket.on('connection', function(socket) {
 });
 /*********** Client Sockets ************************/
 io.on('connection', (socket) => {
+    console.log('client connected');
     if (!playerInfo[convertId(socket.id)]) {
         playerInfo[convertId(socket.id)] = {};
     }
@@ -67,16 +69,21 @@ io.on('connection', (socket) => {
     redisClient.set('change', 'true');
     socket.on('entityPathRequest', (data) => {
     	if(entities[data.id]){
-        data.startX = entities[data.id].x;
-        data.startY = entities[data.id].y;
-        pathSocketConnection.emit('pathRequest', data);
+            data.startX = entities[data.id].x;
+            data.startY = entities[data.id].y;
+            pathSocketConnection.emit('pathRequest', data);
     	}
     });
     socket.on('addEntity', (data) => {
-        if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
+        if(data.pw === pw){
+            setChange(data.entity.id, 'wholeEntity', data.entity);
+            Attacks.setEntitiesMap(data.entity, true);
+
+        }
+        else if( playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
             playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
             playerInfoChange = true;
-            setChange(data.entity.id, 'wholeEntity', data.entity)
+            setChange(data.entity.id, 'wholeEntity', data.entity) //using client data here, fix
             Attacks.setEntitiesMap(data.entity, true);
             socket.emit('addEntitySuccess', { entity: data.entity });
         } else socket.emit('addEntityFailure', { entity: data.entity });
@@ -110,8 +117,14 @@ function runServer() {
     playerInfoChange = true;
     tickRate = 30; // in hz
     changes = {};
+            redisClient.set('changes', JSON.stringify(changes));
+
     attacks = [];
+        redisClient.set('attacks', JSON.stringify(attacks));
+
     entities = {};
+        redisClient.set('entities', JSON.stringify(entities));
+
     lastAttacks = Date.now() + 500;
     lastFullState = Date.now() - 1001;
     redisClient = redis.createClient(process.env.REDIS_URL);
@@ -120,7 +133,7 @@ function runServer() {
     moveEntities = moveEntitiesFile.moveEntities;
     lastScores = Date.now() - 10000;
     scores = { 'orange': 1000, 'blue': 1000 }
-    var castles = Castles.castles;
+    var castles = require('./castles.js').castles.castles;
     /*******************Main Server Loop ************************************/
     var mainInterval = setInterval(() => {
         redisClient.get('changes', function(err, outsideChanges) {

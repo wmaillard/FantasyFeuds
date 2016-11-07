@@ -2,6 +2,7 @@
 
 "use strict"
 var redis = require('redis');
+var playerId = 0;  // This will change on connection
 
 
 const aiFile = require('./ai.js');
@@ -23,28 +24,29 @@ const server = express()
 
 
 
-var socketURL = 'http://localhost:5000/path';
-
+var socketURL = 'http://localhost:5000';
 if(process.env.DYNO){
-  socketURL = 'https://fantasyfeuds.herokuapp.com/path';
+  socketURL = 'https://fantasyfeuds.herokuapp.com';
   if(process.env.WEB_URL){
-	socketURL = process.env.WEB_URL + '/path';
+	   socketURL = process.env.WEB_URL;
   }
   console.log('**************' + socketURL + '*****************');
 }
+var pathURL = socketURL + '/path';
 
 setTimeout(function(){
 	const io = require('socket.io-client');
+  const io2 = require('socket.io-client');
 	//was .com/path
-	var pathSocket = io(socketURL, {
-	    path: '/socket.io-client',
-	    transports: ['websocket'],
-	})
 
+  var pathSocket = io(pathURL, {
+      path: '/socket.io-client',
+      transports: ['websocket'],
+  })
 	
 
-	pathSocket.on('connect', function(socket){
-
+	pathSocket.on('connect', function(){
+    console.log('Pathfinding connected: ');
 		pathSocket.on('pathRequest', function(data){
 		var path = AI.AStar({
 			x: ~~(data.startX / 32),
@@ -60,8 +62,47 @@ setTimeout(function(){
 
 		})
 	});
+  var aiSocket = io2.connect('http://localhost:5000', {'force new connection': true});
 
-	}, 1000)
+  aiSocket.on('connect', function(){
+    console.log('AISocket connected: ')
+    var entities = {};
+    playerId = aiSocket.id;
+    controlAI(aiSocket, entities);
+
+
+  })
+
+	}, 5000)
+
+function controlAI(socket, entities){
+  var Entity = require('./entities').Entity;
+  addQuarries(Entity, socket, entities);
+
+
+}
+function addQuarries(Entity, socket, entities){
+    var levelWidth = 1000;
+  var levelHeight = 1000;
+  for (var i = 0; i < 1000; i++) {
+    var start = {};
+    start.x = ~~(Math.random() * levelWidth * 32);
+    start.y = ~~(Math.random() * levelHeight * 32);
+    var newQuar = new Entity(start, 100, 'quarry', playerId, 'grey', 'ai');
+    while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
+      newQuar.x = ~~(Math.random() * levelWidth * 32);
+      newQuar.y = ~~(Math.random() * levelHeight * 32);
+    }
+    newQuar.attackType = 'none';
+
+    newQuar.id = Date.now() + i * 200;
+    entities[newQuar.id] = newQuar;
+    socket.emit('addEntity', { pw: 'password', entity: newQuar });
+
+
+  }
+  console.log('Added Quarries')
+}
 
 
 function setPathfinding() {
@@ -85,15 +126,6 @@ function setPathfinding() {
     });
   });
 }
-
-
-
-
-/*server.get('/path', function(req, res){
-	var query = req.query;
-	var path = AI.AStar({x: ~~(query.startX / 32), y: ~~(query.startY / 32)}, {x: ~~(query.endX / 32), y: ~~(query.endY / 32)}, blockingTerrain);
-	res.send(path);
-})*/
 
 
 
