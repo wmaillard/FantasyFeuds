@@ -185,7 +185,7 @@ function runServer() {
                     Object.assign(changes, attackChanges.changes);
                     addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
                     lastAttacks = Date.now();
-                    emitCastles(io);
+                    emitCastles(io, entities);
                 }
                 if (Date.now() > lastFullState + 10000) { //Send out a full state to keep in sync
                     sendFullState(entities);
@@ -250,7 +250,7 @@ function setChange(entityId, key, value) {
     }
 }
 
-function emitCastles(io) {
+function emitCastles(io, entities) {
     Castles.clearEntitiesInCastles();
     for (var e in entities) {
         Castles.setEntitiesInCastles(entities[e]);
