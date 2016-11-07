@@ -84,7 +84,7 @@ function controlAI(socket, entities){
 function addQuarries(Entity, socket, entities){
     var levelWidth = 1000;
   var levelHeight = 1000;
-  for (var i = 0; i < 1000; i++) {
+  for (var i = 0; i < 250; i++) {
     var start = {};
     start.x = ~~(Math.random() * levelWidth * 32);
     start.y = ~~(Math.random() * levelHeight * 32);
