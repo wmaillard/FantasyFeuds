@@ -165,8 +165,8 @@ function runServer() {
                                 }
                             }
                         } else {
-                            entities[i].walking = false;  //Start as walking then kill
                             entities[i] = changes[i];
+                            entities[i].walking = false;  //Start as walking then kill, gives a nice effect but not necessary
                         }
                         io.emit('changes', changes);
                         changes = {};
