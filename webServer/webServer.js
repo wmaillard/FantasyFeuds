@@ -153,6 +153,9 @@ function runServer() {
                                 entities[i][j] = changes[i][j]
                                 if(entities[i][j] === 'path'){
                                     walkingEntities[i] = entities[i];
+                                }else if(entities[i][j] === 'walking' && changes[i][j] === false){
+                                    delete walkingEntities[i];
+                                }
                             }
                         } else {
                             entities[i] = changes[i];
