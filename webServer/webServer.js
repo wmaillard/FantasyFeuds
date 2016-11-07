@@ -128,7 +128,6 @@ function runServer() {
     lastAttacks = Date.now() + 500;
     lastFullState = Date.now() - 1001;
     redisClient = redis.createClient(process.env.REDIS_URL);
-    LOO = require('./generalUtilities').LOO;
     moveEntitiesFile = require('./moveEntities.js').moveEntities;
     moveEntities = moveEntitiesFile.moveEntities;
     lastScores = Date.now() - 10000;
