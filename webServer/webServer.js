@@ -164,7 +164,7 @@ function runServer() {
                                     delete walkingEntities[i];
                                 }
                             }
-                        } else {
+                        } else if(changes[i]) {  //changes[i] is sometimes undefined, BUG
                             entities[i] = changes[i];
                             entities[i].walking = false;  //Start as walking then kill, gives a nice effect but not necessary
                         }
