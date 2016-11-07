@@ -68,7 +68,10 @@ setTimeout(function(){
     console.log('AISocket connected: ')
     var entities = {};
     playerId = aiSocket.id;
-    controlAI(aiSocket, entities);
+    setTimeout(function(){
+          controlAI(aiSocket, entities);
+        }, 5000)
+
 
 
   })
@@ -82,9 +85,9 @@ function controlAI(socket, entities){
 
 }
 function addQuarries(Entity, socket, entities){
-    var levelWidth = 1000;
+  var levelWidth = 1000;
   var levelHeight = 1000;
-  for (var i = 0; i < numberOfQuarries; i++) {
+  for (var i = 0; i < 1000; i++) {
     var start = {};
     start.x = ~~(Math.random() * levelWidth * 32);
     start.y = ~~(Math.random() * levelHeight * 32);
@@ -97,10 +100,10 @@ function addQuarries(Entity, socket, entities){
 
     newQuar.id = Date.now() + i * 200;
     entities[newQuar.id] = newQuar;
-    socket.emit('addEntity', { pw: 'password', entity: newQuar });
-
+    
 
   }
+  socket.emit('addEntity', { pw: 'password', entities: entities });
   console.log('Added Quarries')
 }
 

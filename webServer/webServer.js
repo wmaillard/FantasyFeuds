@@ -69,19 +69,19 @@ io.on('connection', (socket) => {
     }
     redisClient.set('change', 'true');
     socket.on('entityPathRequest', (data) => {
-    	if(entities[data.id]){
+        if (entities[data.id]) {
             data.startX = entities[data.id].x;
             data.startY = entities[data.id].y;
             pathSocketConnection.emit('pathRequest', data);
-    	}
+        }
     });
     socket.on('addEntity', (data) => {
-        if(data.pw === pw){
-            setChange(data.entity.id, 'wholeEntity', data.entity);
-            Attacks.setEntitiesMap(data.entity, true);
-
-        }
-        else if( playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
+        if (data.pw === pw) {
+            for (var e in data.entities) {
+                setChange(data.entities[e].id, 'wholeEntity', data.entities[e]);
+                Attacks.setEntitiesMap(data.entities[e], true);
+            }
+        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
             playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
             playerInfoChange = true;
             setChange(data.entity.id, 'wholeEntity', data.entity) //using client data here, fix
@@ -118,14 +118,11 @@ function runServer() {
     playerInfoChange = true;
     tickRate = 30; // in hz
     changes = {};
-            redisClient.set('changes', JSON.stringify(changes));
-
+    redisClient.set('changes', JSON.stringify(changes));
     attacks = [];
-        redisClient.set('attacks', JSON.stringify(attacks));
-
+    redisClient.set('attacks', JSON.stringify(attacks));
     entities = {};
-        redisClient.set('entities', JSON.stringify(entities));
-
+    redisClient.set('entities', JSON.stringify(entities));
     lastAttacks = Date.now() + 500;
     lastFullState = Date.now() - 1001;
     redisClient = redis.createClient(process.env.REDIS_URL);
@@ -141,45 +138,47 @@ function runServer() {
             outsideChanges = JSON.stringify(outsideChanges);
             if (!err) {
                 outsideChanges = JSON.stringify(outsideChanges);
-                 //Apply outside changes, not currently used
+                //Apply outside changes, not currently used
                 if (LOO(outsideChanges) > 0) {
                     Object.assign(changes, outsideChanges)
                     redisClient.set('changes', JSON.stringify({}));
                 }
                 //Move entities 
-                if(LOO(walkingEntities) > 0){
-                    Object.assign(changes, moveEntities(walkingEntities)); 
+                if (LOO(walkingEntities) > 0) {
+                    Object.assign(changes, moveEntities(walkingEntities));
                 }
                 //If anything interesting changed
-                if (LOO(changes) > 0) { 
+                if (LOO(changes) > 0) {
                     //Loop through entities that have changed
                     for (var i in changes) {
                         if (entities[i]) {
                             //Loop through changes per entity
                             for (var j in changes[i]) {
                                 entities[i][j] = changes[i][j]
-                                if(j === 'path'){
+                                if (j === 'path') {
                                     walkingEntities[i] = entities[i];
-                                }else if(j === 'walking' && changes[i][j] === false){
+                                } else if (j === 'walking' && changes[i][j] === false) {
                                     delete walkingEntities[i];
                                 }
                             }
-                        } else {  //changes[i] is sometimes undefined, BUG
+                        } else if (changes[i]) {
+
+                            changes[i].walking = false;
                             entities[i] = changes[i];
+
                         }
-                        io.emit('changes', changes);
-                        changes = {};
                     }
-                    if (playerInfoChange) {
-                        io.emit('playerInfo', playerInfo);
-                        playerInfoChange = false;
-                    }
+                    io.emit('changes', changes);
+                    changes = {};
+                }
+                if (playerInfoChange) {
+                    io.emit('playerInfo', playerInfo);
+                    playerInfoChange = false;
                 }
                 if (Date.now() > lastAttacks + 1000) { //Send out attacks
                     for (var e in entities) {
                         Attacks.setEntitiesMap(entities[e]);
                     }
-                    
                     var attackChanges = Attacks.commitAttacks(entities);
                     Object.assign(changes, attackChanges.changes);
                     addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
