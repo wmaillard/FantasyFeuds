@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 const server = express()
 	.use(express.static(path.join(__dirname, 'public')))
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
-const numberOfQuarries = 1000;
+const numberOfQuarries = 500;
 
 
 
