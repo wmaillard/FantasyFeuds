@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
     }
     redisClient.set('change', 'true');
     socket.on('entityPathRequest', (data) => {
-        if (entities[data.id]) {
+        if (pathSocketConnection && entities[data.id]) {
             data.startX = entities[data.id].x;
             data.startY = entities[data.id].y;
             pathSocketConnection.emit('pathRequest', data);
