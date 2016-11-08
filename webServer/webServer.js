@@ -44,6 +44,7 @@ var blankGameLength = 20; //minutes
 var pointsPerCastle = 1000 / 60 / 5 / blankGameLength; //5 = num start castles, 1000 points 60 seconds
 var nextPlayer = 'orange';
 var pw = 'password';
+var walkingEntities = {};
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
     console.log('********* web worker connected **********');
@@ -68,19 +69,19 @@ io.on('connection', (socket) => {
     }
     redisClient.set('change', 'true');
     socket.on('entityPathRequest', (data) => {
-    	if(entities[data.id]){
+        if (entities[data.id]) {
             data.startX = entities[data.id].x;
             data.startY = entities[data.id].y;
             pathSocketConnection.emit('pathRequest', data);
-    	}
+        }
     });
     socket.on('addEntity', (data) => {
-        if(data.pw === pw){
-            setChange(data.entity.id, 'wholeEntity', data.entity);
-            Attacks.setEntitiesMap(data.entity, true);
-
-        }
-        else if( playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
+        if (data.pw === pw) {
+            for (var e in data.entities) {
+                setChange(data.entities[e].id, 'wholeEntity', data.entities[e]);
+                Attacks.setEntitiesMap(data.entities[e], true);
+            }
+        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
             playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
             playerInfoChange = true;
             setChange(data.entity.id, 'wholeEntity', data.entity) //using client data here, fix
@@ -115,16 +116,13 @@ function clearPlayerInfo(playerInfo) {
 function runServer() {
     clearPlayerInfo(playerInfo);
     playerInfoChange = true;
-    tickRate = 15; // in hz
+    tickRate = 30; // in hz
     changes = {};
-            redisClient.set('changes', JSON.stringify(changes));
-
+    redisClient.set('changes', JSON.stringify(changes));
     attacks = [];
-        redisClient.set('attacks', JSON.stringify(attacks));
-
+    redisClient.set('attacks', JSON.stringify(attacks));
     entities = {};
-        redisClient.set('entities', JSON.stringify(entities));
-
+    redisClient.set('entities', JSON.stringify(entities));
     lastAttacks = Date.now() + 500;
     lastFullState = Date.now() - 1001;
     redisClient = redis.createClient(process.env.REDIS_URL);
@@ -140,42 +138,54 @@ function runServer() {
             outsideChanges = JSON.stringify(outsideChanges);
             if (!err) {
                 outsideChanges = JSON.stringify(outsideChanges);
+                //Apply outside changes, not currently used
                 if (LOO(outsideChanges) > 0) {
-                    Object.assign(changes, outsideChanges) //Apply outside changes
+                    Object.assign(changes, outsideChanges)
                     redisClient.set('changes', JSON.stringify({}));
                 }
-                Object.assign(changes, moveEntities(entities)); //Move entities, 
-                if (LOO(changes) > 0) { //If anything interesting changed
+                //Move entities 
+                if (LOO(walkingEntities) > 0) {
+                    Object.assign(changes, moveEntities(walkingEntities));
+                }
+                //If anything interesting changed
+                if (LOO(changes) > 0) {
+                    //Loop through entities that have changed
                     for (var i in changes) {
                         if (entities[i]) {
+                            //Loop through changes per entity
                             for (var j in changes[i]) {
                                 entities[i][j] = changes[i][j]
+                                if (j === 'path') {
+                                    walkingEntities[i] = entities[i];
+                                } else if (j === 'walking' && changes[i][j] === false) {
+                                    delete walkingEntities[i];
+                                }
                             }
-                        } else {
+                        } else if (changes[i]) {
+
+                            changes[i].walking = false;
                             entities[i] = changes[i];
+
                         }
                     }
-                    if (LOO(changes) > 0) {
-                        io.emit('changes', changes);
-                    }
+                    io.emit('changes', changes);
                     changes = {};
-                    if (playerInfoChange) {
-                        io.emit('playerInfo', playerInfo);
-                        playerInfoChange = false;
-                    }
                 }
-                if (Date.now() > lastAttacks + 750) { //Send out attacks
+                if (playerInfoChange) {
+                    io.emit('playerInfo', playerInfo);
+                    playerInfoChange = false;
+                }
+                if (Date.now() > lastAttacks + 1000) { //Send out attacks
                     for (var e in entities) {
                         Attacks.setEntitiesMap(entities[e]);
                     }
-                    
                     var attackChanges = Attacks.commitAttacks(entities);
                     Object.assign(changes, attackChanges.changes);
                     addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
                     lastAttacks = Date.now();
-                    emitCastles(io);
+                    emitCastles(io, entities);
                 }
-                if (Date.now() > lastFullState + 1000) { //Send out a full state to keep in sync
+                if (Date.now() > lastFullState + 10000) { //Send out a full state to keep in sync
                     sendFullState(entities);
                 }
                 if (Date.now() > lastScores + 1000) {
@@ -238,7 +248,7 @@ function setChange(entityId, key, value) {
     }
 }
 
-function emitCastles(io) {
+function emitCastles(io, entities) {
     Castles.clearEntitiesInCastles();
     for (var e in entities) {
         Castles.setEntitiesInCastles(entities[e]);
