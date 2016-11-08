@@ -63,6 +63,7 @@ if (cluster.isMaster) {
             pathSocket.on('connect', function() {
                 
                 pathSocket.on('pathRequest', function(data) {
+                	console.log('Pathfinding request', process.pid);
                     var path = AI.AStar({
                         x: ~~(data.startX / 32),
                         y: ~~(data.startY / 32)
