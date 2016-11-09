@@ -9,14 +9,7 @@ const blockingTerrain = blockingTerrainFile.blockingTerrain;
 const numberOfQuarries = 500;
 const cluster = require('cluster');
 
-var socketURL = 'http://localhost:5000';
-if (process.env.DYNO) {
-    socketURL = 'https://fantasyfeuds.herokuapp.com';
-    if (process.env.WEB_URL) {
-        socketURL = process.env.WEB_URL;
-    }
-}
-var pathURL = socketURL + '/path';
+
 if (cluster.isMaster) {
 	var workers = {};
 	workers.pathfinders = {};
@@ -44,7 +37,19 @@ if (cluster.isMaster) {
         cluster.fork();
     });
 } else {
+	if(~~(Math.random() * 2) === 0){
+		var socketURL = 'http://localhost:5000';
+	}else{
+		var socketURL = 'http://localhost:3000';
+	}
 
+	if (process.env.DYNO) {
+	    socketURL = 'https://fantasyfeuds.herokuapp.com';
+	    if (process.env.WEB_URL) {
+	        socketURL = process.env.WEB_URL;
+	    }
+	}
+	var pathURL = socketURL + '/path';
 
 	redisClient.get('workers', function(err, workers){
 	var workers = JSON.parse(workers);
@@ -61,9 +66,11 @@ if (cluster.isMaster) {
                 transports: ['websocket'],
             })
             pathSocket.on('connect', function() {
-                
+                console.log('Pathfinding connected for pid: ', process.pid);
+                console.log('**********', pathURL, '***********')
                 pathSocket.on('pathRequest', function(data) {
                 	console.log('Pathfinding request', process.pid);
+                	redisClient.set('Pathfinder' + process.pid, 'busy');
                     var path = AI.AStar({
                         x: ~~(data.startX / 32),
                         y: ~~(data.startY / 32)
@@ -72,9 +79,18 @@ if (cluster.isMaster) {
                         y: ~~(data.endY / 32)
                     }, blockingTerrain);
                     var heading = { x: data.endX, y: data.endY }
-                    pathSocket.emit('path', { id: data.id, path: path, heading: heading })
+                    pathSocket.emit('path', { id: data.id, path: path, heading: heading }, function(err){
+                    	redis.set('Pathfinder' + process.pid, 'free');
+                    })
+
+
                 })
+                    pathSocket.on('disconnect', function(){
+            		console.log('Pathfinding disconnected for pid: ', process.pid);
+
+            	})
             });
+
         
     } else if (workers.AI === process.pid) {
         const io2 = require('socket.io-client');
