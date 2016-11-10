@@ -85,6 +85,9 @@ if (cluster.isMaster) {
 
 
                 })
+		    pathSocket.on('AIAttacked', function(err, data){
+			console.log(data);
+		    }
                     pathSocket.on('disconnect', function(){
             		console.log('Pathfinding disconnected for pid: ', process.pid);
 
