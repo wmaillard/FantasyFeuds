@@ -45,11 +45,12 @@ var Attacks = {  //This mutates entities in setChange
     commitAttacks(entities) {
 
         this.changes = {};
+        this.playerMoneyChanges = [];
+        this.AIAttacked = {};
         Attacks.addAttacks(entities);
         this.clearAttacks(entities);
-        this.playerMoneyChanges = [];
         this.doAttacks(entities); //has built in set redis for attacks
-        return {changes: this.changes, playerMoneyChanges: this.playerMoneyChanges};
+        return {changes: this.changes, playerMoneyChanges: this.playerMoneyChanges, AIAttacked: this.AIAttacked};
     },
     removeFromEntityMap(x, y, id) {
         if (Attacks.entitiesMap[x] && Attacks.entitiesMap[x][y]) {
@@ -131,6 +132,7 @@ var Attacks = {  //This mutates entities in setChange
         return attacks;
     },
     applyAttacks(attacks, allEntities) { //mutates allEntities ;()
+        var data = {};
         var attackList;
         while (attackList = attacks.shift()) {
             for (var a in attackList) {
@@ -140,6 +142,9 @@ var Attacks = {  //This mutates entities in setChange
 
                 if (allEntities[j] && allEntities[k]) {
                     if (allEntities[j].health > 0) {
+                        if(allEntities[j].team === 'AI'){
+                            this.AIAttacked[j] = allEntities[j];
+                        }
                         Attacks.setChange(k, 'attacking', true, allEntities);
                         Attacks.setChange(k, 'victim', j, allEntities);
                         var health = allEntities[j].health - Attacks.entityInfo[allEntities[k].type].attack * attack.power * Math.random();
@@ -158,6 +163,7 @@ var Attacks = {  //This mutates entities in setChange
                 }
             }
         }
+        return data;
     }
 
 }
