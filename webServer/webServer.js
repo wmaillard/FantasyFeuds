@@ -180,6 +180,7 @@ function runServer() {
                         Attacks.setEntitiesMap(entities[e]);
                     }
                     var attackChanges = Attacks.commitAttacks(entities);
+                    pathSocketConnection.emit('AIAttacked', JSON.stringify(attackChanges.AIAttacked);
                     Object.assign(changes, attackChanges.changes);
                     addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
                     lastAttacks = Date.now();
