@@ -8,7 +8,6 @@ var canvasHeight;
 var characterImages = {};
 var ctxB, ctxF, ctxI  //Foreground, background, and info context
 var entities = {};
-var entitySize = .5;  //how big each entity appears on the map
 var firstLoad = true;  //If true then all the images will be loaded up and cached
 var lastAnimation = Date.now();
 var level = 'megaMap';

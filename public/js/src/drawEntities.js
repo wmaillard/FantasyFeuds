@@ -53,6 +53,12 @@ function drawEntities(entities, ctx, lock, clear) {
         'E': 2,
         'N': 3
     }
+    var directionOptions = [
+        'S',
+        'W',
+        'E',
+        'N'
+    ]
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     for (var e in entities) {
         var type = entities[e].type;
@@ -63,6 +69,9 @@ function drawEntities(entities, ctx, lock, clear) {
             return; //Takes care of race conditions when loading
         }
         var img_x = entities[e].walkingState * entityInfo[type].width;
+        if(!entities[e].directionPointing){
+            entities[e].directionPointing = directionOptions[~~(Math.random() * 4)];
+        }
         var img_y = directions[entities[e].directionPointing] * entityInfo[type].height;
         var x, y, nodeX, nodeY;
         x = entities[e].x;
@@ -81,6 +90,7 @@ function drawEntities(entities, ctx, lock, clear) {
             drawHealthBar(entities[e], newCan);
         }
         var entityCenter = {};
+        var entitySize = entityInfo[type].size;
         entityCenter.x = entities[e].x - (newCan.width * entitySize - entityInfo[type].width * entitySize / 2);
         entityCenter.y = entities[e].y - (newCan.height * entitySize - entityInfo[type].height * entitySize); //unclear why this is no /2, has to do with canvas cutting
         var point = mapToScreenPoint(entityCenter.x, entityCenter.y);
@@ -204,7 +214,7 @@ function setDirectionFacing(entity, victim) {
         } else {
             entity.directionPointing = 'E';
         }
-    } else if (entity.directionPointing !== 'S' && !entity.dead) {
+    } else if (!entity.aiType && entity.directionPointing !== 'S' && !entity.dead) {
         entity.directionPointing = 'S';
     }
 }

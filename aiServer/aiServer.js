@@ -13,7 +13,7 @@ const cluster = require('cluster');
 if (cluster.isMaster) {
 	var workers = {};
 	workers.pathfinders = {};
-    var numWorkers = require('os').cpus().length;
+    var numWorkers = 1;   //require('os').cpus().length;
     console.log(numWorkers);
     for (var i = 0; i < numWorkers; i++) {
         cluster.fork();
@@ -37,11 +37,9 @@ if (cluster.isMaster) {
         cluster.fork();
     });
 } else {
-	if(~~(Math.random() * 2) === 0){
+		var aiSocket;
 		var socketURL = 'http://localhost:5000';
-	}else{
-		var socketURL = 'http://localhost:3000';
-	}
+
 
 	if (process.env.DYNO) {
 	    socketURL = 'https://fantasyfeuds.herokuapp.com';
@@ -59,7 +57,7 @@ if (cluster.isMaster) {
     const server = app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
         		
 
-    if (workers.pathfinders[process.pid]) {
+
             const io = require('socket.io-client');
             var pathSocket = io(pathURL, {
                 path: '/socket.io-client',
@@ -85,9 +83,15 @@ if (cluster.isMaster) {
 
 
                 })
-		    pathSocket.on('AIAttacked', function(err, data){
-			console.log(data);
-		    }
+		    pathSocket.on('AIAttacked', function(data){
+		    	for(var e in data){
+		    		setTimeout(function(){
+		    			entityFlee(data[e], aiSocket);
+		    		}, 1000)
+		    		
+		    	}
+				
+		    })
                     pathSocket.on('disconnect', function(){
             		console.log('Pathfinding disconnected for pid: ', process.pid);
 
@@ -95,28 +99,60 @@ if (cluster.isMaster) {
             });
 
         
-    } else if (workers.AI === process.pid) {
+
         const io2 = require('socket.io-client');
-        var aiSocket = io2.connect(socketURL, { 'force new connection': true });
+        aiSocket = io2.connect(socketURL, { 'force new connection': true });
         aiSocket.on('connect', function() {
             console.log('AISocket connected')
             var entities = {};
             playerId = aiSocket.id;
             setTimeout(function() {
                 controlAI(aiSocket, entities);
-            }, 5000)
+            }, 500)
         });
-    }
+    
     })
 }
 
-
+function entityFlee(entity, socket){
+	var i = 0;
+	var levelWidth = 1000;
+    var levelHeight = 1000;
+    var end = {};
+    var midPoint = {};
+    var time = Date.now();
+    end.x = ~~(Math.random() * (20 * 32) + entity.x - 10 * 32);  //The width is 20 * 30 the midpoint is entity.x - 10 * 32 
+    end.y = ~~(Math.random() * (20 * 32) + entity.y - 10 * 32);
+    var failed = false;
+    while (((end.x < 0 && end.x > levelWidth * 32) || (end.y < 0 && end.y > levelHeight * 32)) || blockingTerrain[~~(end.x / 32)][~~(end.y / 32)]) {
+    	if(Date.now() > time + 500){
+    		failed = true;
+    		break;
+    	}
+	    end.x = ~~(Math.random() * (20 * 32) + entity.x - 10 * 32);  //The width is 20 * 30 the midpoint is entity.x - 10 * 32 
+	    end.y = ~~(Math.random() * (20 * 32) + entity.y - 10 * 32);
+    }
+    if(!failed){
+		var coords = {
+	        startX: entity.x,
+	        startY: entity.y,
+	        endX: end.x,
+	        endY: end.y,
+	        id: entity.id
+	    }
+	    socket.emit('entityPathRequest', coords);
+	}
+}
 function controlAI(socket, entities) {
     var Entity = require('./entities').Entity;
-    addQuarries(Entity, socket, entities);
+    addQuarries(Entity, entities);
+    addHydras(Entity, entities);
+    socket.emit('addEntity', { pw: 'password', entities: entities });
+
+
 }
 
-function addQuarries(Entity, socket, entities) {
+function addQuarries(Entity, entities) {
     var levelWidth = 1000;
     var levelHeight = 1000;
     for (var i = 0; i < 1000; i++) {
@@ -130,10 +166,35 @@ function addQuarries(Entity, socket, entities) {
         }
         newQuar.attackType = 'none';
         newQuar.id = Date.now() + i * 200;
+        newQuar.aiType = 'passive';  //passive, active, or agressive
         entities[newQuar.id] = newQuar;
     }
-    socket.emit('addEntity', { pw: 'password', entities: entities });
+
     console.log('Added Quarries')
+}
+
+function addHydras(Entity, entities){
+	var levelWidth = 1000;
+	var levelHeight = 1000;
+  
+
+  for (var i = 0; i < 1000; i++) {
+  	var start = {};
+	start.x = ~~(Math.random() * levelWidth * 32);
+    start.y = ~~(Math.random() * levelHeight * 32);
+    var newHydra = new Entity(start, 100, 'hydra', playerId, 'grey', 'ai');
+    while (blockingTerrain[~~(newHydra.x / 32)][~~(newHydra.y / 32)]) {
+      newHydra.x = ~~(Math.random() * levelWidth * 32);
+      newHydra.y = ~~(Math.random() * levelHeight * 32);
+    }
+	newHydra.attackType = 'none';
+    newHydra.id = Date.now() + i * 200;
+    newHydra.aiType = 'active';  //passive, active, or agressive
+    entities[newHydra.id] = newHydra;
+
+    
+   }
+   console.log('added Hydras')
 }
 
 function setPathfinding() {

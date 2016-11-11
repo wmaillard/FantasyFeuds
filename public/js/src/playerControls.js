@@ -42,9 +42,7 @@ function clickGameContainer(e) {
                     entity.walking = true;
                     entity.heading = {};
                     entity.heading.x = point.x;
-                    entity.heading.x += entity.width * .1;
                     entity.heading.y = point.y;
-                    entity.heading.y -= (zoom - 1) * entity.width * .4;
                     var coords = {
                         startX: entity.x,
                         startY: entity.y,
