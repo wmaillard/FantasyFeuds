@@ -27,11 +27,11 @@ var AI = {
     cNode.HScore = this.calcHScore(cNode, eNode);
     cNode.FScore = startNode.GScore + cNode.HScore;
     this.openSet.push(cNode);
-    var timeB = Date.now();
+    var time = performance.now();
 
 
     do{
-      if(timeB < Date.now() - 100){
+      if(perfomance.now() - 9 > time){  //trying to do 100 requests a second
         return []
       }
       cNode = this.getLowestFScore(this.openSet);
