@@ -69,7 +69,7 @@ if (cluster.isMaster) {
                 console.log('Pathfinding connected for pid: ', process.pid);
                 console.log('**********', pathURL, '***********')
                 pathSocket.on('pathRequest', function(data) {
-                	console.log('Pathfinding request', process.pid);
+                	//console.log('Pathfinding request', process.pid);
                 	redisClient.set('Pathfinder' + process.pid, 'busy');
                     var path = AI.AStar({
                         x: ~~(data.startX / 32),
@@ -108,11 +108,11 @@ if (cluster.isMaster) {
 							entityFlee(activeEntities[e], aiSocket);
 							continue;
 						}
-						tenth++;
-						tenth %= 10;
 						break;
 					}
-				}, 1000);
+					tenth++;
+					tenth %= 10;
+				}, 5000);
 					
 					
 				
