@@ -154,7 +154,7 @@ function entityFlee(entity, socket){
     end.x = ~~(Math.random() * (20 * 32) + entity.x - 10 * 32);  //The width is 20 * 30 the midpoint is entity.x - 10 * 32 
     end.y = ~~(Math.random() * (20 * 32) + entity.y - 10 * 32);
     var failed = false;
-    while (((end.x < 0 && end.x > levelWidth) || (end.y < 0 && end.y > levelHeight)) || blockingTerrain[~~(end.x / 32)][~~(end.y / 32)]) {
+    while (end.x < 0 || end.x > levelWidth || end.y < 0 || end.y > levelHeight || blockingTerrain[~~(end.x / 32)][~~(end.y / 32)]) {
     	if(Date.now() > time + 500){
     		failed = true;
     		break;
