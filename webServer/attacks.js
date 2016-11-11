@@ -142,9 +142,6 @@ var Attacks = {  //This mutates entities in setChange
 
                 if (allEntities[j] && allEntities[k]) {
                     if (allEntities[j].health > 0) {
-                        if(allEntities[j].team === 'AI'){
-                            this.AIAttacked[j] = allEntities[j];
-                        }
                         Attacks.setChange(k, 'attacking', true, allEntities);
                         Attacks.setChange(k, 'victim', j, allEntities);
                         var health = allEntities[j].health - Attacks.entityInfo[allEntities[k].type].attack * attack.power * Math.random();
@@ -155,6 +152,8 @@ var Attacks = {  //This mutates entities in setChange
                             Attacks.setChange(j, 'walkingState', 2, allEntities);
                             Attacks.playerMoneyChanges.push({id: attack.attacker.playerId, gold : Attacks.entityInfo[allEntities[j].type].value});
 
+                        }else if(allEntities[j].team === 'ai'){
+                            this.AIAttacked[j] = allEntities[j];
                         }
                         Attacks.setChange(j, 'health', health, allEntities);
                        
