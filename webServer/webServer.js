@@ -61,6 +61,7 @@ io.on('connection', (socket) => {
     }
     playerInfo[convertId(socket.id)].gold = startGold;
     playerInfo[convertId(socket.id)].team = nextPlayer;
+    lastFullState = 0;
     socket.emit('team', nextPlayer);
     if (nextPlayer === 'orange') {
         nextPlayer = 'blue';

@@ -86,7 +86,9 @@ if (cluster.isMaster) {
 		    pathSocket.on('AIAttacked', function(data){
 		    	for(var e in data){
 		    		setTimeout(function(){
-		    			entityFlee(data[e], aiSocket);
+                        if(data[e].aiType === 'active'){
+		    			   entityFlee(data[e], aiSocket);
+                        }
 		    		}, 1000)
 		    		
 		    	}
@@ -148,6 +150,7 @@ function controlAI(socket, entities) {
     addQuarries(Entity, entities);
     addHydras(Entity, entities);
     socket.emit('addEntity', { pw: 'password', entities: entities });
+    var entities = {}; //Don't need them right now, might in the future.
 
 
 }
