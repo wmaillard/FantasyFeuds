@@ -174,7 +174,8 @@ function controlAI(socket) {
     var Entity = require('./entities').Entity;
     addQuarries(Entity, passiveEntities);
     addHydras(Entity, activeEntities);
-    socket.emit('addEntity', { pw: 'password', entities: entities });
+    socket.emit('addEntity', { pw: 'password', entities: passiveEntities });
+    socket.emit('addEntity', { pw: 'password', entities: activeEntities });
 
 
 }
