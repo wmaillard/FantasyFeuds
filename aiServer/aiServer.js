@@ -127,14 +127,18 @@ if (cluster.isMaster) {
         
 
         const io2 = require('socket.io-client');
+		var addedAI = false;
         aiSocket = io2.connect(socketURL, { 'force new connection': true });
         aiSocket.on('connect', function() {
             console.log('AISocket connected')
 
             playerId = aiSocket.id;
-            setTimeout(function() {
-                controlAI(aiSocket);
-            }, 500)
+			if(!addedAI){
+				setTimeout(function() {
+					controlAI(aiSocket);
+					addedAI = true;
+				}, 500)
+			}
         });
     
     })
