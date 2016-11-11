@@ -8,6 +8,8 @@ const blockingTerrainFile = require('./blockingTerrain.js');
 const blockingTerrain = blockingTerrainFile.blockingTerrain;
 const numberOfQuarries = 500;
 const cluster = require('cluster');
+var passiveEntities = {};
+var activeEntities = {};
 
 
 if (cluster.isMaster) {
@@ -94,6 +96,28 @@ if (cluster.isMaster) {
 		    	}
 				
 		    })
+				var tenth = 0;
+				setInterval(function(){
+					var i = -1;
+					for(var e in activeEntities){
+						i++;
+						if(i < tenth * 100){
+							continue;
+						}
+						else if(i < (tenth + 1) * 100){
+							entityFlee(activeEntities[e], aiSocket);
+							continue;
+						}
+						tenth++;
+						tenth %= 10;
+						break;
+					}
+				}, 1000);
+					
+					
+				
+				
+				
                     pathSocket.on('disconnect', function(){
             		console.log('Pathfinding disconnected for pid: ', process.pid);
 
@@ -106,10 +130,10 @@ if (cluster.isMaster) {
         aiSocket = io2.connect(socketURL, { 'force new connection': true });
         aiSocket.on('connect', function() {
             console.log('AISocket connected')
-            var entities = {};
+
             playerId = aiSocket.id;
             setTimeout(function() {
-                controlAI(aiSocket, entities);
+                controlAI(aiSocket);
             }, 500)
         });
     
@@ -145,12 +169,12 @@ function entityFlee(entity, socket){
 	    socket.emit('entityPathRequest', coords);
 	}
 }
-function controlAI(socket, entities) {
+
+function controlAI(socket) {
     var Entity = require('./entities').Entity;
-    addQuarries(Entity, entities);
-    addHydras(Entity, entities);
+    addQuarries(Entity, passiveEntities);
+    addHydras(Entity, activeEntities);
     socket.emit('addEntity', { pw: 'password', entities: entities });
-    var entities = {}; //Don't need them right now, might in the future.
 
 
 }
