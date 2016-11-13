@@ -11,8 +11,8 @@ var passiveEntities = {};
 var activeEntities = {};
 var aggressiveEntities = {};
 var numPassive = 500;
-var numAggressive = 500;
-var numActive = 500;
+var numAggressive = 250;
+var numActive = 250;
 if (cluster.isMaster) {
     var workers = {};
     workers.pathfinders = {};
@@ -192,18 +192,18 @@ function entityFlee(entity, socket) {
 
 function controlAI(socket) {
     var Entity = require('./entities').Entity;
-    addQuarries(Entity, passiveEntities);
-    addHydras(Entity, activeEntities);
-    addOrcs(Entity, aggressiveEntities);
+    addQuarries(Entity, passiveEntities, numPassive);
+    addHydras(Entity, activeEntities, numActive);
+    addOrcs(Entity, aggressiveEntities, numAggressive);
     socket.emit('addEntity', { pw: 'password', entities: aggressiveEntities });
     socket.emit('addEntity', { pw: 'password', entities: passiveEntities });
     socket.emit('addEntity', { pw: 'password', entities: activeEntities });
 }
 
-function addOrcs(Entity, entities) {
+function addOrcs(Entity, entities, num) {
     var levelWidth = 1000;
     var levelHeight = 1000;
-    for (var i = 0; i < numAggressive; i++) {
+    for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
@@ -220,10 +220,10 @@ function addOrcs(Entity, entities) {
     console.log('Added Orcs')
 }
 
-function addQuarries(Entity, entities) {
+function addQuarries(Entity, entities, num) {
     var levelWidth = 1000;
     var levelHeight = 1000;
-    for (var i = 0; i < numPassive; i++) {
+    for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
@@ -240,10 +240,10 @@ function addQuarries(Entity, entities) {
     console.log('Added Quarries')
 }
 
-function addHydras(Entity, entities) {
+function addHydras(Entity, entities, num) {
     var levelWidth = 1000;
     var levelHeight = 1000;
-    for (var i = 0; i < numActive; i++) {
+    for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
