@@ -31,7 +31,8 @@ var AI = {
 
 
     do{
-      if(Date.now() - 9 > time){  //trying to do 100 requests a second
+      if(Date.now() > time + 20){  //trying to do 100 requests a second
+        //console.log('Error: Pathfinding was too slow');
         return []
       }
       cNode = this.getLowestFScore(this.openSet);
@@ -52,7 +53,7 @@ var AI = {
       }
 
     }while(this.openSet.length > 0)
-
+    console.log('Error: No path was found');
     return [];
 
 

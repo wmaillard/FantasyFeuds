@@ -114,6 +114,20 @@ function clearPlayerInfo(playerInfo) {
     }
 }
 
+function mergeObjectsTwoLayers(base, addition) {
+    for (var e in addition) {
+        if (base[e] === undefined) {
+            base[e] = addition[e];
+        } else {
+            for (var i in addition[e]) {
+                if (base[e][i] === undefined) {
+                    base[e][i] = addition[e][i];
+                }
+            }
+        }
+    }
+}
+
 function runServer() {
     clearPlayerInfo(playerInfo);
     playerInfoChange = true;
@@ -135,84 +149,137 @@ function runServer() {
     var castles = require('./castles.js').castles.castles;
     /*******************Main Server Loop ************************************/
     var mainInterval = setInterval(() => {
-        redisClient.get('changes', function(err, outsideChanges) {
-            outsideChanges = JSON.stringify(outsideChanges);
-            if (!err) {
-                outsideChanges = JSON.stringify(outsideChanges);
-                //Apply outside changes, not currently used
-                if (LOO(outsideChanges) > 0) {
-                    Object.assign(changes, outsideChanges)
-                    redisClient.set('changes', JSON.stringify({}));
-                }
-                //Move entities 
-                if (LOO(walkingEntities) > 0) {
-                    Object.assign(changes, moveEntities(walkingEntities));
-                }
-                //If anything interesting changed
-                if (LOO(changes) > 0) {
-                    //Loop through entities that have changed
-                    for (var i in changes) {
-                        if (entities[i]) {
-                            //Loop through changes per entity
-                            for (var j in changes[i]) {
-                                entities[i][j] = changes[i][j]
-                                if (j === 'path') {
-                                    walkingEntities[i] = entities[i];
-                                } else if (j === 'walking' && changes[i][j] === false) {
-                                    delete walkingEntities[i];
-                                }
-                            }
-                        } else if (changes[i]) {
-
-                            changes[i].walking = false;
-                            entities[i] = changes[i];
-
-                        }
+            redisClient.get('changes', function(err, outsideChanges) {
+                if (!err) {
+                    outsideChanges = JSON.stringify(outsideChanges);
+                    //Apply outside changes, not currently used
+                    if (LOO(outsideChanges) > 0) {
+                        Object.assign(changes, outsideChanges)
+                        redisClient.set('changes', JSON.stringify({}));
                     }
-                    io.emit('changes', changes);
+                    //Move entities 
+                    var moved = {};
+                    if (LOO(walkingEntities) > 0) {
+                        moved = moveEntities(walkingEntities);
+                        /* console.log('*******moved**************');
+                         console.log(JSON.stringify(moved));
+                         console.log('**********changes*************');
+                         console.log(JSON.stringify(changes));*/
+                        applyChanges(moved, io);
+                    }
+                    applyChanges(changes, io);
                     changes = {};
-                }
-                if (playerInfoChange) {
-                    io.emit('playerInfo', playerInfo);
-                    playerInfoChange = false;
-                }
-                if (Date.now() > lastAttacks + 1000) { //Send out attacks
-                    for (var e in entities) {
-                        Attacks.setEntitiesMap(entities[e]);
+                    if (playerInfoChange) {
+                        io.emit('playerInfo', playerInfo);
+                        playerInfoChange = false;
                     }
-                    var attackChanges = Attacks.commitAttacks(entities);
-                    if(LOO(attackChanges.AIAttacked) > 0){
-                        pathSocketConnection.emit('AIAttacked', attackChanges.AIAttacked);
-                    }
-                    Object.assign(changes, attackChanges.changes);
-                    addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
-                    lastAttacks = Date.now();
-                    emitCastles(io, entities);
-                }
-                if (Date.now() > lastFullState + 10000) { //Send out a full state to keep in sync
-                    sendFullState(entities);
-                }
-                if (Date.now() > lastScores + 1000) {
-                    lastScores = Date.now();
-                    setScores(castles, scores);
-                    io.emit('scores', scores);
-                    if (scores.blue <= 0 || scores.orange <= 0) {
-                        var winner;
-                        if (scores.blue <= 0) {
-                            winner = 'orange';
-                        } else {
-                            winner = 'blue';
+                    if (Date.now() > lastAttacks + 1000) { //Send out attacks
+                        for (var e in entities) {
+                            Attacks.setEntitiesMap(entities[e]); //O(n) but it means we don't have to keep an extra O(n) space.
                         }
-                        clearInterval(mainInterval);
-                        gameOver(winner);
+
+                        var toAlert = alertNearbyAI(Attacks.movedNonAI);
+                        if(LOO(toAlert) > 0){
+                            pathSocket.emit('nearbyEntities', toAlert);
+                        }
+                        Attacks.movedNonAI = {};
+
+                        var attackChanges = Attacks.commitAttacks(entities);
+                        if (LOO(attackChanges.AIAttacked) > 0) {
+                            pathSocketConnection.emit('AIAttacked', attackChanges.AIAttacked);
+                        }
+                        mergeObjectsTwoLayers(changes, attackChanges.changes);
+                        addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
+                        lastAttacks = Date.now();
+                        emitCastles(io, entities);
+                    }
+                    if (Date.now() > lastFullState + 10000) { //Send out a full state to keep in sync
+                        sendFullState(entities);
+                    }
+                    if (Date.now() > lastScores + 1000) {
+                        lastScores = Date.now();
+                        setScores(castles, scores);
+                        io.emit('scores', scores);
+                        if (scores.blue <= 0 || scores.orange <= 0) {
+                            var winner;
+                            if (scores.blue <= 0) {
+                                winner = 'orange';
+                            } else {
+                                winner = 'blue';
+                            }
+                            clearInterval(mainInterval);
+                            gameOver(winner);
+                        }
+                    }
+                    redisClient.set('entities', JSON.stringify(entities));
+                } else {
+                    console.err(err);
+                }
+            });
+        },
+        1000 / tickRate);
+}
+
+function alertNearbyAI(movedEntities) {
+    //only alert if AI is not already moving, that way we don't get a ton of path requests
+    //This takes O(range * range)ish
+    var alerted = {};
+    var range = 20;
+    for (var e in movedEntities) {
+        var node = { x: ~~(movedEntities[e].x / 32), y: ~~(movedEntities[e].y / 32) }
+        for (var x = node.x - range / 2; x < node.x + range / 2; x++) {
+            if (x < 0) {
+                x = 0;
+                continue;
+            } else if (x > 1000) {
+                break;
+            }
+            for (var y = node.y - range / 2; y < node.y + range / 2; y++) {
+                if (y < 0) {
+                    y = 0;
+                    continue
+                } else if (y > 1000) {
+                    break;
+                } else if (Attacks.entitiesMap[x] && Attacks.entitiesMap[x][y] && Attacks.entitiesMap[x][y].length > 0) {
+                    for (var e in Attacks.entitiesMap[x][y]) {
+                            //Change logic here if they are too stupid and not following clients fast enough
+                            if (entities[Attacks.entitiesMap[x][y][e]].aiType && entities[Attacks.entitiesMap[x][y][e]].aiType === 'aggressive'  && !entities[Attacks.entitiesMap[x][y][e]].attacking) {
+                                alerted[Attacks.entitiesMap[x][y][e]] = {start : {x: x, y: y}, victim : {x : node.x, y: node.y}};
+                            }
+                        
                     }
                 }
-                redisClient.set('entities', JSON.stringify(entities));
-            } else {
-                console.err(err);
             }
-        });
-    }, 1000 / tickRate);
+        }
+    }
+    return alerted;
+}
+
+function applyChanges(changes, socket) {
+    //If anything interesting changed
+    if (LOO(changes) > 0) {
+        //Loop through entities that have changed
+        for (var i in changes) {
+            if (entities[i]) {
+                //Loop through changes per entity
+                for (var j in changes[i]) {
+                    entities[i][j] = changes[i][j]
+                    if (j === 'path') {
+                        walkingEntities[i] = entities[i];
+                    } else if (j === 'walking' && changes[i][j] === false) {
+                        delete walkingEntities[i];
+                    }
+                }
+            } else if (changes[i]) {
+                //Don't have entity on record
+                changes[i].walking = false;
+                entities[i] = changes[i];
+            }
+        }
+        if (socket) {
+            socket.emit('changes', changes);
+        }
+    }
 }
 
 function gameOver(winner) {
@@ -241,10 +308,8 @@ function setScores(castles, scores) {
 /************* Functions to send/modify info sent to client *******************/
 function setChange(entityId, key, value) {
     if (key === 'wholeEntity') {
-        //entities[entityId] = value;
         changes[entityId] = value;
     } else {
-        //entities[entityId][key] = value;
         if (!changes[entityId]) {
             changes[entityId] = {};
         }
@@ -269,6 +334,7 @@ function addPath(data) {
     setChange(data.id, 'path', data.path);
     setChange(data.id, 'heading', data.heading);
     setChange(data.id, 'attacking', false);
+    setChange(data.id, 'previousNode', entities[data.id].nextNode);
 }
 
 function addPlayerMoneyChanges(playerMoneyChanges) {

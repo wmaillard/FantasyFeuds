@@ -18,7 +18,6 @@ var moveEntities = { //Currently mutates entities
         if(!moveEntities.microMove){
             return {};
         }
-        moveEntities.changes = [];
         moveEntities.entities = entities;
         //NextNode is actually the current node, but called nextNode because currentNode should be derived from x, y
         //Previous node is the previous node
@@ -27,6 +26,9 @@ var moveEntities = { //Currently mutates entities
         var more = false; //If there are still entities walking after the move
         for (var e in entities) {
             var entity = entities[e];
+            if(entity.dead){
+                entity.path = [];
+            }
             if (entity.path.length > 0) { //If the entity has a path
                 if (entity.nextNode.x === entity.previousNode.x && entity.nextNode.y === entity.previousNode.y) {
                     entity.nextNode = entity.path.pop();  //The first node is the one we are on, so pop it
@@ -58,7 +60,7 @@ var moveEntities = { //Currently mutates entities
                 }
             } //If the entity is not at the heading
             else if (Math.abs(entity.heading.x - entity.x) <= howClose && Math.abs(entity.heading.x - entity.y) <= howClose) {
-                moveEntities.microMoveTowardPoint(entity, entity.heading, microMove, howClose);
+                moveEntities.microMoveTowardPoint(entity, entity.heading, moveEntities.microMove, howClose);
                 more = true;
                 if (!entity.walking) {
                     entity.walking = true;

@@ -70,8 +70,11 @@ function drawEntities(entities, ctx, lock, clear) {
         }
         var img_x = entities[e].walkingState * entityInfo[type].width;
         if(!entities[e].directionPointing){
-            
-            entities[e].directionPointing = directionOptions[~~(Math.random() * 4)];
+            if(entities[e].aiType === 'passive' || entities[e].dead){
+                entities[e].directionPointing = 'S';
+            }else{
+                entities[e].directionPointing = directionOptions[~~(Math.random() * 4)];
+            }
         }
         var img_y = directions[entities[e].directionPointing] * entityInfo[type].height;
         var x, y, nodeX, nodeY;

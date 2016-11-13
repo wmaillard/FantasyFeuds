@@ -1,23 +1,23 @@
-var Attacks = {  //This mutates entities in setChange
+var Attacks = { //This mutates entities in setChange
     entitiesMap: {},
     redisClient: require('redis').createClient(process.env.REDIS_URL),
     LOO: require('./generalUtilities.js').LOO,
     changes: {},
-    entityInfo : require('./entityInfo.js').entityInfo,
+    entityInfo: require('./entityInfo.js').entityInfo,
     playerMoneyChanges: [],
-
+    movedNonAI: {},
     setChange(entityId, key, value, entities) {
-    if (key === 'wholeEntity') {
-        //entities[entityId] = value;
-        this.changes[entityId] = value;
-    } else {
-        //entities[entityId][key] = value;
-        if (!this.changes[entityId]) {
-            this.changes[entityId] = {};
+        if (key === 'wholeEntity') {
+            //entities[entityId] = value;
+            this.changes[entityId] = value;
+        } else {
+            //entities[entityId][key] = value;
+            if (!this.changes[entityId]) {
+                this.changes[entityId] = {};
+            }
+            this.changes[entityId][key] = value;
         }
-        this.changes[entityId][key] = value;
-    }
-},
+    },
     addAttacks(entities) {
         this.attacks = [];
         for (var entity in entities) {
@@ -26,31 +26,28 @@ var Attacks = {  //This mutates entities in setChange
                 this.attacks.push(attack);
             }
         }
-
     },
     doAttacks(entities) {
-            if (this.attacks && this.attacks.length > 0) {
-                var val = JSON.stringify([]);
-                Attacks.applyAttacks(this.attacks, entities);
-            }
-
+        if (this.attacks && this.attacks.length > 0) {
+            var val = JSON.stringify([]);
+            Attacks.applyAttacks(this.attacks, entities);
+        }
     },
     clearAttacks(entities) {
         for (var e in entities) {
-            if(entities[e].attacking){
+            if (entities[e].attacking) {
                 Attacks.setChange(e, 'attacking', false, entities);
             }
         }
     },
     commitAttacks(entities) {
-
         this.changes = {};
         this.playerMoneyChanges = [];
         this.AIAttacked = {};
         Attacks.addAttacks(entities);
         this.clearAttacks(entities);
         this.doAttacks(entities); //has built in set redis for attacks
-        return {changes: this.changes, playerMoneyChanges: this.playerMoneyChanges, AIAttacked: this.AIAttacked};
+        return { changes: this.changes, playerMoneyChanges: this.playerMoneyChanges, AIAttacked: this.AIAttacked };
     },
     removeFromEntityMap(x, y, id) {
         if (Attacks.entitiesMap[x] && Attacks.entitiesMap[x][y]) {
@@ -71,6 +68,9 @@ var Attacks = {  //This mutates entities in setChange
             oldX = (entity.previousMapNode.x);
             oldY = (entity.previousMapNode.y);
             if (!(oldX === newX && oldY === newY)) {
+                if (!entity.aiType) {
+                    Attacks.movedNonAI[entity.id] = entity;
+                }
                 Attacks.removeFromEntityMap(oldX, oldY, entity.id);
                 if (!Attacks.entitiesMap[newX]) {
                     Attacks.entitiesMap[newX] = {};
@@ -79,10 +79,13 @@ var Attacks = {  //This mutates entities in setChange
                     Attacks.entitiesMap[newX][newY] = [];
                 }
                 Attacks.entitiesMap[newX][newY].push(entity.id);
-                entity.previousMapNode = {x : newX, y: newY}
+                entity.previousMapNode = { x: newX, y: newY }
                 return true; //moved
             }
         } else if (newEntity) {
+            if (!entity.aiType) {
+                Attacks.movedNonAI[entity.id] = entity;
+            }
             if (!Attacks.entitiesMap[newX]) {
                 Attacks.entitiesMap[newX] = {};
             }
@@ -90,7 +93,7 @@ var Attacks = {  //This mutates entities in setChange
                 Attacks.entitiesMap[newX][newY] = [];
             }
             Attacks.entitiesMap[newX][newY].push(entity.id);
-            entity.previousMapNode = {x : newX, y: newY}
+            entity.previousMapNode = { x: newX, y: newY }
         }
     },
     attackableEntities(entity, entities) {
@@ -125,7 +128,7 @@ var Attacks = {  //This mutates entities in setChange
                 victim: { id: victim.id, playerId: victim.playerId },
                 power: 1 / nearbyEntities.length
             };
-            if(attack.attacker.id && attack.victim.id){
+            if (attack.attacker.id && attack.victim.id) {
                 attacks.push(attack);
             }
         }
@@ -139,31 +142,26 @@ var Attacks = {  //This mutates entities in setChange
                 var attack = attackList[a];
                 var j = attack.victim.id;
                 var k = attack.attacker.id;
-
                 if (allEntities[j] && allEntities[k]) {
                     if (allEntities[j].health > 0) {
                         Attacks.setChange(k, 'attacking', true, allEntities);
                         Attacks.setChange(k, 'victim', j, allEntities);
                         var health = allEntities[j].health - Attacks.entityInfo[allEntities[k].type].attack * attack.power * Math.random();
-                        if(health <= 0){
+                        if (health <= 0) {
                             health = 0;
                             Attacks.removeFromEntityMap(allEntities[j].x, allEntities[j].y, allEntities[j].id, allEntities)
                             Attacks.setChange(j, 'dead', true, allEntities);
                             Attacks.setChange(j, 'walkingState', 2, allEntities);
-                            Attacks.playerMoneyChanges.push({id: attack.attacker.playerId, gold : Attacks.entityInfo[allEntities[j].type].value});
-
-                        }else if(allEntities[j].team === 'ai'){
+                            Attacks.playerMoneyChanges.push({ id: attack.attacker.playerId, gold: Attacks.entityInfo[allEntities[j].type].value });
+                        } else if (allEntities[j].team === 'ai') {
                             this.AIAttacked[j] = allEntities[j];
                         }
                         Attacks.setChange(j, 'health', health, allEntities);
-                       
                     }
-
                 }
             }
         }
         return data;
     }
-
 }
 exports.Attacks = Attacks;
