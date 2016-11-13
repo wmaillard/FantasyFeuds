@@ -95,8 +95,8 @@ if (cluster.isMaster) {
                         var coords = {
                             startX: data[e].start.x,
                             startY: data[e].start.y,
-                            endX: data[e].victim.x * 32 + Math.random() * 32,
-                            endY: data[e].victim.y * 32 + Math.random() * 32,
+                            endX: (data[e].victim.x - 1) * 32 + 2 * Math.random() * 32, //Randomly placed on 4 nodes
+                            endY: (data[e].victim.y - 1) * 32 + 2 * Math.random() * 32,
                             id: e
                         }
                         aiSocket.emit('entityPathRequest', coords);
