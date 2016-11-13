@@ -4,8 +4,7 @@ var redisClient = redis.createClient(process.env.REDIS_URL);
 var playerId = 0; // This will change on connection
 const aiFile = require('./ai.js');
 const AI = aiFile.AI;
-const blockingTerrainFile = require('./blockingTerrain.js');
-const blockingTerrain = blockingTerrainFile.blockingTerrain;
+const blockingTerrain = require('./blockingTerrain.js').blockingTerrain;
 const numberOfQuarries = 500;
 const cluster = require('cluster');
 var passiveEntities = {};
@@ -81,11 +80,11 @@ if (cluster.isMaster) {
                 for (var e in data) {
                     if (data[e].aiType === 'active') {
                         setTimeout(function() {
-                            entityFlee(data[e], aiSocket);
+                            entityFlee(data[e], pathSocket);
                         }, 1000);
                     } else if (data[e].aiType === 'aggressive') {
                         if (data[e].health < 25) {
-                            entityFlee(data[e], aiSocket);
+                            entityFlee(data[e], pathSocket);
                         }
                     }
                 }
@@ -107,8 +106,8 @@ if (cluster.isMaster) {
             var divisor = 20;
             var fraction = 0;
             setInterval(function() {
-                makeThemWalk(aggressiveEntities, fraction, divisor, aiSocket, numAggressive);
-                makeThemWalk(activeEntities, fraction, divisor, aiSocket, numActive);
+                makeThemWalk(aggressiveEntities, fraction, divisor, pathSocket, numAggressive);
+                makeThemWalk(activeEntities, fraction, divisor, pathSocket, numActive);
                 fraction++;
                 fraction %= divisor;
             }, 2500);
@@ -132,16 +131,16 @@ if (cluster.isMaster) {
     })
 }
 
-function makeThemWalk(entities, fraction, divisor, aiSocket, numEntities) {
+function makeThemWalk(entities, fraction, divisor, pathSocket, numEntities) {
     var i = -1;
     for (var e in entities) {
         i++;
         if (i < fraction * numEntities / divisor) {
             continue;
         } else if (i < (fraction + 1) * numEntities / divisor) {
-            entityFlee(entities[e], aiSocket);
+            entityFlee(entities[e], pathSocket);
             try {
-                entityFlee(entities[e], aiSocket);
+                entityFlee(entities[e], pathSocket);
             } catch (e) {
                 console.log(entities[e])
             }
@@ -172,14 +171,20 @@ function entityFlee(entity, socket) {
         failed = true;
     }
     if (!failed) {
-        var coords = {
-            endX: end.x,
-            endY: end.y,
-            id: entity.id
-        }
-        socket.emit('entityPathRequest', coords);
-        entity.x = end.x;
-        entity.y = end.y;
+        var path = AI.AStar({
+                    x: ~~(entity.x / 32),
+                    y: ~~(entity.y / 32)
+                }, {
+                    x: ~~(end.x / 32),
+                    y: ~~(end.y / 32)
+                }, blockingTerrain);
+                if(path.length > 0){
+                    var heading = { x: entity.endX, y: entity.endY }
+                    socket.emit('path', { id: entity.id, path: path, heading: heading });
+                    entity.x = end.x;
+                    entity.y = end.y;
+                }
+
     } else {
         console.log('Error: Failed to find end point for ai flee path')
     }
