@@ -51,6 +51,17 @@ function setUpSocketListeners() {
         }
         redrawBackground();
     })
+    socket.on('playerColor', function(data){
+        playerColor = data;
+        $('.icon-coins').css({color: playerColor});
+    })
+    socket.on('pathfindingFailed', function(data){
+        if(playerId === entities[data].playerId){
+            $('#pathfindingFailed').fadeIn('fast', function(){
+                setTimeout(function(){$('#pathfindingFailed').fadeOut('slow')}, 1000);
+            })
+        }
+    })
     socket.on('connect', function() {
         playerId = socket.id;
     })

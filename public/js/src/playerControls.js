@@ -34,11 +34,10 @@ function clickGameContainer(e) {
         socket.emit('addEntity', { entity: entity });
         boughtEntity = false;
     } else if (!entityIsBlocked(point.x, point.y)) {
-        console.log('here')
         if (LOO(selectedEntities) > 0) {
             for (var i in selectedEntities) {
                 var entity = selectedEntities[i];
-                if(!entity.dead){
+                if(entity.health > 0){
                     entity.walking = true;
                     entity.heading = {};
                     entity.heading.x = point.x;

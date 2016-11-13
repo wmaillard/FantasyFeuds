@@ -11,6 +11,9 @@ const cluster = require('cluster');
 var passiveEntities = {};
 var activeEntities = {};
 var aggressiveEntities = {};
+var numPassive = 500;
+var numAggressive = 500;
+var numActive = 500;
 if (cluster.isMaster) {
     var workers = {};
     workers.pathfinders = {};
@@ -67,8 +70,12 @@ if (cluster.isMaster) {
                     x: ~~(data.endX / 32),
                     y: ~~(data.endY / 32)
                 }, blockingTerrain);
-                var heading = { x: data.endX, y: data.endY }
-                pathSocket.emit('path', { id: data.id, path: path, heading: heading });
+                if(path.length > 0){
+	                var heading = { x: data.endX, y: data.endY }
+	                pathSocket.emit('path', { id: data.id, path: path, heading: heading });
+            	}else{
+            		pathSocket.emit('failed', data.id);
+            	}
             })
             pathSocket.on('AIAttacked', function(data) {
                 for (var e in data) {
@@ -85,31 +92,25 @@ if (cluster.isMaster) {
             })
             pathSocket.on('nearbyEntities', function(data) {
                 for (var e in data) {
-                    var coords = {
-                        startX: data[e].start.x,
-                        startY: data[e].start.y,
-                        endX: data[e].victim.x * 32,
-                        endY: data[e].victim.y * 32,
-                        id: e
+                    if (data[e].health > 25) {
+                        var coords = {
+                            startX: data[e].start.x,
+                            startY: data[e].start.y,
+                            endX: data[e].victim.x * 32 + Math.random() * 32,
+                            endY: data[e].victim.y * 32 + Math.random() * 32,
+                            id: e
+                        }
+                        aiSocket.emit('entityPathRequest', coords);
                     }
-                    aiSocket.emit('entityPathRequest', coords);
                 }
             })
-            var tenth = 0;
+            var divisor = 20;
+            var fraction = 0;
             setInterval(function() {
-                var i = -1;
-                for (var e in activeEntities) {
-                    i++;
-                    if (i < tenth * 100) {
-                        continue;
-                    } else if (i < (tenth + 1) * 100) {
-                        entityFlee(activeEntities[e], aiSocket);
-                        continue;
-                    }
-                    break;
-                }
-                tenth++;
-                tenth %= 10;
+                makeThemWalk(aggressiveEntities, fraction, divisor, aiSocket, numAggressive);
+                makeThemWalk(activeEntities, fraction, divisor, aiSocket, numActive);
+                fraction++;
+                fraction %= divisor;
             }, 2500);
             pathSocket.on('disconnect', function() {
                 console.log('Pathfinding disconnected for pid: ', process.pid);
@@ -131,6 +132,25 @@ if (cluster.isMaster) {
     })
 }
 
+function makeThemWalk(entities, fraction, divisor, aiSocket, numEntities) {
+    var i = -1;
+    for (var e in entities) {
+        i++;
+        if (i < fraction * numEntities / divisor) {
+            continue;
+        } else if (i < (fraction + 1) * numEntities / divisor) {
+            entityFlee(entities[e], aiSocket);
+            try {
+                entityFlee(entities[e], aiSocket);
+            } catch (e) {
+                console.log(entities[e])
+            }
+            continue;
+        }
+        break;
+    }
+}
+
 function entityFlee(entity, socket) {
     var i = 0;
     var levelWidth = 1000;
@@ -138,26 +158,28 @@ function entityFlee(entity, socket) {
     var end = {};
     var midPoint = {};
     var time = Date.now();
-    end.x = ~~(Math.random() * (20 * 32) + entity.x - 10 * 32); //The width is 20 * 32 the midpoint is entity.x - 10 * 32 
-    end.y = ~~(Math.random() * (20 * 32) + entity.y - 10 * 32);
     var failed = false;
-    while (end.x < 0 || end.x > levelWidth * 32 || end.y < 0 || end.y > levelHeight * 32 || blockingTerrain[~~(end.x / 32)][~~(end.y / 32)]) {
-        if (Date.now() > time + 5) {
-            failed = true;
-            break;
+    try {
+        while (end.x < 0 || end.x > levelWidth * 32 || end.y < 0 || end.y > levelHeight * 32 || blockingTerrain[~~(end.x / 32)][~~(end.y / 32)]) {
+            if (Date.now() > time + 5) {
+                failed = true;
+                break;
+            }
+            end.x = ~~(Math.random() * (20 * 32) + entity.x - 10 * 32); //The width is 20 * 32 the midpoint is entity.x - 10 * 32 
+            end.y = ~~(Math.random() * (20 * 32) + entity.y - 10 * 32);
         }
-        end.x = ~~(Math.random() * (20 * 32) + entity.x - 10 * 32); //The width is 20 * 32 the midpoint is entity.x - 10 * 32 
-        end.y = ~~(Math.random() * (20 * 32) + entity.y - 10 * 32);
+    } catch (e) {
+        failed = true;
     }
     if (!failed) {
         var coords = {
-            startX: entity.x,
-            startY: entity.y,
             endX: end.x,
             endY: end.y,
             id: entity.id
         }
         socket.emit('entityPathRequest', coords);
+        entity.x = end.x;
+        entity.y = end.y;
     } else {
         console.log('Error: Failed to find end point for ai flee path')
     }
@@ -165,22 +187,22 @@ function entityFlee(entity, socket) {
 
 function controlAI(socket) {
     var Entity = require('./entities').Entity;
-    // addQuarries(Entity, passiveEntities);
-    // addHydras(Entity, activeEntities);
+    addQuarries(Entity, passiveEntities);
+    addHydras(Entity, activeEntities);
     addOrcs(Entity, aggressiveEntities);
     socket.emit('addEntity', { pw: 'password', entities: aggressiveEntities });
-    // socket.emit('addEntity', { pw: 'password', entities: passiveEntities });
-    // socket.emit('addEntity', { pw: 'password', entities: activeEntities });
+    socket.emit('addEntity', { pw: 'password', entities: passiveEntities });
+    socket.emit('addEntity', { pw: 'password', entities: activeEntities });
 }
 
 function addOrcs(Entity, entities) {
     var levelWidth = 1000;
     var levelHeight = 1000;
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < numAggressive; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
-        var orc = new Entity(start, 100, 'orcPeon', playerId, 'pink', 'ai');
+        var orc = new Entity(start, 100, 'orcPeon', playerId, 'black', 'ai');
         while (blockingTerrain[~~(orc.x / 32)][~~(orc.y / 32)]) {
             orc.x = ~~(Math.random() * levelWidth * 32);
             orc.y = ~~(Math.random() * levelHeight * 32);
@@ -196,11 +218,11 @@ function addOrcs(Entity, entities) {
 function addQuarries(Entity, entities) {
     var levelWidth = 1000;
     var levelHeight = 1000;
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < numPassive; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
-        var newQuar = new Entity(start, 100, 'quarry', playerId, 'pink', 'ai');
+        var newQuar = new Entity(start, 100, 'quarry', playerId, 'black', 'ai');
         while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
             newQuar.x = ~~(Math.random() * levelWidth * 32);
             newQuar.y = ~~(Math.random() * levelHeight * 32);
@@ -216,11 +238,11 @@ function addQuarries(Entity, entities) {
 function addHydras(Entity, entities) {
     var levelWidth = 1000;
     var levelHeight = 1000;
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < numActive; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
-        var newHydra = new Entity(start, 100, 'hydra', playerId, 'pink', 'ai');
+        var newHydra = new Entity(start, 100, 'hydra', playerId, 'black', 'ai');
         while (blockingTerrain[~~(newHydra.x / 32)][~~(newHydra.y / 32)]) {
             newHydra.x = ~~(Math.random() * levelWidth * 32);
             newHydra.y = ~~(Math.random() * levelHeight * 32);

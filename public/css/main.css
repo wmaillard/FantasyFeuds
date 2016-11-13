@@ -199,6 +199,7 @@ i {
     top: 33%;
     user-select: none;
     pointer-events: none;
+    display: none;
 }
 #badSpot, #blockedSpot {
   display: none;

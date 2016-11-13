@@ -146,7 +146,11 @@ var Attacks = { //This mutates entities in setChange
                     if (allEntities[j].health > 0) {
                         Attacks.setChange(k, 'attacking', true, allEntities);
                         Attacks.setChange(k, 'victim', j, allEntities);
-                        var health = allEntities[j].health - Attacks.entityInfo[allEntities[k].type].attack * attack.power * Math.random();
+                        var aiExtra = 1;
+                        if(allEntities[j].aiType){
+                            aiExtra = 2;
+                        }
+                        var health = allEntities[j].health - aiExtra * (Attacks.entityInfo[allEntities[k].type].attack * attack.power * (Math.random() / 2 + .5)) * (10 - Attacks.entityInfo[allEntities[j].type].defense) / 10;
                         if (health <= 0) {
                             health = 0;
                             Attacks.removeFromEntityMap(allEntities[j].x, allEntities[j].y, allEntities[j].id, allEntities)

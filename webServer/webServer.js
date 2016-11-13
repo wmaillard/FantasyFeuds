@@ -45,6 +45,10 @@ var pointsPerCastle = 1000 / 60 / 5 / blankGameLength; //5 = num start castles, 
 var nextPlayer = 'orange';
 var pw = 'password';
 var walkingEntities = {};
+var playerColors = require('./playerColors.js').playerColors;
+playerColors.next = {};
+playerColors.next.orange = 0;
+playerColors.next.blue = 0;
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
     console.log('********* web worker connected **********');
@@ -52,6 +56,9 @@ pathSocket.on('connection', function(socket) {
     socket.on('path', (data) => {
         addPath(data);
     });
+    socket.on('failed', (data) =>{
+        io.emit('pathfindingFailed', data);
+    })
 });
 /*********** Client Sockets ************************/
 io.on('connection', (socket) => {
@@ -63,6 +70,15 @@ io.on('connection', (socket) => {
     playerInfo[convertId(socket.id)].team = nextPlayer;
     lastFullState = 0;
     socket.emit('team', nextPlayer);
+    try{
+    var playerColor = playerColors[nextPlayer][playerColors.next[nextPlayer]];
+}catch(e){
+    console.log(playerColors);
+}
+    playerColors.next[nextPlayer]++;
+    playerColors.next[nextPlayer] %= playerColors[nextPlayer].length;
+    socket.emit('playerColor', playerColor);
+
     if (nextPlayer === 'orange') {
         nextPlayer = 'blue';
     } else {
@@ -99,7 +115,7 @@ function withinPlayerCircle(entities, entity) {
     var rx = radius / 2.5;
     var ry = radius / 3;
     for (var e in entities) {
-        if (entities[e].team === entity.team && !entities[e].attacking) {
+        if (!entities[e].dead && entities[e].team === entity.team && !entities[e].attacking) {
             if (Math.pow((entity.x - entities[e].x), 2) / Math.pow(rx, 2) + Math.pow((entity.y - entities[e].y), 2) / Math.pow(ry, 2) < 1) {
                 return true;
             }
@@ -241,10 +257,10 @@ function alertNearbyAI(movedEntities) {
                 } else if (y > 1000) {
                     break;
                 } else if (Attacks.entitiesMap[x] && Attacks.entitiesMap[x][y] && Attacks.entitiesMap[x][y].length > 0) {
-                    for (var e in Attacks.entitiesMap[x][y]) {
+                    for (var f in Attacks.entitiesMap[x][y]) {
                             //Change logic here if they are too stupid and not following clients fast enough
-                            if (entities[Attacks.entitiesMap[x][y][e]].aiType && entities[Attacks.entitiesMap[x][y][e]].aiType === 'aggressive'  && !entities[Attacks.entitiesMap[x][y][e]].attacking) {
-                                alerted[Attacks.entitiesMap[x][y][e]] = {start : {x: x, y: y}, victim : {x : node.x, y: node.y}};
+                            if (entities[Attacks.entitiesMap[x][y][f]].health > 0 && entities[Attacks.entitiesMap[x][y][f]].aiType && entities[Attacks.entitiesMap[x][y][f]].aiType === 'aggressive'  && !entities[Attacks.entitiesMap[x][y][f]].attacking) {
+                                alerted[Attacks.entitiesMap[x][y][f]] = {start : {x: x, y: y}, victim : {x : node.x, y: node.y, id: e}, health : entities[Attacks.entitiesMap[x][y][f]].health};
                             }
                         
                     }

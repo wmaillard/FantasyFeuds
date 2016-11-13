@@ -11,7 +11,7 @@ $(function() {
         });
         $('#closeIntro').removeClass('disabled');
     });
-    $('.icon-coins').css({color: playerColor});
+    
    
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;

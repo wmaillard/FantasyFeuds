@@ -31,7 +31,7 @@ function drawEntityCircles(entities, ctx, playerTeam){
     //Should add, if not in a castle's circle TODO
     var entityRadius = 250;
     for(var e in entities){
-     if(entities[e].team === playerTeam  && !entities[e].attacking){
+     if(entities[e].health > 0 && entities[e].team === playerTeam  && !entities[e].attacking){
         ctx.save();
         var width = 1.5 / Math.cbrt(zoom);
         ctx.lineWidth = width;
@@ -111,7 +111,7 @@ function cutOutCharacter(newCan, img, x, y, width, height, entity) {
     newCan.width = width;
     newCan.height = height * 2;
     var ctx = newCan.getContext('2d');
-    if (selectedEntities[entity.id]) {
+    if (selectedEntities[entity.id] && entity.health > 0) {
         drawHighlight(entity, newCan);
     }
     ctx.drawImage(img, x, y, width, height, 0, height * .5, width, height);

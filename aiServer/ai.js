@@ -1,10 +1,3 @@
-//IMPORTANT: if you want to convert a event.clientX or Y to work with isBlocked, do this:
-//** This is a little off when zoomed in, look into the math eventually if needs be, probably won't need to
-//   x = ~~((x - backgroundOffset.x) / zoom); //where 32 is the size of a tile, consistent for our applications
-//   y = ~~((y - backgroundOffset.y) / zoom);
-
-
-
 var AI = {
   //A* tutorial: http://www.policyalmanac.org/games/aStarTutorial.html
   //https://en.wikipedia.org/wiki/A*_search_algorithm
@@ -31,16 +24,16 @@ var AI = {
 
 
     do{
-      if(Date.now() > time + 20){  //trying to do 100 requests a second
+      if(Date.now() > time + 5){  //trying to do 100 requests a second
         //console.log('Error: Pathfinding was too slow');
-        return []
+        return [];
       }
       cNode = this.getLowestFScore(this.openSet);
       this.addNonBlockedNeighborsToOpen(cNode, eNode);
       var index = this.findInArray(cNode, this.openSet);
 
       if(index === -1){
-        console.log('did not find cNode in openSet')
+        //console.log('did not find cNode in openSet')
         break;
       }
       this.openSet.splice(index, 1); //get rid of cNode
@@ -53,7 +46,7 @@ var AI = {
       }
 
     }while(this.openSet.length > 0)
-    console.log('Error: No path was found');
+    //console.log('Error: No path was found');
     return [];
 
 
