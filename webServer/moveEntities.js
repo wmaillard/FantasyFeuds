@@ -15,7 +15,8 @@ var moveEntities = { //Currently mutates entities
         }
     },
     moveEntities(entities) { //This is global scope for some reason, maybe because it is called
-        if(!moveEntities.microMove){
+        moveEntities.changes = {};
+        if (!moveEntities.microMove){
             return {};
         }
         moveEntities.entities = entities;
@@ -26,12 +27,13 @@ var moveEntities = { //Currently mutates entities
         var more = false; //If there are still entities walking after the move
         for (var e in entities) {
             var entity = entities[e];
-            if(entity.dead){
+            if (entity.health <= 0) {
                 entity.path = [];
+                continue;
             }
             if (entity.path.length > 0) { //If the entity has a path
                 if (entity.nextNode.x === entity.previousNode.x && entity.nextNode.y === entity.previousNode.y) {
-                    entity.nextNode = entity.path.pop();  //The first node is the one we are on, so pop it
+                    entity.nextNode = entity.path.pop(); //The first node is the one we are on, so pop it
                     if (entity.path.length === 0) {
                         continue;
                     }
@@ -40,7 +42,6 @@ var moveEntities = { //Currently mutates entities
                     x: ~~(entity.path[entity.path.length - 1].x * 32),
                     y: ~~(entity.path[entity.path.length - 1].y * 32)
                 };
-
                 //entity.previousNode.x === entity.nextNode.x is so that we don't move from current to a node in the wrong direction, ie we don't actually want to go to nodes sometimes
                 if ((Math.abs(dest.x - entity.x) <= howClose || entity.previousNode.x === entity.nextNode.x) && (Math.abs(dest.y - entity.y) <= howClose || entity.previousNode.y === entity.nextNode.y)) {
                     entity.previousNode = entity.nextNode;

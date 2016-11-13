@@ -34,14 +34,20 @@ function clickGameContainer(e) {
         socket.emit('addEntity', { entity: entity });
         boughtEntity = false;
     } else if (!entityIsBlocked(point.x, point.y)) {
-        if (LOO(selectedEntities) > 0) {
+        var numMoving = LOO(selectedEntities);
+        if (numMoving > 0) {
             for (var i in selectedEntities) {
                 var entity = selectedEntities[i];
                 if(entity.health > 0){
                     entity.walking = true;
                     entity.heading = {};
-                    entity.heading.x = point.x;
-                    entity.heading.y = point.y;
+                    if(numMoving > 1){
+                        entity.heading.x = ~~((point.x - 1) / 32) * 32 + 2 * Math.random() * 32 ;
+                        entity.heading.y = ~~((point.y - 1) / 32 ) * 32 + 2 * Math.random() * 32;
+                    }else{
+                        entity.heading.x = point.x
+                        entity.heading.y = point.y;
+                    }
                     var coords = {
                         startX: entity.x,
                         startY: entity.y,

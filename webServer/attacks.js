@@ -102,8 +102,8 @@ var Attacks = { //This mutates entities in setChange
         if (entity.attackType === 'sword' && !entity.dead) {
             var nodeX = ~~(entity.x / 32);
             var nodeY = ~~(entity.y / 32);
-            for (var i = nodeX - 1; i <= nodeX + 1; i++) {
-                for (var j = nodeY - 1; j <= nodeY + 1; j++) {
+            for (var i = nodeX - 2; i <= nodeX + 2; i++) {
+                for (var j = nodeY - 2; j <= nodeY + 2; j++) {
                     if (!Attacks.entitiesMap[i] || !Attacks.entitiesMap[i][j]) {
                         continue;
                     }
