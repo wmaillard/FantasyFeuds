@@ -1,3 +1,26 @@
+/*V8 Debugging */
+const profiler = require('v8-profiler')
+const fs = require('fs')
+var profilerRunning = false
+
+function toggleProfiling() {
+    if (profilerRunning) {
+        const profile = profiler.stopProfiling()
+        console.log('stopped profiling')
+        profile.export()
+            .pipe(fs.createWriteStream('./myapp-' + Date.now() + '.cpuprofile'))
+            .once('error', profiler.deleteAllProfiles)
+            .once('finish', profiler.deleteAllProfiles)
+        profilerRunning = false
+        return
+    }
+    profiler.startProfiling()
+    profilerRunning = true
+    console.log('started profiling')
+}
+process.on('SIGUSR2', toggleProfiling)
+console.log('Process ID: ', process.pid)
+    /*End V8 Debugging */
 "use strict"
 var redis = require('redis');
 var Castles = require('./castles.js').castles;
@@ -49,6 +72,7 @@ var playerColors = require('./playerColors.js').playerColors;
 playerColors.next = {};
 playerColors.next.orange = 0;
 playerColors.next.blue = 0;
+var entitiesMovedSinceLastAttack = {};
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
     console.log('********* web worker connected **********');
@@ -56,7 +80,7 @@ pathSocket.on('connection', function(socket) {
     socket.on('path', (data) => {
         addPath(data);
     });
-    socket.on('failed', (data) =>{
+    socket.on('failed', (data) => {
         io.emit('pathfindingFailed', data);
     })
 });
@@ -70,15 +94,14 @@ io.on('connection', (socket) => {
     playerInfo[convertId(socket.id)].team = nextPlayer;
     lastFullState = 0;
     socket.emit('team', nextPlayer);
-    try{
-    var playerColor = playerColors[nextPlayer][playerColors.next[nextPlayer]];
-}catch(e){
-    console.log(playerColors);
-}
+    try {
+        var playerColor = playerColors[nextPlayer][playerColors.next[nextPlayer]];
+    } catch (e) {
+        console.log(playerColors);
+    }
     playerColors.next[nextPlayer]++;
     playerColors.next[nextPlayer] %= playerColors[nextPlayer].length;
     socket.emit('playerColor', playerColor);
-
     if (nextPlayer === 'orange') {
         nextPlayer = 'blue';
     } else {
@@ -163,77 +186,73 @@ function runServer() {
     lastScores = Date.now() - 10000;
     scores = { 'orange': 1000, 'blue': 1000 }
     var castles = require('./castles.js').castles.castles;
+    entitiesMovedSinceLastAttack = {};
     /*******************Main Server Loop ************************************/
     var mainInterval = setInterval(() => {
-            redisClient.get('changes', function(err, outsideChanges) {
-                if (!err) {
-                    outsideChanges = JSON.stringify(outsideChanges);
-                    //Apply outside changes, not currently used
-                    if (LOO(outsideChanges) > 0) {
-                        Object.assign(changes, outsideChanges)
-                        redisClient.set('changes', JSON.stringify({}));
-                    }
-                    //Move entities 
-                    var moved = {};
-                    if (LOO(walkingEntities) > 0) {
-                        moved = moveEntities(walkingEntities);
-                        /* console.log('*******moved**************');
-                         console.log(JSON.stringify(moved));
-                         console.log('**********changes*************');
-                         console.log(JSON.stringify(changes));*/
-                        applyChanges(moved, io);
-                    }
-                    applyChanges(changes, io);
-                    changes = {};
-                    if (playerInfoChange) {
-                        io.emit('playerInfo', playerInfo);
-                        playerInfoChange = false;
-                    }
-                    if (Date.now() > lastAttacks + 1000) { //Send out attacks
-                        for (var e in entities) {
-                            Attacks.setEntitiesMap(entities[e]); //O(n) but it means we don't have to keep an extra O(n) space.
-                        }
-
-                        var toAlert = alertNearbyAI(Attacks.movedNonAI);
-                        if(LOO(toAlert) > 0){
-                            pathSocket.emit('nearbyEntities', toAlert);
-                        }
-                        Attacks.movedNonAI = {};
-
-                        var attackChanges = Attacks.commitAttacks(entities);
-                        if (LOO(attackChanges.AIAttacked) > 0) {
-                            pathSocketConnection.emit('AIAttacked', attackChanges.AIAttacked);
-                        }
-                        mergeObjectsTwoLayers(changes, attackChanges.changes);
-                        addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
-                        lastAttacks = Date.now();
-                        emitCastles(io, entities);
-                    }
-                    if (Date.now() > lastFullState + 10000) { //Send out a full state to keep in sync
-                        sendFullState(entities);
-                    }
-                    if (Date.now() > lastScores + 1000) {
-                        lastScores = Date.now();
-                        setScores(castles, scores);
-                        io.emit('scores', scores);
-                        if (scores.blue <= 0 || scores.orange <= 0) {
-                            var winner;
-                            if (scores.blue <= 0) {
-                                winner = 'orange';
-                            } else {
-                                winner = 'blue';
-                            }
-                            clearInterval(mainInterval);
-                            gameOver(winner);
-                        }
-                    }
-                    redisClient.set('entities', JSON.stringify(entities));
-                } else {
-                    console.err(err);
+            //Move entities 
+            var moved = {};
+            if (LOO(walkingEntities) > 0) {
+                moved = moveEntities(walkingEntities);
+                applyChanges(moved, io);
+            }
+            applyChanges(changes, io);
+            changes = {};
+            if (playerInfoChange) {
+                io.emit('playerInfo', playerInfo);
+                playerInfoChange = false;
+            }
+            if (Date.now() > lastAttacks + 1000) { //Send out attacks
+                for (var e in entitiesMovedSinceLastAttack) {
+                    Attacks.setEntitiesMap(entitiesMovedSinceLastAttack[e]); 
                 }
-            });
+                
+                var toAlert = alertNearbyAI(Attacks.movedNonAI);
+                if (LOO(toAlert) > 0) {
+                    pathSocket.emit('nearbyEntities', toAlert);
+                }
+                Attacks.movedNonAI = {};
+                //only entities that haved moved or were attacking last time
+
+                var attackChanges = Attacks.commitAttacks(entitiesMovedSinceLastAttack, entities);
+                entitiesMovedSinceLastAttack = attackingLastTime(attackChanges.changes);
+                if (LOO(attackChanges.AIAttacked) > 0) {
+                    pathSocketConnection.emit('AIAttacked', attackChanges.AIAttacked);
+                }
+                mergeObjectsTwoLayers(changes, attackChanges.changes);
+                addPlayerMoneyChanges(attackChanges.playerMoneyChanges);
+                emitCastles(io, entities);
+                lastAttacks = Date.now();
+            }
+            if (Date.now() > lastFullState + 10000) { //Send out a full state to keep in sync
+                sendFullState(entities);
+            }
+            if (Date.now() > lastScores + 1000) {
+                lastScores = Date.now();
+                setScores(castles, scores);
+                io.emit('scores', scores);
+                if (scores.blue <= 0 || scores.orange <= 0) {
+                    var winner;
+                    if (scores.blue <= 0) {
+                        winner = 'orange';
+                    } else {
+                        winner = 'blue';
+                    }
+                    clearInterval(mainInterval);
+                    gameOver(winner);
+                }
+            }
+            redisClient.set('entities', JSON.stringify(entities));
         },
         1000 / tickRate);
+}
+function attackingLastTime(changes){
+    var attacked = {};
+    for(var c in changes){
+        if(changes[c].attacking && changes[c].attacking === true){
+            attacked[c] = entities[c];
+        }
+    }
+    return attacked;
 }
 
 function alertNearbyAI(movedEntities) {
@@ -258,11 +277,10 @@ function alertNearbyAI(movedEntities) {
                     break;
                 } else if (Attacks.entitiesMap[x] && Attacks.entitiesMap[x][y] && Attacks.entitiesMap[x][y].length > 0) {
                     for (var f in Attacks.entitiesMap[x][y]) {
-                            //Change logic here if they are too stupid and not following clients fast enough
-                            if (entities[Attacks.entitiesMap[x][y][f]].health > 0 && entities[Attacks.entitiesMap[x][y][f]].aiType && entities[Attacks.entitiesMap[x][y][f]].aiType === 'aggressive'  && !entities[Attacks.entitiesMap[x][y][f]].attacking) {
-                                alerted[Attacks.entitiesMap[x][y][f]] = {start : {x: x, y: y}, victim : {x : node.x, y: node.y, id: e}, health : entities[Attacks.entitiesMap[x][y][f]].health};
-                            }
-                        
+                        //Change logic here if they are too stupid and not following clients fast enough
+                        if (entities[Attacks.entitiesMap[x][y][f]].health > 0 && entities[Attacks.entitiesMap[x][y][f]].aiType && entities[Attacks.entitiesMap[x][y][f]].aiType === 'aggressive' && !entities[Attacks.entitiesMap[x][y][f]].attacking) {
+                            alerted[Attacks.entitiesMap[x][y][f]] = { start: { x: x, y: y }, victim: { x: node.x, y: node.y, id: e }, health: entities[Attacks.entitiesMap[x][y][f]].health };
+                        }
                     }
                 }
             }
@@ -273,15 +291,18 @@ function alertNearbyAI(movedEntities) {
 
 function applyChanges(changes, socket) {
     //If anything interesting changed
-    if (LOO(changes) > 0) {
         //Loop through entities that have changed
         for (var i in changes) {
             if (entities[i]) {
                 //Loop through changes per entity
                 for (var j in changes[i]) {
                     entities[i][j] = changes[i][j]
+                    if(j === 'x' || j === 'y'){
+                        entitiesMovedSinceLastAttack[i] = entities[i];
+                    }
                     if (j === 'path') {
                         walkingEntities[i] = entities[i];
+                        
                     } else if (j === 'walking' && changes[i][j] === false) {
                         delete walkingEntities[i];
                     }
@@ -290,12 +311,14 @@ function applyChanges(changes, socket) {
                 //Don't have entity on record
                 changes[i].walking = false;
                 entities[i] = changes[i];
+                entitiesMovedSinceLastAttack[i] = entities[i];
+
             }
         }
         if (socket) {
             socket.emit('changes', changes);
         }
-    }
+    
 }
 
 function gameOver(winner) {

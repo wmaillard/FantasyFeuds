@@ -18,19 +18,19 @@ var Attacks = { //This mutates entities in setChange
             this.changes[entityId][key] = value;
         }
     },
-    addAttacks(entities) {
+    addAttacks(entities, allEntities) {
         this.attacks = [];
         for (var entity in entities) {
-            var attack = Attacks.attackableEntities(entities[entity], entities);
+            var attack = Attacks.attackableEntities(entities[entity], entities, allEntities);
             if (attack.length > 0) {
                 this.attacks.push(attack);
             }
         }
     },
-    doAttacks(entities) {
+    doAttacks(allEntities) {
         if (this.attacks && this.attacks.length > 0) {
             var val = JSON.stringify([]);
-            Attacks.applyAttacks(this.attacks, entities);
+            Attacks.applyAttacks(this.attacks, allEntities);
         }
     },
     clearAttacks(entities) {
@@ -40,13 +40,13 @@ var Attacks = { //This mutates entities in setChange
             }
         }
     },
-    commitAttacks(entities) {
+    commitAttacks(entities, allEntities) {
         this.changes = {};
         this.playerMoneyChanges = [];
         this.AIAttacked = {};
-        Attacks.addAttacks(entities);
+        Attacks.addAttacks(entities, allEntities);
         this.clearAttacks(entities);
-        this.doAttacks(entities); //has built in set redis for attacks
+        this.doAttacks(allEntities); //has built in set redis for attacks
         return { changes: this.changes, playerMoneyChanges: this.playerMoneyChanges, AIAttacked: this.AIAttacked };
     },
     removeFromEntityMap(x, y, id) {
@@ -96,7 +96,7 @@ var Attacks = { //This mutates entities in setChange
             entity.previousMapNode = { x: newX, y: newY }
         }
     },
-    attackableEntities(entity, entities) {
+    attackableEntities(entity, entities, allEntities) {
         var attacks = [];
         var nearbyEntities = [];
         if (entity.attackType === 'sword' && !entity.dead) {
@@ -111,9 +111,9 @@ var Attacks = { //This mutates entities in setChange
                         var entitiesAtNode = Attacks.entitiesMap[i][j];
                         if (entitiesAtNode.length > 0) {
                             for (var e in entitiesAtNode) {
-                                var charact = entities[entitiesAtNode[e]];
+                                var charact = allEntities[entitiesAtNode[e]];
                                 if (charact && charact.team !== entity.team) { //don't attack yourself, could use this logic to heal
-                                    nearbyEntities.push(entities[entitiesAtNode[e]]);
+                                    nearbyEntities.push(allEntities[entitiesAtNode[e]]);
                                 }
                             }
                         }
