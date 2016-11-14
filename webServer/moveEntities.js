@@ -1,5 +1,5 @@
 var moveEntities = { //Currently mutates entities
-    microMove: 4, //How far each step for an entity is per tick.  Could make entity specific, should be relative to tickrate
+    microMove: 8, //How far each step for an entity is per tick.  Could make entity specific, should be relative to tickrate
     changes: {},
     entities: {},
     setChange(entityId, key, value) {
