@@ -5,10 +5,15 @@ var profilerRunning = false
 
 function toggleProfiling() {
     if (profilerRunning) {
+        const snapshot = profiler.takeSnapshot();
         const profile = profiler.stopProfiling()
         console.log('stopped profiling')
         profile.export()
             .pipe(fs.createWriteStream('./myapp-' + Date.now() + '.cpuprofile'))
+            .once('error', profiler.deleteAllProfiles)
+            .once('finish', profiler.deleteAllProfiles)
+        snapshot.export()
+            .pipe(fs.createWriteStream('./myapp-' + Date.now() + '.heapsnapshot'))
             .once('error', profiler.deleteAllProfiles)
             .once('finish', profiler.deleteAllProfiles)
         profilerRunning = false

@@ -99,6 +99,7 @@ if (cluster.isMaster) {
                             endY: (data[e].victim.y - 1) * 32 + 2 * Math.random() * 32,
                             id: e
                         }
+
                         aiSocket.emit('entityPathRequest', coords);
                     }
                 }
@@ -159,6 +160,8 @@ function entityFlee(entity, socket) {
     var time = Date.now();
     var failed = false;
     try {
+        end.x = ~~(Math.random() * (20 * 32) + entity.x - 10 * 32); //The width is 20 * 32 the midpoint is entity.x - 10 * 32 
+        end.y = ~~(Math.random() * (20 * 32) + entity.y - 10 * 32);
         while (end.x < 0 || end.x > levelWidth * 32 || end.y < 0 || end.y > levelHeight * 32 || blockingTerrain[~~(end.x / 32)][~~(end.y / 32)]) {
             if (Date.now() > time + 5) {
                 failed = true;
@@ -179,7 +182,7 @@ function entityFlee(entity, socket) {
                     y: ~~(end.y / 32)
                 }, blockingTerrain);
                 if(path.length > 0){
-                    var heading = { x: entity.endX, y: entity.endY }
+                    var heading = { x: end.x, y: end.y}
                     socket.emit('path', { id: entity.id, path: path, heading: heading });
                     entity.x = end.x;
                     entity.y = end.y;
