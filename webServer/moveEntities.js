@@ -16,7 +16,7 @@ var moveEntities = { //Currently mutates entities
     },
     moveEntities(entities) { //This is global scope for some reason, maybe because it is called
         moveEntities.changes = {};
-        if (!moveEntities.microMove){
+        if (!moveEntities.microMove) {
             return {};
         }
         moveEntities.entities = entities;
@@ -60,8 +60,13 @@ var moveEntities = { //Currently mutates entities
                     moveEntities.setChange(entity.id, 'walking', true);
                 }
             } //If the entity is not at the heading
-            else if (Math.abs(entity.heading.x - entity.x) <= howClose && Math.abs(entity.heading.x - entity.y) <= howClose) {
-                moveEntities.microMoveTowardPoint(entity, entity.heading, moveEntities.microMove, howClose);
+            else if (entity.heading.x !== entity.x || entity.heading.y !== entity.y) { //Math.abs(entity.heading.x - entity.x) <= .001 && Math.abs(entity.heading.y - entity.y) <= .001) {
+                if (Math.abs(entity.heading.x - entity.x) > 5 || Math.abs(entity.heading.y - entity.y) > 5) {
+                    moveEntities.microMoveTowardPoint(entity, entity.heading, 4, 5);
+                } else {
+                    moveEntities.setChange(entity.id, 'x', entity.heading.x);
+                    moveEntities.setChange(entity.id, 'y', entity.heading.y);
+                }
                 more = true;
                 if (!entity.walking) {
                     entity.walking = true;
