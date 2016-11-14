@@ -46,6 +46,7 @@ function drawEntityCircles(entities, ctx, playerTeam){
     }
 
 }
+
 function drawEntities(entities, ctx, lock, clear) {
     var directions = {
         'S': 0,

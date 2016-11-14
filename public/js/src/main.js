@@ -33,9 +33,11 @@ $(function() {
     backgroundOffset = {x: -2929.1425191861085, y: -8798.232238003477};
     zoom = 0.045;
     
-   
-    window.requestAnimationFrame(drawFrame);
-    window.requestAnimationFrame(function(){drawScoreBar(scores)});
+
+        window.requestAnimationFrame(drawFrame);
+        window.requestAnimationFrame(function(){drawScoreBar(scores)});
+
+
 
 
 
@@ -119,8 +121,9 @@ function bottomNavCenter(){
     $('#topNav nav').css({marginTop: $('#sword span').height()})
 }
 
-
+var efps = 15;
 function drawFrame() {
+    var now = Date.now();
     limitBackgroundOffset();
     if (Date.now() > lastAnimation + 1000 / animationPerSecond || serverSentFullState) {
         lastAnimation = Date.now();
@@ -134,8 +137,10 @@ function drawFrame() {
     if (entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight) {
         drawEntities(entities, ctxF, true);
     }
+    setTimeout(function(){
+        window.requestAnimationFrame(drawFrame);
+    }, Math.max(now - Date.now() + 1000 / efps, 0))
 
-    window.requestAnimationFrame(drawFrame);
 }
 
 function redrawBackground(){
