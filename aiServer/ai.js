@@ -42,6 +42,7 @@ var AI = {
       if(cNode.x === eNode.x && cNode.y === eNode.y){
         //console.log('found end');
         var path = this.drawPath(cNode, startNode);
+        path.pop(); //remove current node
         return path;
       }
 

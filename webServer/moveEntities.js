@@ -32,12 +32,6 @@ var moveEntities = { //Currently mutates entities
                 continue;
             }
             if (entity.path.length > 0) { //If the entity has a path
-                if (entity.nextNode.x === entity.previousNode.x && entity.nextNode.y === entity.previousNode.y) {
-                    entity.nextNode = entity.path.pop(); //The first node is the one we are on, so pop it
-                    if (entity.path.length === 0) {
-                        continue;
-                    }
-                }
                 var dest = {
                     x: ~~(entity.path[entity.path.length - 1].x * 32),
                     y: ~~(entity.path[entity.path.length - 1].y * 32)

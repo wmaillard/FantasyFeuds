@@ -46,7 +46,7 @@ var Attacks = { //This mutates entities in setChange
         this.AIAttacked = {};
         Attacks.addAttacks(entities, allEntities);
         this.clearAttacks(entities);
-        this.doAttacks(allEntities); //has built in set redis for attacks
+        this.doAttacks(allEntities); 
         return { changes: this.changes, playerMoneyChanges: this.playerMoneyChanges, AIAttacked: this.AIAttacked };
     },
     removeFromEntityMap(x, y, id) {
@@ -150,15 +150,26 @@ var Attacks = { //This mutates entities in setChange
                         if(allEntities[j].aiType){
                             aiExtra = 2;
                         }
+
                         var health = allEntities[j].health - aiExtra * (Attacks.entityInfo[allEntities[k].type].attack * attack.power * (Math.random() / 2 + .5)) * (10 - Attacks.entityInfo[allEntities[j].type].defense) / 10;
                         if (health <= 0) {
-                            health = 0;
+                            allEntities[j].health = 0;
                             Attacks.removeFromEntityMap(allEntities[j].x, allEntities[j].y, allEntities[j].id, allEntities)
                             Attacks.setChange(j, 'dead', true, allEntities);
                             Attacks.setChange(j, 'walkingState', 2, allEntities);
-                            Attacks.playerMoneyChanges.push({ id: attack.attacker.playerId, gold: Attacks.entityInfo[allEntities[j].type].value });
-                        } else if (allEntities[j].team === 'ai') {
-                            this.AIAttacked[j] = allEntities[j];
+                            var kill, aiKill;
+                            kill = aiKill = 0;
+                            if(allEntities[j].aiType){
+                                aiKill = 1;
+                            }else{
+                                kill = 1;
+                            }
+                            Attacks.playerMoneyChanges.push({ id: attack.attacker.playerId, gold: Attacks.entityInfo[allEntities[j].type].value, kill : kill, aiKill : aiKill});
+                        } else if (allEntities[j].team === 'ai' && allEntities[j].heading.x === allEntities[j].x && allEntities[j].heading.y === allEntities[j].y) { //don't alert if already moving
+                            if(allEntities[j].aiType !== 'aggressive' || allEntities[j].health >= 25){
+                                this.AIAttacked[j] = allEntities[j];
+                            }
+                            
                         }
                         Attacks.setChange(j, 'health', health, allEntities);
                     }

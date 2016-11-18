@@ -97,6 +97,10 @@ io.on('connection', (socket) => {
     }
     playerInfo[convertId(socket.id)].gold = startGold;
     playerInfo[convertId(socket.id)].team = nextPlayer;
+    playerInfo[convertId(socket.id)].captures = 0;
+    playerInfo[convertId(socket.id)].aiKills = 0;
+    playerInfo[convertId(socket.id)].kills = 0;
+
     lastFullState = 0;
     socket.emit('team', nextPlayer);
     try {
@@ -120,13 +124,17 @@ io.on('connection', (socket) => {
             pathSocketConnection.emit('pathRequest', data);
         }
     });
+    socket.on('name', (name) => {
+        playerInfo[convertId(socket.id)].name = name;
+    });
+
     socket.on('addEntity', (data) => {
         if (data.pw === pw) {
             for (var e in data.entities) {
                 setChange(data.entities[e].id, 'wholeEntity', data.entities[e]);
                 Attacks.setEntitiesMap(data.entities[e], true);
             }
-        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
+        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost){ //For DEBUG here //&& (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
             playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
             playerInfoChange = true;
             setChange(data.entity.id, 'wholeEntity', data.entity) //using client data here, fix
@@ -366,7 +374,21 @@ function emitCastles(io, entities) {
     for (var e in entities) {
         Castles.setEntitiesInCastles(entities[e]);
     }
-    io.emit('castleColors', Castles.setCastleColors());
+    var castleResults = Castles.setCastleColors();
+    addCapturePoints(castleResults.capturedCastles);
+    io.emit('castleColors', castleResults.changes);
+
+}
+function addCapturePoints(castleResults){
+    for(var i in castleResults){
+        if(castleResults[i]){
+            playerInfoChanges = true;
+            var teamEntities = Castles.castles[i].entities.teams[castleResults[i]];
+            for(var e in teamEntities){
+                playerInfo[teamEntities[e].playerId].captures++;
+            }
+    }
+    }
 }
 
 function sendFullState(entities) {
@@ -384,8 +406,15 @@ function addPath(data) {
 function addPlayerMoneyChanges(playerMoneyChanges) {
     if (playerMoneyChanges.length > 0) {
         playerInfoChange = true;
+        console.log(playerMoneyChanges);
     }
     for (var i in playerMoneyChanges) {
         playerInfo[playerMoneyChanges[i].id].gold += playerMoneyChanges[i].gold;
+        if(playerMoneyChanges[i].aiKill){
+            playerInfo[playerMoneyChanges[i].id].aiKills += playerMoneyChanges[i].aiKill;
+        }
+        if(playerMoneyChanges[i].kill){
+            playerInfo[playerMoneyChanges[i].id].kills += playerMoneyChanges[i].kill;
+        }
     }
 }

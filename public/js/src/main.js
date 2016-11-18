@@ -25,6 +25,7 @@ $(function() {
     setWindowResizeProperties()
     bottomNavCenter();
 
+
     setUpSocketListeners();
 
     scene.load(level, ctxB, zoom);
@@ -64,8 +65,9 @@ function drawScoreBar(scores) {
 
 
 function buildStore() {
-    var navHeight = $('nav').outerHeight();
-    $('#shop').css({ 'margin-top': navHeight });
+    var navHeight = $('#topNav .navbar').height() + $('#topNav .navbar').offset().top;
+    $('#shopStats').css({ 'margin-top': navHeight });
+    $('#shopStatsNav').css({ 'margin-top': navHeight });
     var count = 0;
     var top = false;
     var bottom = false;
@@ -74,7 +76,7 @@ function buildStore() {
             $('#shop').append('<div id="cards' + count / 3 + '" class="card-deck">');
             top = true;
         }
-        if (!entityInfo[entity].object && !entityInfo[entity].animal) {
+        if (entityInfo[entity].image) {
             var id = ~~(count / 3)
             $('#cards' + id).append('<div class="card text-xs-center" id = ' + entity + '><img class="card-img-top" src="' + entityInfo[entity].image + '" alt="Card image cap"><div class="card-block text-xs-center"><h4 class="card-title">' + entityInfo[entity].name + '</h4><p class="card-text"></p><p class="card-text"><small class="text-muted">' + entityInfo[entity].cost + ' Gold Pieces</p><button type="button" class="btn btn-success buy">Buy</button></div>')
             count++;
@@ -83,6 +85,8 @@ function buildStore() {
         }
     }
     $('#shop .card-deck').css('margin-bottom', navHeight).css('margin-top', navHeight * .25);
+
+
 }
 
 
@@ -155,7 +159,7 @@ function loadImages() {
     //  http://res.cloudinary.com/ochemaster/image/upload/w_241,c_scale/v1475040587/orcPeonStore_dp53w5.png
     //Load up entity images
     for (var entity in entityInfo) {
-        if (!entityInfo[entity].object && !entityInfo[entity].animal) {
+        if (entityInfo[entity].image) {
             entityInfo[entity].image = 'https://res.cloudinary.com/ochemaster/image/upload/h_230,c_scale/v1477430979/' + entityInfo[entity].image;
             var teams = ['orange', 'blue'];
             for (var t in teams) {

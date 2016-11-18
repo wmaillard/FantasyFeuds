@@ -13,7 +13,7 @@ body {
     background-size: cover;
     -o-background-size: cover;
 }
-canvas, #shop {
+canvas, #shopStats {
   position: absolute;
   top: 0;
   left: 0;
@@ -21,7 +21,7 @@ canvas, #shop {
   width: 100%;
 }
 
-#shop{
+#shopStats{
   overflow: auto;
   height: 90%;
 }
@@ -43,7 +43,7 @@ canvas, #shop {
   z-index: 4;
 }
 
-#signUpForm, #shop, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{
+#signUpForm, #shopStats, #levelButtons, #cancel, #menu-toggle{
 	display: none;
 }
 #signInBox {
@@ -72,7 +72,7 @@ canvas, #shop {
     padding-top:0;
     padding-bottom: 0;
 }
-nav {
+nav:not(#shopStatsNav) {
   font-size: 30px;
   color:  #262626;
 
@@ -81,8 +81,7 @@ nav {
   -khtml-user-select: none;    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
-  user-select: none;           /* Non-prefixed version, currently
-                                  not supported by any browser */
+  user-select: none;           
   pointer-events: none
 
 }

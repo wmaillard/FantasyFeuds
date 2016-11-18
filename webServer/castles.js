@@ -47,10 +47,15 @@ var castles = {
                 } else castle.color[0].color = 'orange';
             }
         }
+        var captured = null;
         if (castle.color[1].percent > 1) {
             castle.color[1].percent = 1;
             castle.color[0].percent = 0;
-            castle.ownedBy = castle.color[1].color;
+            if(castle.ownedBy !== castle.color[1].color){
+                captured = castle.color[1].color;
+                castle.ownedBy = castle.color[1].color;
+            }
+            
         } else if (castle.color[1].percent < 0) {
             castle.color[1].percent = 0;
             castle.color[0].percent = 1;
@@ -58,20 +63,28 @@ var castles = {
         if (castle.color[0].percent > 1) {
             castle.color[0].percent = 1;
             castle.color[1].percent = 0;
-            castle.ownedBy = castle.color[0].color;
+            if(castle.ownedBy !== castle.color[0].color){
+                captured = castle.color[0].color;
+                castle.ownedBy = castle.color[0].color;
+            }
         } else if (castle.color[0].percent < 0) {
             castle.color[0].percent = 0;
             castle.color[1].percent = 1;
         }
+        return captured;
     },
     setCastleColors: function() {
         var castles = this.castles;
         var changes = {};
+        var capturedCastles = [];
         for (var c in castles) {
-            this.attackCastle(castles[c])
+            var color = this.attackCastle(castles[c]);
+            if(color){
+                capturedCastles[c] = color;
+            }
             changes[c] = castles[c].color;
         }
-        return changes;
+        return {changes : changes, capturedCastles : capturedCastles};
     },
     clearEntitiesInCastles: function() {
         var castles = this.castles;

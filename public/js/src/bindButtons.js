@@ -31,13 +31,17 @@ var BindButtons = {
             drawScoreBar(scores);
         });
         $('#showShop').click(function() {
-            if ($('#shop').is(":visible")) {
-                $('#shop').hide();
-            } else $('#shop').show();
+            if ($('#shopStats').is(":visible")) {
+                $('#shopStats').hide();
+            } else $('#shopStats').show();
             if ($('#bottomNav').is(":visible")) {
                 $('#bottomNav').hide();
             } else $('#bottomNav').show();
             $(this).toggleClass('buttonDown')
+            var navHeight = $('#topNav .navbar').height() + $('#topNav .navbar').offset().top;
+            $('#shopStatsNav').css({ 'margin-top': navHeight });
+            navHeight += $('#shopStatsNav').height();
+            $('#shopStats').css({ 'margin-top': navHeight });
             return false;
         });
         $('.buy').each(function() {

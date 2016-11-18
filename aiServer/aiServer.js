@@ -7,12 +7,30 @@ const AI = aiFile.AI;
 const blockingTerrain = require('./blockingTerrain.js').blockingTerrain;
 const numberOfQuarries = 500;
 const cluster = require('cluster');
+const entityInfo = require('./entityInfo.js').entityInfo;
 var passiveEntities = {};
 var activeEntities = {};
 var aggressiveEntities = {};
 var numPassive = 500;
 var numAggressive = 250;
-var numActive = 250;
+var numActive = 500;
+
+var possibleAggressive = [];
+var possibleActive = [];
+var possiblePassive = [];
+
+for(var e in entityInfo){
+    if(entityInfo[e].image){
+        possibleAggressive.push(e);
+    }else if(e === 'quarry'){
+        possiblePassive.push(e);
+    }else{
+        possibleActive.push(e);
+    }
+}
+
+
+
 if (cluster.isMaster) {
     var workers = {};
     workers.pathfinders = {};
@@ -195,22 +213,22 @@ function entityFlee(entity, socket) {
 
 function controlAI(socket) {
     var Entity = require('./entities').Entity;
-    addQuarries(Entity, passiveEntities, numPassive);
-    addHydras(Entity, activeEntities, numActive);
-    addOrcs(Entity, aggressiveEntities, numAggressive);
+    addPassive(Entity, passiveEntities, numPassive);
+    addActive(Entity, activeEntities, numActive);
+    addAggressive(Entity, aggressiveEntities, numAggressive);
     socket.emit('addEntity', { pw: 'password', entities: aggressiveEntities });
     socket.emit('addEntity', { pw: 'password', entities: passiveEntities });
     socket.emit('addEntity', { pw: 'password', entities: activeEntities });
 }
+var levelWidth = 1000;
+var levelHeight = 1000;
+function addAggressive(Entity, entities, num) {
 
-function addOrcs(Entity, entities, num) {
-    var levelWidth = 1000;
-    var levelHeight = 1000;
     for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
-        var orc = new Entity(start, 100, 'orcPeon', playerId, 'black', 'ai');
+        var orc = new Entity(start, 100, possibleAggressive[~~(Math.random() * possibleAggressive.length)], playerId, 'black', 'ai');
         while (blockingTerrain[~~(orc.x / 32)][~~(orc.y / 32)]) {
             orc.x = ~~(Math.random() * levelWidth * 32);
             orc.y = ~~(Math.random() * levelHeight * 32);
@@ -223,14 +241,13 @@ function addOrcs(Entity, entities, num) {
     console.log('Added Orcs')
 }
 
-function addQuarries(Entity, entities, num) {
-    var levelWidth = 1000;
-    var levelHeight = 1000;
+function addPassive(Entity, entities, num) {
+
     for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
-        var newQuar = new Entity(start, 100, 'quarry', playerId, 'black', 'ai');
+        var newQuar = new Entity(start, 100, possiblePassive[~~(Math.random() * possiblePassive.length)], playerId, 'black', 'ai');
         while (blockingTerrain[~~(newQuar.x / 32)][~~(newQuar.y / 32)]) {
             newQuar.x = ~~(Math.random() * levelWidth * 32);
             newQuar.y = ~~(Math.random() * levelHeight * 32);
@@ -243,14 +260,14 @@ function addQuarries(Entity, entities, num) {
     console.log('Added Quarries')
 }
 
-function addHydras(Entity, entities, num) {
-    var levelWidth = 1000;
-    var levelHeight = 1000;
+function addActive(Entity, entities, num) {
+
     for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
-        var newHydra = new Entity(start, 100, 'hydra', playerId, 'black', 'ai');
+        var newHydra = new Entity(start, 100,  possibleActive[~~(Math.random() * possibleActive.length)], playerId, 'black', 'ai');
+        console.log(newHydra.type)
         while (blockingTerrain[~~(newHydra.x / 32)][~~(newHydra.y / 32)]) {
             newHydra.x = ~~(Math.random() * levelWidth * 32);
             newHydra.y = ~~(Math.random() * levelHeight * 32);

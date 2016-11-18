@@ -1,6 +1,7 @@
 function setUpSocketListeners() {
     socket = io();
     socket.on('playerInfo', function(data) {
+        console.log(data);
         playerGold = data[playerId].gold;
         $('#goldAmount').text(" " + data[playerId].gold)
     });
