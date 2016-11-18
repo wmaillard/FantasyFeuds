@@ -65,9 +65,7 @@ function drawScoreBar(scores) {
 
 
 function buildStore() {
-    var navHeight = $('#topNav .navbar').height() + $('#topNav .navbar').offset().top;
-    $('#shopStats').css({ 'margin-top': navHeight });
-    $('#shopStatsNav').css({ 'margin-top': navHeight });
+
     var count = 0;
     var top = false;
     var bottom = false;

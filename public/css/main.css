@@ -22,8 +22,11 @@ canvas, #shopStats {
 }
 
 #shopStats{
-  overflow: auto;
+  overflow-y: scroll;
   height: 90%;
+}
+#rankings{
+  padding-bottom: 25%;
 }
 
 #info{
@@ -84,6 +87,10 @@ nav:not(#shopStatsNav) {
   user-select: none;           
   pointer-events: none
 
+}
+#shopStatsNav {
+  background-color: rgba(255, 255, 255, .5) !important;
+  padding: 0 !important;
 }
 
 #allEntities{
@@ -202,4 +209,23 @@ i {
 }
 #badSpot, #blockedSpot {
   display: none;
+}
+.nav-link active{
+  background-color: rgba(255, 255, 255, .9) !important;
+}
+#tabs {
+      padding-top: .5rem;
+      padding-bottom: .5rem;
+      background-color: rgba(255, 255, 255, .9) !important;
+      text-align: center;
+}
+ .table-hover .table-danger:hover>th, .table-hover .table-danger:hover>td{
+  background-color: rgba(255, 153, 0, .3) !important;
+}
+.table-danger>th, .table-danger>td {
+  background-color: rgba(255, 153, 0, .2) !important;
+}
+#shopStatsNav a{
+  color: #55595c;
+
 }
