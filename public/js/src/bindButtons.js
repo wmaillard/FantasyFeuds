@@ -23,6 +23,10 @@ var BindButtons = {
             goToNextEntity();
             return false;
         })
+        $('#screenName').on('focus', function() {
+            $('#startInfo').scrollTop($('#startInfo .modal-content').height());
+        });
+
         $(window).resize(function() {
             setWindowResizeProperties()
             bottomNavCenter();
