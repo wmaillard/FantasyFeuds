@@ -16,6 +16,14 @@ var BindButtons = {
             return false;
         })
         $('#nextEntity').click(function() {
+            if(firstTime.zoomToEntity){
+                $('#nextEntity').removeClass('breathing');
+                firstTime.zoomToEntity = false;
+                if(firstTime.selectEntity){
+                    $('#allEntities').addClass('breathing');
+                }
+                
+            }
             $(this).toggleClass('buttonDown');
             setTimeout(function(current) {
                 $('#nextEntity').toggleClass('buttonDown');
@@ -37,6 +45,11 @@ var BindButtons = {
             drawScoreBar(scores);
         });
         $('#showShop').click(function() {
+            if(firstTime.showShop){
+                $('#showShop').removeClass('breathing');
+                firstTime.showShop = false;
+                $('.buy').addClass('breathing');
+            }
             if ($('#shopStats').is(":visible")) {
                 $('#shopStats').hide();
             } else {
@@ -69,6 +82,11 @@ var BindButtons = {
         });
         $('.buy').each(function() {
             $(this).click(function() {
+                if(firstTime.buyEntity){
+                    $('.buy').remove('breathing');
+                    $('#tutorialAdd').show();
+                    firstTime.buyEntity = false;
+                }
                 boughtEntity = this.closest('.card').id;
                 if (entityInfo[boughtEntity].cost > playerGold) {
                     $("#playerGold").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
@@ -84,6 +102,13 @@ var BindButtons = {
             })
         })
         $('#allEntities').click(function() {
+            if(firstTime.selectEntity){
+                $('#allEntities').removeClass('breathing');
+                firstTime.selectEntity = false;
+                if(firstTime.moveEntity){
+                    $('#tutorialMove').show();
+                }
+            }
             if ($(this).hasClass('buttonDown')) {
                 deselectAllEntities();
             } else {

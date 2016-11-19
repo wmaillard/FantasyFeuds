@@ -29,6 +29,8 @@ var scores = {orange: 1000, blue: 1000};
 var playerTeam = null;
 var name = "";
 var allPlayerInfo;
+var firstTime = {showShop : true, buyEntity : true, placeEntity : true, selectEntity : true, zoomToEntity : true, moveEntity : true}
+var tips = ['You can zoom in and out by pinching the screen or scrolling with the mouse wheel.', 'Capturing castles will earn you 3x as many points as killing enemies.', 'You can double tap the map to quickly zoom in and out.']
 
 
 

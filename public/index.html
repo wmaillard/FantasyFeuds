@@ -43,13 +43,17 @@
             </div>
         </nav>
     </div>
-    <div id="introTeamBox" class="infoBoxes col-xs-8 offset-xs-2 text-xs-center">
+    <div id="tutorialAdd" class="infoBoxes col-xs-10 offset-xs-1 text-xs-center">
+        <h3>Tap the <span class="teamName"></span> area to add your character</h3></div>
+    <div id="tutorialMove" class="infoBoxes col-xs-10 offset-xs-1 text-xs-center">
+        <h3>Tap the map to move your selected character.  <br>Your characters will automatically attack when near enemies.</h3></div>
+    <div id="introTeamBox" class="infoBoxes col-xs-10 offset-xs-1 text-xs-center">
         <h3>You Have Joined Team <span class="teamName"></span></h3></div>
-    <div id="badSpot" class="infoBoxes col-xs-8 offset-xs-2 text-xs-center">
+    <div id="badSpot" class="infoBoxes col-xs-10 offset-xs-1 text-xs-center">
         <h3>Sorry, you can only add characters in areas that are <span class="teamName"></span></h3></div>
-    <div id="blockedSpot" class="infoBoxes col-xs-8 offset-xs-2 text-xs-center">
+    <div id="blockedSpot" class="infoBoxes col-xs-10 offset-xs-1 text-xs-center">
         <h3>Sorry, that spot is blocked</h3></div>
-    <div id="pathfindingFailed" class="infoBoxes col-xs-8 offset-xs-2 text-xs-center">
+    <div id="pathfindingFailed" class="infoBoxes col-xs-10 offset-xs-1 text-xs-center">
         <h3>Sorry, I can't find a path to that location</h3></div>
     <div id="gameContainer" class="header">
         <canvas id="background"></canvas>
@@ -107,31 +111,24 @@
                             <h2><span class="icon-sword" aria-hidden="true"></span></h2>
                             <h2>Fantasy Feuds</h2>
                             <hr class="star-primary">
-                            <p>Welcome to Fantasy Feuds! This game is currently in pre-beta, so there may be some minor bugs.
+                            <p>Welcome to Fantasy Feuds!
                                 <!-- If you find a problem please report it by clicking the <i class="icon-bug"></i> button.--></p>
-                            <h3>Gameplay</h3>
-                            <p>Each player is placed on either the orange or blue team. Your goal is to deplete the opposite team's health bar by conquering the most castles</p>
-                            <h3>Buying characters</h3>
-                            <p>Buy characters by clicking the <i class="fa fa-bars" aria-hidden="true"></i> button. Your gold is shown next to the <span class="icon-coins"></span> icon which is the same color as the healthbar above each of your characters.</p>
-                            <p>Add your characters by tapping the map anywhere that is the <span class='teamColor'>color of your team</span>. This is either at conquered castles or near characters that are not attacking</p>
-                            <h3>Getting Gold</h3>
-                            <p>Get more gold by defeating anything with a healthbar.</p>
-                            <h3>Move the Camera</h3>
-                            <p>Double tap the map to quickly zoom in and out.</p>
-                            <p>Zoom to your characters by pressing <i class="fa fa-chevron-left" aria-hidden="true"></i> or <i class="fa fa-chevron-right" aria-hidden="true"></i> </p>
-                            <p>Zoom and pan around by pinching and dragging (scroll to zoom if you have a mouse). </p>
-                            <h3>Control Your Characters</h3>
-                            <p>Select your characters by clicking on them or press <i class="fa fa-users" aria-hidden="true"></i> to select all visible characters, or to deselect all of your characters.</p>
-                            <p>After a character is selected, you can move it by clicking on where you would like it to go on the map. Your phone will vibrate (if your volume is on) if your spot is blocked.
-                                <h3>Attacking</h3>
-                                <p>Characters will automatically attack anything that is attackable nearby.</p>
-                                <form id='screenNameForm' class="form-inline">
-                                    <div class="form-group">
-                                        <label class="sr-only" for="screenName">Player Name</label>
-                                        <input type="name" class="form-control" id="screenName" placeholder="Name e.g. 'Killer Tofu'">
-                                    </div>
-                                    <button id="closeIntro" type="button" class="btn btn-success disabled">Play!</button>
-                                </form>
+                            <h3>How It Works</h3>
+                            <p>Each player is placed on either the orange or blue team. Your goal is to deplete the opposite team's health bar by conquering the most castles.</p>
+                            <p>Your characters will have the same color healthbar as your coins <span class="icon-coins"></span>.</p>
+                            <p>AI characters will always have a black healthbar.</p>
+                            <h3>Did you know?</h3>
+                            <p id='didYouKnow'>You can double tap the map to quickly zoom in and out.</p>
+                            <form id='screenNameForm' class="form-inline">
+                                <div class="form-group">
+                                    <label class="sr-only" for="screenName">Player Name</label>
+                                    <input type="name" class="form-control" id="screenName" placeholder="Name e.g. 'Killer Tofu'">
+                                    <label class="form-check-label">
+                                        <input id="skipTutorial" type="checkbox" class="form-check-input"> Skip the Tutorial
+                                    </label>
+                                </div>
+                                <button id="closeIntro" type="button" class="btn btn-success disabled">Play!</button>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,29 @@
+function runTips(i) {
+    if ($('#startInfo').is(":visible")) {
+        setTimeout(function() {
+            $('#didYouKnow').fadeTo('slow', .01, function() {
+                $('#didYouKnow').text(tips[i]);
+                $('#didYouKnow').fadeTo( 'slow', 1);
+                i++;
+                i %= tips.length;
+                runTips(i);
+            })
+        }, 3000);
+    }
+}
 $(function() {
-    $('table').tablesorter(); 
+    runTips(0);
+    $('table').tablesorter();
     $('th').removeClass('header');
     Pace.on('done', function() {
         $('#closeIntro').click(function(e) {
+            if($('#skipTutorial').is(':checked')){
+                for(var i in firstTime){
+                    firstTime[i] = false;
+                }
+            }else{
+                    $('#showShop').addClass('breathing');
+            }
             if ($('#screenName').val() === "") {
                 $("#screenName").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
             } else {
@@ -151,35 +172,34 @@ function loadImages() {
         characterImages[entity + 'Pose'].src = 'img/characters/' + entity + '/' + entity + 'Pose' + '.png';
     }
 }
-function createSortTable(){
+
+function createSortTable() {
     $('tbody').empty();
     var playerInfoArray = [];
-    for(var p in allPlayerInfo){
-        if(!allPlayerInfo[p].name){
+    for (var p in allPlayerInfo) {
+        if (!allPlayerInfo[p].name) {
             continue;
         }
         allPlayerInfo[p].score = allPlayerInfo[p].aiKills * .5 + allPlayerInfo[p].kills - allPlayerInfo[p].deaths * .5 + allPlayerInfo[p].captures * 2;
         playerInfoArray.push(allPlayerInfo[p]);
     }
     playerInfoArray.sort(comparePlayers);
-    for(var p in playerInfoArray){
+    for (var p in playerInfoArray) {
         var rowColor = "table-danger";
-        if(playerInfoArray[p].team === 'blue'){
+        if (playerInfoArray[p].team === 'blue') {
             rowColor = 'table-info';
         }
         var ratio = playerInfoArray[p].kills / playerInfoArray[p].deaths;
-        if(isNaN(ratio)){
+        if (isNaN(ratio)) {
             ratio = 0;
         }
         ratio = Math.round(ratio * 100) / 100;
-
         $('tbody').append('<tr class="' + rowColor + '"><th scope="row">' + playerInfoArray[p].score + '</th><td>' + playerInfoArray[p].name + '</td><td>' + playerInfoArray[p].captures + '</td><td>' + playerInfoArray[p].kills + '</td><td>' + ratio + '</td></tr>')
-
     }
-    
     //$("table").tablesorter( {sortList: [[0,0]]});
     //$('th').removeClass('header');
 }
-function comparePlayers(a, b){
+
+function comparePlayers(a, b) {
     return b.score - a.score;
 }

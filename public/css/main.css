@@ -200,6 +200,8 @@ i {
   display: none;
 }
 .infoBoxes {
+    color: #262626;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
     position: fixed;
     z-index: 8;
     top: 33%;
@@ -232,4 +234,56 @@ i {
 }
 th {
     text-align: center;
+}
+
+
+.breathing {
+    -webkit-animation: breathing 1.5s ease-out infinite normal;
+    animation: breathing 1.5s ease-out infinite normal;
+    }
+ a.breathing{
+    background-color: rgba(250, 250, 55, .5);
+    border-radius: 25%;
+}
+
+@-webkit-keyframes breathing {
+  0% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+  50% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+}
+
+@keyframes breathing {
+  0% {
+    -webkit-transform: scale(1.4);
+    -ms-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+  50% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    -webkit-transform: scale(1.4);
+    -ms-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+}
+.form-check-label{
+  padding-top: 1rem;
 }

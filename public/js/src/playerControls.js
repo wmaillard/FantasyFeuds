@@ -24,6 +24,11 @@ function clickGameContainer(e) {
             $('#allEntities').toggleClass('buttonDown')
         }
     } else if (boughtEntity && playerTeam && !entityIsBlocked(point.x, point.y)) {
+        if(firstTime.placeEntity){
+            $('#nextEntity').addClass('breathing');
+            $('#tutorialAdd').fadeOut('slow');
+            firstTime.placeEntity = false;
+        }
         var entity;
         var health = 100;
         entity = new Entity({
@@ -34,6 +39,11 @@ function clickGameContainer(e) {
         socket.emit('addEntity', { entity: entity });
         boughtEntity = false;
     } else if (!entityIsBlocked(point.x, point.y)) {
+        if(firstTime.moveEntity){
+            $('#tutorialMove').fadeOut('slow')
+            firstTime.moveEntity = false;
+        }
+        setTimeout(function(){$('#blockedSpot').fadeOut('slow')}, 1000);
         var numMoving = LOO(selectedEntities);
         if (numMoving > 0) {
             for (var i in selectedEntities) {
