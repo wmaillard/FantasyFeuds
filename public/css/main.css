@@ -210,12 +210,13 @@ i {
 #badSpot, #blockedSpot {
   display: none;
 }
-.nav-link active{
+.nav-link.active{
   background-color: rgba(255, 255, 255, .9) !important;
 }
+
 #tabs {
       padding-top: .5rem;
-      padding-bottom: .5rem;
+      padding-bottom: 5rem;
       background-color: rgba(255, 255, 255, .9) !important;
       text-align: center;
 }
@@ -228,4 +229,7 @@ i {
 #shopStatsNav a{
   color: #55595c;
 
+}
+th {
+    text-align: center;
 }

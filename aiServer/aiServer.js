@@ -11,9 +11,9 @@ const entityInfo = require('./entityInfo.js').entityInfo;
 var passiveEntities = {};
 var activeEntities = {};
 var aggressiveEntities = {};
-var numPassive = 500;
-var numAggressive = 250;
-var numActive = 500;
+var numPassive = 250;
+var numAggressive = 350;
+var numActive = 750;
 
 var possibleAggressive = [];
 var possibleActive = [];
@@ -267,7 +267,6 @@ function addActive(Entity, entities, num) {
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
         var newHydra = new Entity(start, 100,  possibleActive[~~(Math.random() * possibleActive.length)], playerId, 'black', 'ai');
-        console.log(newHydra.type)
         while (blockingTerrain[~~(newHydra.x / 32)][~~(newHydra.y / 32)]) {
             newHydra.x = ~~(Math.random() * levelWidth * 32);
             newHydra.y = ~~(Math.random() * levelHeight * 32);

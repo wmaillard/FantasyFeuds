@@ -164,7 +164,7 @@ var Attacks = { //This mutates entities in setChange
                             }else{
                                 kill = 1;
                             }
-                            Attacks.playerMoneyChanges.push({ id: attack.attacker.playerId, gold: Attacks.entityInfo[allEntities[j].type].value, kill : kill, aiKill : aiKill});
+                            Attacks.playerMoneyChanges.push({ id: attack.attacker.playerId, gold: Attacks.entityInfo[allEntities[j].type].value, kill : kill, aiKill : aiKill, victimPlayerId : attack.victim.playerId});
                         } else if (allEntities[j].team === 'ai' && allEntities[j].heading.x === allEntities[j].x && allEntities[j].heading.y === allEntities[j].y) { //don't alert if already moving
                             if(allEntities[j].aiType !== 'aggressive' || allEntities[j].health >= 25){
                                 this.AIAttacked[j] = allEntities[j];

@@ -2,8 +2,11 @@ function setUpSocketListeners() {
     socket = io();
     socket.on('playerInfo', function(data) {
         console.log(data);
+        allPlayerInfo = data;
         playerGold = data[playerId].gold;
-        $('#goldAmount').text(" " + data[playerId].gold)
+        $('#goldAmount').text(" " + data[playerId].gold);
+
+
     });
     socket.on('changes', function(changes) {
         for (var i in changes) {
@@ -15,6 +18,8 @@ function setUpSocketListeners() {
                 entities[i] = changes[i];
             }
         }
+    })
+    socket.on('newPlayer', function(players){
     })
     socket.on('castleColors', function(colors) {
         for (var c in colors) {

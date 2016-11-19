@@ -31,9 +31,15 @@ var BindButtons = {
             drawScoreBar(scores);
         });
         $('#showShop').click(function() {
+            
             if ($('#shopStats').is(":visible")) {
                 $('#shopStats').hide();
-            } else $('#shopStats').show();
+            } else{
+                $('#shopStats').show();
+                createSortTable();
+                $('#shopStats').scrollTop(0);
+                
+            } 
             if ($('#bottomNav').is(":visible")) {
                 $('#bottomNav').hide();
             } else $('#bottomNav').show();
@@ -47,11 +53,26 @@ var BindButtons = {
             $('#shopButton').css({ 'padding-left':  ($('#shopStats').width() / 2) - ($('#shopButton').width() + $('#rankingsButton').width()) / 2});
             return false;
         });
+        $('#shopButton').click(function(e){
+            $('#shopStats').scrollTop(0);
+        })
+        $('#rankingsButton').click(function(e){
+            $('#shopStats').scrollTop(0);
+            
+        })
+        $('#screenName').keypress(function(event){
+          if(event.keyCode == 13){
+            $('#closeIntro').click();
+            return false;
+          }
+
+        });
         $('.buy').each(function() {
             $(this).click(function() {
                 boughtEntity = this.closest('.card').id;
                 if (entityInfo[boughtEntity].cost > playerGold) {
                     $("#playerGold").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+                    boughtEntity = null;
                 } else {
                     $('#shopStats').hide();
                     $('#showShop').toggleClass('buttonDown')

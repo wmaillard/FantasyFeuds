@@ -100,6 +100,7 @@ io.on('connection', (socket) => {
     playerInfo[convertId(socket.id)].captures = 0;
     playerInfo[convertId(socket.id)].aiKills = 0;
     playerInfo[convertId(socket.id)].kills = 0;
+    playerInfo[convertId(socket.id)].deaths = 0;
 
     lastFullState = 0;
     socket.emit('team', nextPlayer);
@@ -126,6 +127,7 @@ io.on('connection', (socket) => {
     });
     socket.on('name', (name) => {
         playerInfo[convertId(socket.id)].name = name;
+        socket.emit('playerInfo', playerInfo);
     });
 
     socket.on('addEntity', (data) => {
@@ -406,7 +408,6 @@ function addPath(data) {
 function addPlayerMoneyChanges(playerMoneyChanges) {
     if (playerMoneyChanges.length > 0) {
         playerInfoChange = true;
-        console.log(playerMoneyChanges);
     }
     for (var i in playerMoneyChanges) {
         playerInfo[playerMoneyChanges[i].id].gold += playerMoneyChanges[i].gold;
@@ -415,6 +416,7 @@ function addPlayerMoneyChanges(playerMoneyChanges) {
         }
         if(playerMoneyChanges[i].kill){
             playerInfo[playerMoneyChanges[i].id].kills += playerMoneyChanges[i].kill;
+            playerInfo[playerMoneyChanges[i].victimPlayerId].deaths += 1;
         }
     }
 }
