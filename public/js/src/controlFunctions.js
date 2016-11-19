@@ -13,11 +13,13 @@ function entityIsThere(x, y, rangeX, rangeY) {
         }
     } else {
         for (var i in entities) {
-            var entX = entities[i].x - entities[i].width * entityInfo[entities[i].type].size * .2;
-            var entY = entities[i].y;
-            if (x >= entX - 16 && x <= entX + 16 && y >= entY - 16 && y <= entY + 16) {
-                return entities[i];
-            }
+            if(entities[i].type){
+                var entX = entities[i].x - entities[i].width * entityInfo[entities[i].type].size * .2;
+                var entY = entities[i].y;
+                if (x >= entX - 16 && x <= entX + 16 && y >= entY - 16 && y <= entY + 16) {
+                    return entities[i];
+                }
+          }
         }
     }
     return false;

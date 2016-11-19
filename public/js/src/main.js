@@ -173,7 +173,7 @@ function createSortTable(){
         }
         ratio = Math.round(ratio * 100) / 100;
 
-        $('tbody').append('<tr class="' + rowColor + '"><th scope="row">' + playerInfoArray[p].score + '</th><td>' + playerInfoArray[p].name + '</td><td>' + playerInfoArray[p].captures + '</td><td>' + playerInfoArray[p].aiKills + '</td><td>' + playerInfoArray[p].kills + '</td><td>' + playerInfoArray[p].deaths + '</td><td>' + ratio + '</td></tr>')
+        $('tbody').append('<tr class="' + rowColor + '"><th scope="row">' + playerInfoArray[p].score + '</th><td>' + playerInfoArray[p].name + '</td><td>' + playerInfoArray[p].captures + '</td><td>' + playerInfoArray[p].kills + '</td><td>' + ratio + '</td></tr>')
 
     }
     

@@ -31,7 +31,7 @@ var redis = require('redis');
 var Castles = require('./castles.js').castles;
 var castles = Castles.castles;
 const blockingTerrain = require('./blockingTerrain.js').blockingTerrain;
-const Attacks = require('./attacks.js').Attacks;
+var Attacks = require('./attacks.js').Attacks;
 const entityInfo = require('./entityInfo.js').entityInfo;
 const express = require('express');
 const socketIO = require('socket.io');
@@ -68,7 +68,7 @@ var moveEntitiesFile = require('./moveEntities.js').moveEntities;
 var moveEntities = moveEntitiesFile.moveEntities;
 var lastScores = Date.now() - 10000;
 var scores = { 'orange': 1000, 'blue': 1000 }
-var blankGameLength = 20; //minutes
+var blankGameLength = 30; //minutes
 var pointsPerCastle = 1000 / 60 / 5 / blankGameLength; //5 = num start castles, 1000 points 60 seconds
 var nextPlayer = 'orange';
 var pw = 'password';
@@ -78,6 +78,7 @@ playerColors.next = {};
 playerColors.next.orange = 0;
 playerColors.next.blue = 0;
 var entitiesMovedSinceLastAttack = {};
+var mainInterval;
 /************** Web Worker Sockets **********************/
 pathSocket.on('connection', function(socket) {
     console.log('********* web worker connected **********');
@@ -183,7 +184,8 @@ function mergeObjectsTwoLayers(base, addition) {
 }
 
 function runServer() {
-    clearPlayerInfo(playerInfo);
+    //clearPlayerInfo(playerInfo);
+    playerInfo = {};
     playerInfoChange = true;
     tickRate = 30; // in hz
     changes = {};
@@ -200,10 +202,12 @@ function runServer() {
     moveEntities = moveEntitiesFile.moveEntities;
     lastScores = Date.now() - 10000;
     scores = { 'orange': 1000, 'blue': 1000 }
-    var castles = require('./castles.js').castles.castles;
+    Castles = require('./castles.js').castles;
+    castles = Castles.castles;
+    Attacks = require('./attacks.js').Attacks;
     entitiesMovedSinceLastAttack = {};
     /*******************Main Server Loop ************************************/
-    var mainInterval = setInterval(() => {
+    mainInterval = setInterval(() => {
             //Move entities 
             var moved = {};
             if (LOO(walkingEntities) > 0) {
@@ -293,7 +297,7 @@ function alertNearbyAI(movedEntities) {
                 } else if (Attacks.entitiesMap[x] && Attacks.entitiesMap[x][y] && Attacks.entitiesMap[x][y].length > 0) {
                     for (var f in Attacks.entitiesMap[x][y]) {
                         //Change logic here if they are too stupid and not following clients fast enough
-                        if (entities[Attacks.entitiesMap[x][y][f]].health > 0 && entities[Attacks.entitiesMap[x][y][f]].aiType && entities[Attacks.entitiesMap[x][y][f]].aiType === 'aggressive' && !entities[Attacks.entitiesMap[x][y][f]].attacking) {
+                        if (entities[Attacks.entitiesMap[x][y][f]] && entities[Attacks.entitiesMap[x][y][f]].health > 0 && entities[Attacks.entitiesMap[x][y][f]].aiType && entities[Attacks.entitiesMap[x][y][f]].aiType === 'aggressive' && !entities[Attacks.entitiesMap[x][y][f]].attacking) {
                             alerted[Attacks.entitiesMap[x][y][f]] = { start: { x: x, y: y }, victim: { x: node.x, y: node.y, id: e }, health: entities[Attacks.entitiesMap[x][y][f]].health };
                         }
                     }
@@ -374,7 +378,9 @@ function setChange(entityId, key, value) {
 function emitCastles(io, entities) {
     Castles.clearEntitiesInCastles();
     for (var e in entities) {
-        Castles.setEntitiesInCastles(entities[e]);
+        if(entities[e].id){
+             Castles.setEntitiesInCastles(entities[e]);
+        }
     }
     var castleResults = Castles.setCastleColors();
     addCapturePoints(castleResults.capturedCastles);

@@ -138,7 +138,13 @@ if (cluster.isMaster) {
         var addedAI = false;
         aiSocket = io2.connect(socketURL, { 'force new connection': true });
         aiSocket.on('connect', function() {
-            console.log('AISocket connected')
+            console.log('AISocket connected');
+            aiSocket.on('gameOver', function(){
+                passiveEntities = {};
+                activeEntities = {};
+                aggressiveEntities = {};
+                controlAI(aiSocket);
+            })
             playerId = aiSocket.id;
             if (!addedAI) {
                 setTimeout(function() {

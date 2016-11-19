@@ -1,7 +1,6 @@
 function setUpSocketListeners() {
     socket = io();
     socket.on('playerInfo', function(data) {
-        console.log(data);
         allPlayerInfo = data;
         playerGold = data[playerId].gold;
         $('#goldAmount').text(" " + data[playerId].gold);
@@ -70,6 +69,7 @@ function setUpSocketListeners() {
     })
     socket.on('connect', function() {
         playerId = socket.id;
+        socket.emit('name', name);
     })
     socket.on('scores', function(newScores){
         scores = newScores;
@@ -79,6 +79,9 @@ function setUpSocketListeners() {
         $('#winningTeam').text(data.winner.charAt(0).toUpperCase() + data.winner.slice(1)).css({color: data.winner});
         $('#gameOverInfo').modal('show');
         entities = {};
+        socket.disconnect();
+        selectedEntities = {};
+        setUpSocketListeners();
     })
     socket.on('addEntityFailure', function(data){
 

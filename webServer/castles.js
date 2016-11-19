@@ -110,7 +110,12 @@ var castles = {
         var ry = this.castleRadius / 3;
         for (var c in castles) {
             if (e.playerId != -1 && Math.pow((e.x - castles[c].x), 2) / Math.pow(rx, 2) + Math.pow((e.y - castles[c].y), 2) / Math.pow(ry, 2) < 1) {
-                castles[c]['entities']['teams'][e.team][e.id] = e;
+                try{
+                    castles[c]['entities']['teams'][e.team][e.id] = e;
+                }catch(err){
+                    console.log(castles[c]['entities']);
+                    console.log(e);
+                }
             }
         }
     },
