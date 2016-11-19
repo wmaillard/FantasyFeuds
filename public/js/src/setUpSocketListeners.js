@@ -78,6 +78,7 @@ function setUpSocketListeners() {
     socket.on('gameOver', function(data){
         $('#winningTeam').text(data.winner.charAt(0).toUpperCase() + data.winner.slice(1)).css({color: data.winner});
         $('#gameOverInfo').modal('show');
+        $('#introTeamBox').show();
         entities = {};
         socket.disconnect();
         selectedEntities = {};

@@ -79,8 +79,7 @@
             <div role="tabpanel" class="tab-pane fade" id="rankings">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-8 col-lg-offset-2">
-                            <div class="modal-body">
+                        <div class="col-lg-12">
                                 <table class="table table-hover table-sm">
                                     <thead>
                                         <tr>
@@ -96,7 +95,6 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -119,7 +117,7 @@
                             <p>AI characters will always have a black healthbar.</p>
                             <h3>Did you know?</h3>
                             <p id='didYouKnow'>You can double tap the map to quickly zoom in and out.</p>
-                            <form id='screenNameForm' class="form-inline">
+                            <form id='screenNameForm' class="form">
                                 <div class="form-group">
                                     <label class="sr-only" for="screenName">Player Name</label>
                                     <input type="name" class="form-control" id="screenName" placeholder="Name e.g. 'Killer Tofu'">
@@ -156,7 +154,7 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                            <button id = 'closeGameOver' type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
                     </div>
                 </div>
@@ -170,7 +168,6 @@
     <script src="js/libraries/pace.min.js"></script>
     <!--script src="js/libraries/particle.js"></script-->
     <script src="js/libraries/socket.io.js"></script>
-    <script src="js/libraries/tablesorter.min.js"></script>
     <!--script src="js/build/libraries/cookie.min.js"></script-->
     <!--script src = 'js/build/game.min.js'></script-->
     <script src="js/src/blockingTerrain.js"></script>

@@ -83,7 +83,7 @@ var BindButtons = {
         $('.buy').each(function() {
             $(this).click(function() {
                 if(firstTime.buyEntity){
-                    $('.buy').remove('breathing');
+                    $('.buy').removeClass('breathing');
                     $('#tutorialAdd').show();
                     firstTime.buyEntity = false;
                 }
@@ -101,13 +101,16 @@ var BindButtons = {
                 return false;
             })
         })
+        $('#closeGameOver').click(function(){
+             setTimeout(function(){$('#introTeamBox').fadeOut('slow')}, 1000);
+        })
         $('#allEntities').click(function() {
             if(firstTime.selectEntity){
                 $('#allEntities').removeClass('breathing');
                 firstTime.selectEntity = false;
-                if(firstTime.moveEntity){
+                firstTime.moveEntity = true;
                     $('#tutorialMove').show();
-                }
+                
             }
             if ($(this).hasClass('buttonDown')) {
                 deselectAllEntities();

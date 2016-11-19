@@ -13,8 +13,6 @@ function runTips(i) {
 }
 $(function() {
     runTips(0);
-    $('table').tablesorter();
-    $('th').removeClass('header');
     Pace.on('done', function() {
         $('#closeIntro').click(function(e) {
             if($('#skipTutorial').is(':checked')){
@@ -189,15 +187,13 @@ function createSortTable() {
         if (playerInfoArray[p].team === 'blue') {
             rowColor = 'table-info';
         }
-        var ratio = playerInfoArray[p].kills / playerInfoArray[p].deaths;
+        var ratio = (playerInfoArray[p].kills + playerInfoArray[p].aiKills * 0.5) / playerInfoArray[p].deaths;
         if (isNaN(ratio)) {
-            ratio = 0;
+            ratio = playerInfoArray[p].kills + playerInfoArray[p].aiKills * 0.5;
         }
         ratio = Math.round(ratio * 100) / 100;
-        $('tbody').append('<tr class="' + rowColor + '"><th scope="row">' + playerInfoArray[p].score + '</th><td>' + playerInfoArray[p].name + '</td><td>' + playerInfoArray[p].captures + '</td><td>' + playerInfoArray[p].kills + '</td><td>' + ratio + '</td></tr>')
+        $('tbody').append('<tr class="' + rowColor + '"><th scope="row">' + playerInfoArray[p].score + '</th><td>' + playerInfoArray[p].name + '</td><td>' + playerInfoArray[p].captures + '</td><td>' + (playerInfoArray[p].kills + playerInfoArray[p].aiKills * .5) + '</td><td>' + ratio + '</td></tr>')
     }
-    //$("table").tablesorter( {sortList: [[0,0]]});
-    //$('th').removeClass('header');
 }
 
 function comparePlayers(a, b) {
