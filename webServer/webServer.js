@@ -102,7 +102,6 @@ io.on('connection', (socket) => {
     playerInfo[convertId(socket.id)].aiKills = 0;
     playerInfo[convertId(socket.id)].kills = 0;
     playerInfo[convertId(socket.id)].deaths = 0;
-
     lastFullState = 0;
     socket.emit('team', nextPlayer);
     try {
@@ -130,14 +129,13 @@ io.on('connection', (socket) => {
         playerInfo[convertId(socket.id)].name = name;
         socket.emit('playerInfo', playerInfo);
     });
-
     socket.on('addEntity', (data) => {
         if (data.pw === pw) {
             for (var e in data.entities) {
                 setChange(data.entities[e].id, 'wholeEntity', data.entities[e]);
                 Attacks.setEntitiesMap(data.entities[e], true);
             }
-        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost){ //For DEBUG here //&& (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
+        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost) { //For DEBUG here //&& (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
             playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
             playerInfoChange = true;
             setChange(data.entity.id, 'wholeEntity', data.entity) //using client data here, fix
@@ -222,16 +220,14 @@ function runServer() {
             }
             if (Date.now() > lastAttacks + 1000) { //Send out attacks
                 for (var e in entitiesMovedSinceLastAttack) {
-                    Attacks.setEntitiesMap(entitiesMovedSinceLastAttack[e]); 
+                    Attacks.setEntitiesMap(entitiesMovedSinceLastAttack[e]);
                 }
-                
                 var toAlert = alertNearbyAI(Attacks.movedNonAI);
                 if (LOO(toAlert) > 0) {
                     pathSocket.emit('nearbyEntities', toAlert);
                 }
                 Attacks.movedNonAI = {};
                 //only entities that haved moved or were attacking last time
-
                 var attackChanges = Attacks.commitAttacks(entitiesMovedSinceLastAttack, entities);
                 entitiesMovedSinceLastAttack = attackingLastTime(attackChanges.changes);
                 if (LOO(attackChanges.AIAttacked) > 0) {
@@ -264,10 +260,11 @@ function runServer() {
         },
         1000 / tickRate);
 }
-function attackingLastTime(changes){
+
+function attackingLastTime(changes) {
     var attacked = {};
-    for(var c in changes){
-        if(changes[c].attacking && changes[c].attacking === true){
+    for (var c in changes) {
+        if (changes[c].attacking && changes[c].attacking === true) {
             attacked[c] = entities[c];
         }
     }
@@ -310,34 +307,31 @@ function alertNearbyAI(movedEntities) {
 
 function applyChanges(changes, socket) {
     //If anything interesting changed
-        //Loop through entities that have changed
-        for (var i in changes) {
-            if (entities[i]) {
-                //Loop through changes per entity
-                for (var j in changes[i]) {
-                    entities[i][j] = changes[i][j]
-                    if(j === 'x' || j === 'y'){
-                        entitiesMovedSinceLastAttack[i] = entities[i];
-                    }
-                    if (j === 'path') {
-                        walkingEntities[i] = entities[i];
-                        
-                    } else if (j === 'walking' && changes[i][j] === false) {
-                        delete walkingEntities[i];
-                    }
+    //Loop through entities that have changed
+    for (var i in changes) {
+        if (entities[i]) {
+            //Loop through changes per entity
+            for (var j in changes[i]) {
+                entities[i][j] = changes[i][j]
+                if (j === 'x' || j === 'y') {
+                    entitiesMovedSinceLastAttack[i] = entities[i];
                 }
-            } else if (changes[i]) {
-                //Don't have entity on record
-                changes[i].walking = false;
-                entities[i] = changes[i];
-                entitiesMovedSinceLastAttack[i] = entities[i];
-
+                if (j === 'path') {
+                    walkingEntities[i] = entities[i];
+                } else if (j === 'walking' && changes[i][j] === false) {
+                    delete walkingEntities[i];
+                }
             }
+        } else if (changes[i]) {
+            //Don't have entity on record
+            changes[i].walking = false;
+            entities[i] = changes[i];
+            entitiesMovedSinceLastAttack[i] = entities[i];
         }
-        if (socket) {
-            socket.emit('changes', changes);
-        }
-    
+    }
+    if (socket) {
+        socket.emit('changes', changes);
+    }
 }
 
 function gameOver(winner) {
@@ -378,24 +372,24 @@ function setChange(entityId, key, value) {
 function emitCastles(io, entities) {
     Castles.clearEntitiesInCastles();
     for (var e in entities) {
-        if(entities[e].id){
-             Castles.setEntitiesInCastles(entities[e]);
+        if (entities[e].id) {
+            Castles.setEntitiesInCastles(entities[e]);
         }
     }
     var castleResults = Castles.setCastleColors();
     addCapturePoints(castleResults.capturedCastles);
     io.emit('castleColors', castleResults.changes);
-
 }
-function addCapturePoints(castleResults){
-    for(var i in castleResults){
-        if(castleResults[i]){
+
+function addCapturePoints(castleResults) {
+    for (var i in castleResults) {
+        if (castleResults[i]) {
             playerInfoChanges = true;
             var teamEntities = Castles.castles[i].entities.teams[castleResults[i]];
-            for(var e in teamEntities){
+            for (var e in teamEntities) {
                 playerInfo[teamEntities[e].playerId].captures++;
             }
-    }
+        }
     }
 }
 
@@ -405,10 +399,12 @@ function sendFullState(entities) {
 }
 
 function addPath(data) {
-    setChange(data.id, 'path', data.path);
-    setChange(data.id, 'heading', data.heading);
-    setChange(data.id, 'attacking', false);
-    setChange(data.id, 'previousNode', entities[data.id].nextNode);
+    if (entities[data.id]) {
+        setChange(data.id, 'path', data.path);
+        setChange(data.id, 'heading', data.heading);
+        setChange(data.id, 'attacking', false);
+        setChange(data.id, 'previousNode', entities[data.id].nextNode);
+    }
 }
 
 function addPlayerMoneyChanges(playerMoneyChanges) {
@@ -416,13 +412,15 @@ function addPlayerMoneyChanges(playerMoneyChanges) {
         playerInfoChange = true;
     }
     for (var i in playerMoneyChanges) {
-        playerInfo[playerMoneyChanges[i].id].gold += playerMoneyChanges[i].gold;
-        if(playerMoneyChanges[i].aiKill){
-            playerInfo[playerMoneyChanges[i].id].aiKills += playerMoneyChanges[i].aiKill;
-        }
-        if(playerMoneyChanges[i].kill){
-            playerInfo[playerMoneyChanges[i].id].kills += playerMoneyChanges[i].kill;
-            playerInfo[playerMoneyChanges[i].victimPlayerId].deaths += 1;
+        if (playerInfo[playerMoneyChanges[i].id]) {
+            playerInfo[playerMoneyChanges[i].id].gold += playerMoneyChanges[i].gold;
+            if (playerMoneyChanges[i].aiKill) {
+                playerInfo[playerMoneyChanges[i].id].aiKills += playerMoneyChanges[i].aiKill;
+            }
+            if (playerMoneyChanges[i].kill) {
+                playerInfo[playerMoneyChanges[i].id].kills += playerMoneyChanges[i].kill;
+                playerInfo[playerMoneyChanges[i].victimPlayerId].deaths += 1;
+            }
         }
     }
 }
