@@ -1,0 +1,1 @@
+"postinstall": "grunt uglify -c -m"

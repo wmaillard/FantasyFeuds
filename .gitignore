@@ -38,3 +38,7 @@ jspm_packages
 
 #grunt generated files
 public/js/build/*.js
+
+#performance logs
+*.heapsnapshot
+*.cpuprofile

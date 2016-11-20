@@ -24,6 +24,11 @@ function clickGameContainer(e) {
             $('#allEntities').toggleClass('buttonDown')
         }
     } else if (boughtEntity && playerTeam && !entityIsBlocked(point.x, point.y)) {
+        if(firstTime.placeEntity){
+            $('#nextEntity').addClass('breathing');
+            $('#tutorialAdd').fadeOut('slow');
+            firstTime.placeEntity = false;
+        }
         var entity;
         var health = 100;
         entity = new Entity({
@@ -34,17 +39,25 @@ function clickGameContainer(e) {
         socket.emit('addEntity', { entity: entity });
         boughtEntity = false;
     } else if (!entityIsBlocked(point.x, point.y)) {
-        if (LOO(selectedEntities) > 0) {
+        if(firstTime.moveEntity){
+            $('#tutorialMove').fadeOut('slow')
+            firstTime.moveEntity = false;
+        }
+        setTimeout(function(){$('#blockedSpot').fadeOut('slow')}, 1000);
+        var numMoving = LOO(selectedEntities);
+        if (numMoving > 0) {
             for (var i in selectedEntities) {
                 var entity = selectedEntities[i];
-                if(!entity.dead){
-                    entity.path = []; //kill path early
+                if(entity.health > 0){
                     entity.walking = true;
                     entity.heading = {};
-                    entity.heading.x = point.x;
-                    entity.heading.x += entity.width * .1;
-                    entity.heading.y = point.y;
-                    entity.heading.y -= (zoom - 1) * entity.width * .4;
+                    if(numMoving > 1){
+                        entity.heading.x = ~~((point.x - 1) / 32) * 32 + 2 * Math.random() * 32 ;
+                        entity.heading.y = ~~((point.y - 1) / 32 ) * 32 + 2 * Math.random() * 32;
+                    }else{
+                        entity.heading.x = point.x
+                        entity.heading.y = point.y;
+                    }
                     var coords = {
                         startX: entity.x,
                         startY: entity.y,

@@ -13,7 +13,7 @@ body {
     background-size: cover;
     -o-background-size: cover;
 }
-canvas, #shop {
+canvas, #shopStats {
   position: absolute;
   top: 0;
   left: 0;
@@ -21,9 +21,12 @@ canvas, #shop {
   width: 100%;
 }
 
-#shop{
-  overflow: auto;
+#shopStats{
+  overflow-y: scroll;
   height: 90%;
+}
+#rankings{
+  padding-bottom: 25%;
 }
 
 #info{
@@ -43,7 +46,7 @@ canvas, #shop {
   z-index: 4;
 }
 
-#signUpForm, #shop, #levelButtons, #cancel, #saveAlertBad, #saveAlertGood, #levelButtons, #signedInNav, #menu-toggle, #cancelLevel{
+#signUpForm, #shopStats, #levelButtons, #cancel, #menu-toggle{
 	display: none;
 }
 #signInBox {
@@ -72,7 +75,7 @@ canvas, #shop {
     padding-top:0;
     padding-bottom: 0;
 }
-nav {
+nav:not(#shopStatsNav) {
   font-size: 30px;
   color:  #262626;
 
@@ -81,10 +84,13 @@ nav {
   -khtml-user-select: none;    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
-  user-select: none;           /* Non-prefixed version, currently
-                                  not supported by any browser */
+  user-select: none;           
   pointer-events: none
 
+}
+#shopStatsNav {
+  background-color: rgba(255, 255, 255, .5) !important;
+  padding: 0 !important;
 }
 
 #allEntities{
@@ -194,12 +200,90 @@ i {
   display: none;
 }
 .infoBoxes {
+    color: #262626;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
     position: fixed;
     z-index: 8;
     top: 33%;
     user-select: none;
     pointer-events: none;
+    display: none;
 }
 #badSpot, #blockedSpot {
   display: none;
+}
+.nav-link.active{
+  background-color: rgba(255, 255, 255, .9) !important;
+}
+
+#tabs {
+      padding-top: .5rem;
+      padding-bottom: 5rem;
+      background-color: rgba(255, 255, 255, .9) !important;
+      text-align: center;
+}
+ .table-hover .table-danger:hover>th, .table-hover .table-danger:hover>td{
+  background-color: rgba(255, 153, 0, .3) !important;
+}
+.table-danger>th, .table-danger>td {
+  background-color: rgba(255, 153, 0, .2) !important;
+}
+#shopStatsNav a{
+  color: #55595c;
+
+}
+th {
+    text-align: center;
+}
+
+
+.breathing {
+    -webkit-animation: breathing 1.5s ease-out infinite normal;
+    animation: breathing 1.5s ease-out infinite normal;
+    }
+ a.breathing{
+    background-color: rgba(250, 250, 55, .5);
+    border-radius: 25%;
+}
+
+@-webkit-keyframes breathing {
+  0% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+  50% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+}
+
+@keyframes breathing {
+  0% {
+    -webkit-transform: scale(1.4);
+    -ms-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+  50% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  100% {
+    -webkit-transform: scale(1.4);
+    -ms-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+}
+.form-check-label{
+  padding-top: 1rem;
 }

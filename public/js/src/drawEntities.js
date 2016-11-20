@@ -27,25 +27,26 @@ function drawCastleCircles(castles, ctx) {
         }
     }
 }
-function drawEntityCircles(entities, ctx, playerTeam){
+
+function drawEntityCircles(entities, ctx, playerTeam) {
     //Should add, if not in a castle's circle TODO
     var entityRadius = 250;
-    for(var e in entities){
-     if(entities[e].team === playerTeam  && !entities[e].attacking){
-        ctx.save();
-        var width = 1.5 / Math.cbrt(zoom);
-        ctx.lineWidth = width;
-        ctx.globalAlpha = .1; //opacity
-        ctx.beginPath();
-        ctx.ellipse((entities[e].x + backgroundOffset.x) * zoom, (entities[e].y + backgroundOffset.y) * zoom, (entityRadius / 2.5) * zoom, (entityRadius / 3) * zoom, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = ctx.fillStyle = entities[e].team;
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
+    for (var e in entities) {
+        if (entities[e].health > 0 && entities[e].team === playerTeam && !entities[e].attacking) {
+            ctx.save();
+            var width = 1.5 / Math.cbrt(zoom);
+            ctx.lineWidth = width;
+            ctx.globalAlpha = .1; //opacity
+            ctx.beginPath();
+            ctx.ellipse((entities[e].x + backgroundOffset.x) * zoom, (entities[e].y + backgroundOffset.y) * zoom, (entityRadius / 2.5) * zoom, (entityRadius / 3) * zoom, 0, 0, Math.PI * 2);
+            ctx.strokeStyle = ctx.fillStyle = entities[e].team;
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
     }
-    }
-
 }
+
 function drawEntities(entities, ctx, lock, clear) {
     var directions = {
         'S': 0,
@@ -53,6 +54,12 @@ function drawEntities(entities, ctx, lock, clear) {
         'E': 2,
         'N': 3
     }
+    var directionOptions = [
+        'S',
+        'W',
+        'E',
+        'N'
+    ]
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     for (var e in entities) {
         var type = entities[e].type;
@@ -62,7 +69,17 @@ function drawEntities(entities, ctx, lock, clear) {
         if (!entityInfo[type]) {
             return; //Takes care of race conditions when loading
         }
+        if (entities[e].attacking && entities[e].walkingState === 2 && entities[e].health > 0) {
+            entities[e].walkingState = 1;
+        }
         var img_x = entities[e].walkingState * entityInfo[type].width;
+        if (!entities[e].directionPointing) {
+            if (entities[e].aiType === 'passive' || entities[e].dead) {
+                entities[e].directionPointing = 'S';
+            } else {
+                entities[e].directionPointing = directionOptions[~~(Math.random() * 4)];
+            }
+        }
         var img_y = directions[entities[e].directionPointing] * entityInfo[type].height;
         var x, y, nodeX, nodeY;
         x = entities[e].x;
@@ -70,7 +87,7 @@ function drawEntities(entities, ctx, lock, clear) {
         nodeX = ~~(x / size);
         nodeY = ~~(y / size);
         var whichImage = entities[e].type;
-        if (entities[e].dead || entities[e].attacking) {
+        if (entities[e].health <= 0 || entities[e].attacking) {
             whichImage += 'Pose';
         }
         if (entities[e].team === 'orange' || entities[e].team === 'blue') {
@@ -81,14 +98,14 @@ function drawEntities(entities, ctx, lock, clear) {
             drawHealthBar(entities[e], newCan);
         }
         var entityCenter = {};
+        var entitySize = entityInfo[type].size;
         entityCenter.x = entities[e].x - (newCan.width * entitySize - entityInfo[type].width * entitySize / 2);
         entityCenter.y = entities[e].y - (newCan.height * entitySize - entityInfo[type].height * entitySize); //unclear why this is no /2, has to do with canvas cutting
         var point = mapToScreenPoint(entityCenter.x, entityCenter.y);
         ctx.drawImage(newCan, point.x, point.y, newCan.width * entitySize * zoom, newCan.height * entitySize * zoom);
-    
     }
-    if(boughtEntity){
-       drawEntityCircles(entities, ctx, playerTeam);
+    if (boughtEntity) {
+        drawEntityCircles(entities, ctx, playerTeam);
     }
     drawCastleCircles(castles, ctx);
 }
@@ -97,7 +114,7 @@ function cutOutCharacter(newCan, img, x, y, width, height, entity) {
     newCan.width = width;
     newCan.height = height * 2;
     var ctx = newCan.getContext('2d');
-    if (selectedEntities[entity.id]) {
+    if (selectedEntities[entity.id] && entity.health > 0) {
         drawHighlight(entity, newCan);
     }
     ctx.drawImage(img, x, y, width, height, 0, height * .5, width, height);
@@ -127,7 +144,7 @@ function scaleDown(justCharacter, height, width) {
 
 function drawHighlight(entity, canvas) {
     var ctx = canvas.getContext('2d');
-    ctx.save(); 
+    ctx.save();
     ctx.beginPath();
     ctx.ellipse(canvas.width / 2, canvas.height * 2 / 3, canvas.width / 2.5, canvas.width / 3, 0, 0, Math.PI * 2);
     ctx.lineWidth = 5 * zoom;
@@ -163,24 +180,27 @@ function animateEntity(entity, entities) {
         victim.x = entities[entity.victim].x;
         victim.y = entities[entity.victim].y;
     } else if (entity.walking) {
-        victim = {};
-        if(entity.previousNode.x < entity.nextNode.x){ //1000000 is abitrary, just send it way out
-            victim.x = entity.x + 1000000;
-        }else if(entity.previousNode.x > entity.nextNode.x){
-           victim.x = entity.x - 1000000;
-        }
-        else{
-            //victim.x = entity.heading.x;
-            victim.x = 0;
-        }
-        if(entity.previousNode.y < entity.nextNode.y){
-            victim.y = entity.y + 1000000;
-        }else if(entity.previousNode.y > entity.nextNode.y){
-           victim.y = entity.y - 1000000;
-        
-        }else{
-            //victim.y = entity.heading.y;
-            victim.y = 0;
+        if (entity.path.length < 3) {
+            victim = entity.heading;
+        } else {
+            victim = {};
+            var next = entity.path[2];
+            if (entity.previousNode.x < next.x) { //1000000 is abitrary, just send it way out
+                victim.x = entity.x + 1000000;
+            } else if (entity.previousNode.x > next.x) {
+                victim.x = entity.x - 1000000;
+            } else {
+                //victim.x = entity.heading.x;
+                victim.x = 0;
+            }
+            if (entity.previousNode.y < next.y) {
+                victim.y = entity.y + 1000000;
+            } else if (entity.previousNode.y > next.y) {
+                victim.y = entity.y - 1000000;
+            } else {
+                //victim.y = entity.heading.y;
+                victim.y = 0;
+            }
         }
     }
     setDirectionFacing(entity, victim);
@@ -192,7 +212,7 @@ function setDirectionFacing(entity, victim) {
     }
     if (victim && (victim.x || victim.y)) {
         var angleDeg = Math.atan2(victim.y - entity.y, victim.x - entity.x) * 180 / Math.PI;
-        if(angleDeg < 0){
+        if (angleDeg < 0) {
             angleDeg += 360;
         }
         if (angleDeg >= 45 && angleDeg < 135) {
@@ -204,7 +224,7 @@ function setDirectionFacing(entity, victim) {
         } else {
             entity.directionPointing = 'E';
         }
-    } else if (entity.directionPointing !== 'S' && !entity.dead) {
+    } else if (!entity.aiType && entity.directionPointing !== 'S' && !entity.dead) {
         entity.directionPointing = 'S';
     }
 }

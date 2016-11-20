@@ -1,8 +1,11 @@
 function setUpSocketListeners() {
     socket = io();
     socket.on('playerInfo', function(data) {
+        allPlayerInfo = data;
         playerGold = data[playerId].gold;
-        $('#goldAmount').text(" " + data[playerId].gold)
+        $('#goldAmount').text(" " + data[playerId].gold);
+
+
     });
     socket.on('changes', function(changes) {
         for (var i in changes) {
@@ -14,6 +17,8 @@ function setUpSocketListeners() {
                 entities[i] = changes[i];
             }
         }
+    })
+    socket.on('newPlayer', function(players){
     })
     socket.on('castleColors', function(colors) {
         for (var c in colors) {
@@ -51,8 +56,20 @@ function setUpSocketListeners() {
         }
         redrawBackground();
     })
+    socket.on('playerColor', function(data){
+        playerColor = data;
+        $('.icon-coins').css({color: playerColor});
+    })
+    socket.on('pathfindingFailed', function(data){
+        if(playerId === entities[data].playerId){
+            $('#pathfindingFailed').fadeIn('fast', function(){
+                setTimeout(function(){$('#pathfindingFailed').fadeOut('slow')}, 1000);
+            })
+        }
+    })
     socket.on('connect', function() {
         playerId = socket.id;
+        socket.emit('name', name);
     })
     socket.on('scores', function(newScores){
         scores = newScores;
@@ -61,7 +78,11 @@ function setUpSocketListeners() {
     socket.on('gameOver', function(data){
         $('#winningTeam').text(data.winner.charAt(0).toUpperCase() + data.winner.slice(1)).css({color: data.winner});
         $('#gameOverInfo').modal('show');
+        $('#introTeamBox').show();
         entities = {};
+        socket.disconnect();
+        selectedEntities = {};
+        setUpSocketListeners();
     })
     socket.on('addEntityFailure', function(data){
 
