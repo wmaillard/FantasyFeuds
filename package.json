@@ -4,8 +4,7 @@
   "description": "Capture the flag fantasy game",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "postinstall": "grunt uglify -c -m"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

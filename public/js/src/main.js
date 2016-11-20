@@ -159,15 +159,15 @@ function loadImages() {
             var teams = ['orange', 'blue'];
             for (var t in teams) {
                 characterImages[entity + '_' + teams[t]] = new Image();
-                characterImages[entity + '_' + teams[t]].src = 'img/characters/' + entity + '/' + entity + '_' + teams[t] + '.png';
+                characterImages[entity + '_' + teams[t]].src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/characters/' + entity + '/' + entity + '_' + teams[t] + '.png';
                 characterImages[entity + 'Pose' + '_' + teams[t]] = new Image();
-                characterImages[entity + 'Pose' + '_' + teams[t]].src = 'img/characters/' + entity + '/' + entity + 'Pose' + '_' + teams[t] + '.png';
+                characterImages[entity + 'Pose' + '_' + teams[t]].src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/characters/' + entity + '/' + entity + 'Pose' + '_' + teams[t] + '.png';
             }
         }
         characterImages[entity] = new Image();
-        characterImages[entity].src = 'img/characters/' + entity + '/' + entity + '.png';
+        characterImages[entity].src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/characters/' + entity + '/' + entity + '.png';
         characterImages[entity + 'Pose'] = new Image();
-        characterImages[entity + 'Pose'].src = 'img/characters/' + entity + '/' + entity + 'Pose' + '.png';
+        characterImages[entity + 'Pose'].src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/characters/' + entity + '/' + entity + 'Pose' + '.png';
     }
 }
 
