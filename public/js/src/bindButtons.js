@@ -19,9 +19,8 @@ var BindButtons = {
             if(firstTime.zoomToEntity){
                 $('#nextEntity').removeClass('breathing');
                 firstTime.zoomToEntity = false;
-                if(firstTime.selectEntity){
-                    $('#allEntities').addClass('breathing');
-                }
+                firstTime.selectEntity = true;
+                $('#allEntities').addClass('breathing');
                 
             }
             $(this).toggleClass('buttonDown');
@@ -48,6 +47,7 @@ var BindButtons = {
             if(firstTime.showShop){
                 $('#showShop').removeClass('breathing');
                 firstTime.showShop = false;
+                firstTime.buyEntity = true;
                 $('.buy').addClass('breathing');
             }
             if ($('#shopStats').is(":visible")) {
@@ -84,8 +84,10 @@ var BindButtons = {
             $(this).click(function() {
                 if(firstTime.buyEntity){
                     $('.buy').removeClass('breathing');
-                    $('#tutorialAdd').show();
+                    firstTime.placeEntity = true;
                     firstTime.buyEntity = false;
+                    $('#tutorialAdd').show();
+                    
                 }
                 boughtEntity = this.closest('.card').id;
                 if (entityInfo[boughtEntity].cost > playerGold) {
@@ -109,7 +111,7 @@ var BindButtons = {
                 $('#allEntities').removeClass('breathing');
                 firstTime.selectEntity = false;
                 firstTime.moveEntity = true;
-                    $('#tutorialMove').show();
+                $('#tutorialMove').show();
                 
             }
             if ($(this).hasClass('buttonDown')) {
