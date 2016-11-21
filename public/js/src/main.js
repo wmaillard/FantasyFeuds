@@ -13,7 +13,7 @@ function runTips(i) {
 }
 $(function() {
     runTips(0);
-    Pace.on('done', function() {
+
         $('#closeIntro').click(function(e) {
             if($('#skipTutorial').is(':checked')){
                 for(var i in firstTime){
@@ -35,7 +35,7 @@ $(function() {
             };
         });
         $('#closeIntro').removeClass('disabled');
-    });
+
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
     loadImages();
