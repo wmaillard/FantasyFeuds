@@ -1,6 +1,5 @@
 var Attacks = { //This mutates entities in setChange
     entitiesMap: {},
-    redisClient: require('redis').createClient(process.env.REDIS_URL),
     LOO: require('./generalUtilities.js').LOO,
     changes: {},
     entityInfo: require('./entityInfo.js').entityInfo,

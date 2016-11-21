@@ -207,9 +207,14 @@ i {
     top: 33%;
     user-select: none;
     pointer-events: none;
-    display: none;
 }
-#badSpot, #blockedSpot {
+.infoBoxes h3>span{
+    background-color: rgba(255, 255, 255, .4);
+    border-radius: 1%;
+    padding-right: 1%;
+    padding-left: 1%
+  }
+#badSpot, #blockedSpot, #tutorialMove, #tutorialAdd, #pathfindingFailed {
   display: none;
 }
 .nav-link.active{

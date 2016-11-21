@@ -1,6 +1,4 @@
 "use strict"
-var redis = require('redis');
-var redisClient = redis.createClient(process.env.REDIS_URL);
 var playerId = 0; // This will change on connection
 const aiFile = require('./ai.js');
 const AI = aiFile.AI;
@@ -32,25 +30,18 @@ for(var e in entityInfo){
 
 
 if (cluster.isMaster) {
-    var workers = {};
-    workers.pathfinders = {};
+
     var numWorkers = 1; //require('os').cpus().length;
-    console.log(numWorkers);
+
     for (var i = 0; i < numWorkers; i++) {
         cluster.fork();
     }
     cluster.on('online', function(worker) {
-        if (!workers.AI) {
-            workers.AI = worker.process.pid;
-        } else {
-            workers.pathfinders[worker.process.pid] = true;
-        }
+
         console.log('Worker ' + worker.process.pid + ' is online');
-        redisClient.set('workers', JSON.stringify(workers));
+
     });
     cluster.on('exit', function(worker, code, signal) {
-        delete workers.pathfinders[worker.process.pid];
-        redisClient.set('workers', JSON.stringify(workers));
         console.log('Worker ' + worker.process.pid + ' died with code: ' + code + ', and signal: ' + signal);
         console.log('Starting a new worker');
         cluster.fork();
@@ -65,8 +56,7 @@ if (cluster.isMaster) {
         }
     }
     var pathURL = socketURL + '/path';
-    redisClient.get('workers', function(err, workers) {
-        var workers = JSON.parse(workers);
+
         const PORT = process.env.PORT || 3000;
         var app = require('express')();
         const server = app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
@@ -153,7 +143,7 @@ if (cluster.isMaster) {
                 }, 500)
             }
         });
-    })
+   
 }
 
 function makeThemWalk(entities, fraction, divisor, pathSocket, numEntities) {

@@ -27,7 +27,6 @@ process.on('SIGUSR2', toggleProfiling)
 console.log('Process ID: ', process.pid)
     /*End V8 Debugging */
 "use strict"
-var redis = require('redis');
 var Castles = require('./castles.js').castles;
 var castles = Castles.castles;
 const blockingTerrain = require('./blockingTerrain.js').blockingTerrain;
@@ -62,7 +61,6 @@ var entities = {};
 var lastAttacks = Date.now() + 500;
 var lastFullState = Date.now() - 1001;
 const startGold = 500;
-var redisClient = redis.createClient(process.env.REDIS_URL);
 var LOO = require('./generalUtilities').LOO;
 var moveEntitiesFile = require('./moveEntities.js').moveEntities;
 var moveEntities = moveEntitiesFile.moveEntities;
@@ -117,7 +115,6 @@ io.on('connection', (socket) => {
     } else {
         nextPlayer = 'orange';
     }
-    redisClient.set('change', 'true');
     socket.on('entityPathRequest', (data) => {
         if (pathSocketConnection && entities[data.id]) {
             data.startX = entities[data.id].x;
@@ -135,7 +132,7 @@ io.on('connection', (socket) => {
                 setChange(data.entities[e].id, 'wholeEntity', data.entities[e]);
                 Attacks.setEntitiesMap(data.entities[e], true);
             }
-        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost) { //For DEBUG here //&& (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
+        } else if (playerInfo[convertId(socket.id)].gold >= entityInfo[data.entity.type].cost && (Castles.canAddHere(data.entity) || withinPlayerCircle(entities, data.entity))) {
             playerInfo[convertId(socket.id)].gold -= entityInfo[data.entity.type].cost;
             playerInfoChange = true;
             setChange(data.entity.id, 'wholeEntity', data.entity) //using client data here, fix
@@ -187,14 +184,10 @@ function runServer() {
     playerInfoChange = true;
     tickRate = 30; // in hz
     changes = {};
-    redisClient.set('changes', JSON.stringify(changes));
     attacks = [];
-    redisClient.set('attacks', JSON.stringify(attacks));
     entities = {};
-    redisClient.set('entities', JSON.stringify(entities));
     lastAttacks = Date.now() + 500;
     lastFullState = Date.now() - 1001;
-    redisClient = redis.createClient(process.env.REDIS_URL);
     LOO = require('./generalUtilities').LOO;
     moveEntitiesFile = require('./moveEntities.js').moveEntities;
     moveEntities = moveEntitiesFile.moveEntities;
@@ -220,16 +213,16 @@ function runServer() {
             }
             if (Date.now() > lastAttacks + 1000) { //Send out attacks
                 for (var e in entitiesMovedSinceLastAttack) {
-                    Attacks.setEntitiesMap(entitiesMovedSinceLastAttack[e]);
+                    Attacks.setEntitiesMap(entitiesMovedSinceLastAttack[e]); //Apply entities moved and those that were attacking
                 }
                 var toAlert = alertNearbyAI(Attacks.movedNonAI);
                 if (LOO(toAlert) > 0) {
                     pathSocket.emit('nearbyEntities', toAlert);
                 }
                 Attacks.movedNonAI = {};
-                //only entities that haved moved or were attacking last time
+                //only entities that haved moved or were attacking last time BUG TODO, what if entity is attacked? Need to get attacked like AIAttacked and add to entitiesMoved
                 var attackChanges = Attacks.commitAttacks(entitiesMovedSinceLastAttack, entities);
-                entitiesMovedSinceLastAttack = attackingLastTime(attackChanges.changes);
+                entitiesMovedSinceLastAttack = attackingLastTime(attackChanges.changes);  //Add those that were attacking, apply on next go round
                 if (LOO(attackChanges.AIAttacked) > 0) {
                     pathSocketConnection.emit('AIAttacked', attackChanges.AIAttacked);
                 }
@@ -256,7 +249,6 @@ function runServer() {
                     gameOver(winner);
                 }
             }
-            redisClient.set('entities', JSON.stringify(entities));
         },
         1000 / tickRate);
 }
@@ -266,6 +258,7 @@ function attackingLastTime(changes) {
     for (var c in changes) {
         if (changes[c].attacking && changes[c].attacking === true) {
             attacked[c] = entities[c];
+            attacked[changes[c].victim] = entities[changes[c].victim];
         }
     }
     return attacked;
