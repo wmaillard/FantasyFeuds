@@ -28,6 +28,7 @@ function clickGameContainer(e) {
             $('#nextEntity').addClass('breathing');
             $('#tutorialAdd').fadeOut('slow');
             firstTime.placeEntity = false;
+            firstTime.selectEntity = true;
         }
         var entity;
         var health = 100;
