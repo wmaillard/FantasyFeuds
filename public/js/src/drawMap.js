@@ -4,15 +4,6 @@ var scene = {
     layers: [],
     tiles: {},
     renderLayer: function(layer) {
-        if (firstLoad) {
-            entitiesMap = new Array(levelWidth);
-            for (var i = 0; i < levelWidth; i++) {
-                entitiesMap[i] = new Array(levelHeight);
-                for (var j = 0; j < entitiesMap[i].length; j++) {
-                    entitiesMap[i][j] = [];
-                }
-            }
-        }
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
             scene.tiles[layer.name] = {};
             scene.tiles[layer.name].url = [];
@@ -131,6 +122,9 @@ function drawFromArray(layerName, rows, columns) {
                     console.log('image loaded', i);
                     redrawBackground();
                 };
+                img.onerror = function(e){
+                    console.log('tits', e);
+                }
                 img.src = scene.tiles[layerName].url[i];
                 scene.tiles[layerName].img[i] = img;
             } else {
@@ -139,6 +133,9 @@ function drawFromArray(layerName, rows, columns) {
                     img.onload = function() {
                         redrawBackground();
                         console.log('image loaded2: ', i);
+                    }
+                    img.onerror = function(e){
+                        console.log('tits', e);
                     }
                 } else {
                     scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
