@@ -72,21 +72,12 @@ function clearURLImages (tiles, currentZoomR) {
 function drawFromArray(layerName, rows, columns) {
     var saveZoom = zoom;
     //Step down or up image resolutions
-    if (zoom > 0.5 && currentZoomResolution !== 1) {
+    if (zoom > 0.25 && currentZoomResolution !== 1) {
         clearURLImages(scene.tiles['tile'], '100');
         currentZoomResolution = 1;
-    } else if (zoom <= 0.5 && zoom > 0.25 && currentZoomResolution !== 0.5) {
-        clearURLImages(scene.tiles['tile'], '50');
-        currentZoomResolution = 0.5;
-    } else if (zoom <= 0.25 && zoom > 0.1 && currentZoomResolution !== 0.25) {
+    } else if (zoom <= 0.25 && currentZoomResolution !== 0.25) {
         clearURLImages(scene.tiles['tile'], '25');
         currentZoomResolution = 0.25;
-    } else if (zoom <= 0.1 && zoom > 0.05 && currentZoomResolution !== 0.10) {
-        clearURLImages(scene.tiles['tile'], '10');
-        currentZoomResolution = 0.10;
-    } else if (zoom <= 0.05 && currentZoomResolution !== 0.05) {
-        clearURLImages(scene.tiles['tile'], '5');
-        currentZoomResolution = 0.05;
     }
     var upperLeft = {}
     upperLeft.x = Math.abs(backgroundOffset.x);
