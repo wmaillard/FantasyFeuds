@@ -129,17 +129,8 @@ function drawFromArray(layerName, rows, columns) {
                 scene.tiles[layerName].img[i] = img;
             } else {
                 var img = scene.tiles[layerName].img[i];
-                if (!img.complete) { //If the image was created but isn't loaded, override the onload function
-                    img.onload = function() {
-                        redrawBackground();
-                        console.log('image loaded2: ', i);
-                    }
-                    img.onerror = function(e){
-                        console.log('tits', e);
-                    }
-                } else {
-                    scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
-                }
+                scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
+                
             }
             xDrawn += (colWidth - offset.x) * zoom;
             if (xDrawn > canvasWidth) {
