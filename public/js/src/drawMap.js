@@ -118,19 +118,11 @@ function drawFromArray(layerName, rows, columns) {
                     }
                 }
                 var img = new Image();
-                img.onload = function() {
-                    console.log('image loaded', i);
-                    redrawBackground();
-                };
-                img.onerror = function(e){
-                    console.log('tits', e);
-                }
                 img.src = scene.tiles[layerName].url[i];
                 scene.tiles[layerName].img[i] = img;
             } else {
                 var img = scene.tiles[layerName].img[i];
                 scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
-                
             }
             xDrawn += (colWidth - offset.x) * zoom;
             if (xDrawn > canvasWidth) {
