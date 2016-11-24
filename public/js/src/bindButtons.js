@@ -31,10 +31,13 @@ var BindButtons = {
             return false;
         })
         $('#screenName').on('focus', function() {
-            $('#screenNameForm').css({
-                'padding-bottom': $(window).height() * 0.60
-            })
-            $('#startInfo').scrollTop($('#startInfo .modal-content').height() + $('#screenNameForm').offset().top);
+            //Move above keyboard if not safari
+            if(!(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1)){
+                $('#screenNameForm').css({
+                    'padding-bottom': $(window).height() * 0.60
+                })
+                $('#startInfo').scrollTop($('#startInfo .modal-content').height() + $('#screenNameForm').offset().top);
+            }
         });
         $(window).resize(function() {
             setWindowResizeProperties()

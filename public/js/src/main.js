@@ -1,5 +1,7 @@
-if(!CanvasRenderingContext2D.ellipse){
+if(!CanvasRenderingContext2D.prototype.ellipse){
     CanvasRenderingContext2D.prototype.ellipse = function(){
+        alert('Please use a modern browser.')
+        throw new Error("Modern Browser Error");
         return;
     }
 }
