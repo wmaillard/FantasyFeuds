@@ -107,9 +107,9 @@ function drawFrame() {
             }
         }
     }
-    if (entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight) {
-        drawEntities(entities, ctxF, true);
-    }
+
+    drawEntities(entities, ctxF, true);
+
     setTimeout(function() {
         window.requestAnimationFrame(drawFrame);
     }, Math.max(now - Date.now() + 1000 / efps, 0))
@@ -117,9 +117,8 @@ function drawFrame() {
 
 function redrawBackground() {
     scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
-    if (entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight) {
-        drawEntities(entities, ctxF, true);
-    }
+    drawEntities(entities, ctxF, true);
+
 }
 
 function loadImages() {
