@@ -122,6 +122,7 @@ function drawFromArray(layerName, rows, columns) {
                 scene.tiles[layerName].img[i] = img;
             } else {
                 var img = scene.tiles[layerName].img[i];
+                console.log('Drawing: ', i, img);
                 scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
             }
             xDrawn += (colWidth - offset.x) * zoom;
