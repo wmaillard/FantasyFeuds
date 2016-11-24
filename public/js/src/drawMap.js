@@ -72,12 +72,8 @@ function clearURLImages (tiles, currentZoomR) {
 function drawFromArray(layerName, rows, columns) {
     var saveZoom = zoom;
     //Step down or up image resolutions
-    if (zoom > 0.25 && currentZoomResolution !== 1) {
-        clearURLImages(scene.tiles['tile'], '100');
+    if (currentZoomResolution !== 1) {
         currentZoomResolution = 1;
-    } else if (zoom <= 0.25 && currentZoomResolution !== 0.25) {
-        clearURLImages(scene.tiles['tile'], '25');
-        currentZoomResolution = 0.25;
     }
     var upperLeft = {}
     upperLeft.x = Math.abs(backgroundOffset.x);
