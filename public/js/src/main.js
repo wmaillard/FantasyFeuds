@@ -1,3 +1,9 @@
+if(!CanvasRenderingContext2D.ellipse){
+    CanvasRenderingContext2D.prototype.ellipse = function(){
+        return;
+    }
+}
+
 $(function() {
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
