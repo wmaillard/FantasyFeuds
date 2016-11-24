@@ -128,7 +128,7 @@ function drawFromArray(layerName, rows, columns) {
                 }
                 var img = new Image();
                 img.onload = function() {
-                    console.log('image loaded');
+                    console.log('image loaded', i);
                     redrawBackground();
                 };
                 img.src = scene.tiles[layerName].url[i];
@@ -138,7 +138,7 @@ function drawFromArray(layerName, rows, columns) {
                 if (!img.complete) { //If the image was created but isn't loaded, override the onload function
                     img.onload = function() {
                         redrawBackground();
-                        console.log('image loaded2');
+                        console.log('image loaded2: ', i);
                     }
                 } else {
                     scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
