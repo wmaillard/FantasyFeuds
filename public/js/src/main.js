@@ -5,7 +5,7 @@ if(!CanvasRenderingContext2D.prototype.ellipse){
         return;
     }
 }
-
+var safari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
 $(function() {
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;

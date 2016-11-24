@@ -66,7 +66,7 @@ function drawFromArray(layerName, rows, columns) {
     if (zoom > 0.25 && currentZoomResolution !== 1) {
         clearURLImages(scene.tiles['tile'], '100');
         currentZoomResolution = 1;
-    } else if (zoom <= 0.25 && currentZoomResolution !== 0.25) {
+    } else if (!safari && zoom <= 0.25 && currentZoomResolution !== 0.25) {
         clearURLImages(scene.tiles['tile'], '25');
         currentZoomResolution = 0.25;
     }
