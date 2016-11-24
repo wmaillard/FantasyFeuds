@@ -121,12 +121,12 @@ function drawFromArray(layerName, rows, columns) {
             if (!scene.tiles[layerName].img[i]) {
                 for (var j in eight) {
                     if (!scene.tiles[layerName].img[eight[j]]) {
-                        var img = new Image;
+                        var img = new Image();
                         img.src = scene.tiles[layerName].url[eight[j]];
                         scene.tiles[layerName].img[eight[j]] = img;
                     }
                 }
-                var img = new Image;
+                var img = new Image();
                 img.onload = function() {
                     redrawBackground();
                 };
