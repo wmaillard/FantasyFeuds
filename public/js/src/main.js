@@ -72,6 +72,9 @@ function zoomAction(e) {
     if (zoom > 3) {
         zoom = 3;
     }
+    if(zoom < 0.1){
+        zoom = 0.1;
+    }
     setBackgroundOffsetToScreenPoint(e.center.x, e.center.y, oldZoom, zoom);
     limitBackgroundOffset();
     redrawBackground();
