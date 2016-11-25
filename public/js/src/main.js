@@ -1,3 +1,11 @@
+if(!CanvasRenderingContext2D.prototype.ellipse){
+    CanvasRenderingContext2D.prototype.ellipse = function(){
+        alert('Please use a modern browser.')
+        throw new Error("Modern Browser Error");
+        return;
+    }
+}
+var safari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
 $(function() {
     // enable vibration support
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
@@ -56,7 +64,11 @@ function setBackgroundOffsetToScreenPoint(sx, sy, z1, z2) {
     backgroundOffset.x = (sx - mapPoint.x * z2) / z2;
     backgroundOffset.y = (sy - mapPoint.y * z2) / z2;
 }
-
+var zoomOutLimit = 0.1;
+//if Safari because Safari has a map drawing bug right now
+if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1){ 
+    zoomOutLimit = 0.249
+}
 function zoomAction(e) {
     var scale = e.scale;
     var oldZoom = zoom;
@@ -72,8 +84,8 @@ function zoomAction(e) {
     if (zoom > 3) {
         zoom = 3;
     }
-    if(zoom < 0.1){
-        zoom = 0.1;
+    if(zoom < zoomOutLimit){
+        zoom = zoomOutLimit;
     }
     setBackgroundOffsetToScreenPoint(e.center.x, e.center.y, oldZoom, zoom);
     limitBackgroundOffset();
@@ -101,9 +113,9 @@ function drawFrame() {
             }
         }
     }
-    if (entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight) {
-        drawEntities(entities, ctxF, true);
-    }
+
+    drawEntities(entities, ctxF, true);
+
     setTimeout(function() {
         window.requestAnimationFrame(drawFrame);
     }, Math.max(now - Date.now() + 1000 / efps, 0))
@@ -111,9 +123,8 @@ function drawFrame() {
 
 function redrawBackground() {
     scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
-    if (entitiesMap.length == levelWidth && entitiesMap[levelWidth - 1].length == levelHeight) {
-        drawEntities(entities, ctxF, true);
-    }
+    drawEntities(entities, ctxF, true);
+
 }
 
 function loadImages() {

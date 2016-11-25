@@ -4,15 +4,6 @@ var scene = {
     layers: [],
     tiles: {},
     renderLayer: function(layer) {
-        if (firstLoad) {
-            entitiesMap = new Array(levelWidth);
-            for (var i = 0; i < levelWidth; i++) {
-                entitiesMap[i] = new Array(levelHeight);
-                for (var j = 0; j < entitiesMap[i].length; j++) {
-                    entitiesMap[i][j] = [];
-                }
-            }
-        }
         if (firstLoad) { //first fill up the array of scratch canvas's, then use later
             scene.tiles[layer.name] = {};
             scene.tiles[layer.name].url = [];
@@ -72,21 +63,12 @@ function clearURLImages (tiles, currentZoomR) {
 function drawFromArray(layerName, rows, columns) {
     var saveZoom = zoom;
     //Step down or up image resolutions
-    if (zoom > 0.5 && currentZoomResolution !== 1) {
+    if (zoom > 0.25 && currentZoomResolution !== 1) {
         clearURLImages(scene.tiles['tile'], '100');
         currentZoomResolution = 1;
-    } else if (zoom <= 0.5 && zoom > 0.25 && currentZoomResolution !== 0.5) {
-        clearURLImages(scene.tiles['tile'], '50');
-        currentZoomResolution = 0.5;
-    } else if (zoom <= 0.25 && zoom > 0.1 && currentZoomResolution !== 0.25) {
+    } else if (!safari && zoom <= 0.25 && currentZoomResolution !== 0.25) {
         clearURLImages(scene.tiles['tile'], '25');
         currentZoomResolution = 0.25;
-    } else if (zoom <= 0.1 && zoom > 0.05 && currentZoomResolution !== 0.10) {
-        clearURLImages(scene.tiles['tile'], '10');
-        currentZoomResolution = 0.10;
-    } else if (zoom <= 0.05 && currentZoomResolution !== 0.05) {
-        clearURLImages(scene.tiles['tile'], '5');
-        currentZoomResolution = 0.05;
     }
     var upperLeft = {}
     upperLeft.x = Math.abs(backgroundOffset.x);
@@ -106,6 +88,7 @@ function drawFromArray(layerName, rows, columns) {
     var tilesUsed = {};
     var widthInTiles = Math.ceil(($('#gameContainer').width() / zoom) / colWidth);
     var heightInTiles = Math.ceil(($('#gameContainer').height() / zoom) / rowHeight);
+    var toLoadAfter = []; 
     for (var i = 0; i < scene.tiles[layerName].url.length; i++) {
         //if, based on the offset and the amount being drawn, we should use this canvas.  Draw a piece using that canvas
         if (doneInY && doneInX) {
@@ -128,26 +111,18 @@ function drawFromArray(layerName, rows, columns) {
                 }
             }
             if (!scene.tiles[layerName].img[i]) {
-                for (var j in eight) {
-                    if (!scene.tiles[layerName].img[eight[j]]) {
-                        var img = new Image;
-                        img.src = scene.tiles[layerName].url[eight[j]];
-                        scene.tiles[layerName].img[eight[j]] = img;
-                    }
-                }
-                var img = new Image;
-                img.onload = function() {
+                
+                var img = new Image();
+                img.onload = function(){
                     redrawBackground();
-                };
+                }
                 img.src = scene.tiles[layerName].url[i];
                 scene.tiles[layerName].img[i] = img;
+                toLoadAfter.push(eight);
+                
             } else {
                 var img = scene.tiles[layerName].img[i];
-                if (!img.complete) { //If the image was created but isn't loaded, override the onload function
-                    img.onload = function() {
-                        redrawBackground();
-                    }
-                } else {
+                if(img.complete){
                     scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
                 }
             }
@@ -174,6 +149,21 @@ function drawFromArray(layerName, rows, columns) {
         }
         //scene.context.drawSafeImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
     }
+    var i;
+    while(i = toLoadAfter.pop()){
+        for (var j in toLoadAfter[i]) {
+                    if (!scene.tiles[layerName].img[toLoadAfter[i][j]]) {
+                        var img = new Image();
+                        img.onload = function(){
+                            redrawBackground();
+                        }
+                        img.src = scene.tiles[layerName].url[toLoadAfter[i][j]];
+                        scene.tiles[layerName].img[toLoadAfter[i][j]] = img;
+                    }
+                }
+
+    }
+    
     //console.log(tilesUsed);
     cleanUp(tilesUsed, scene.tiles[layerName].img, widthInTiles, heightInTiles);
     zoom = saveZoom;
