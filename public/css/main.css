@@ -284,6 +284,42 @@ th {
   }
 
 }
+
+/*Slider Stuff*/
 .form-check-label{
   padding-top: 1rem;
+}
+.slider-selection {
+  background: #7C9FFF;
+}
+.slider.slider-disabled .slider-handle {
+  background: #2C64FC;
+  background-image: none;
+    background-repeat: none;
+}
+  .slider.slider-horizontal {
+    width:75%;
+  }
+.slider.slider-horizontal .slider-track {
+  height: 5px;
+  margin-top: -2.5px
+}
+.skills-slider{
+  margin-top: 3%;
+}
+.slider-tick {
+      opacity: 1;
+}
+.slide-tick-label {
+  width: 33.3% !important;
+}
+#starBlue:after {
+
+  background-color: #2C3E50 !important;
+}
+.slider-tick-container, .slider-handle {
+  display: none;
+}
+.card p {
+  margin-bottom: 0;
 }
