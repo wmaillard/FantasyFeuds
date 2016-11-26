@@ -51,12 +51,13 @@ function buildStore() {
         }
         if (entityInfo[entity].image) {
             var id = ~~(count / 3)
-            $('#cards' + id).append('<div class="card text-xs-center" id = ' + entity + '><img class="card-img-top" src="' + entityInfo[entity].image + '" alt="Card image cap"><div class="card-block text-xs-center"><h4 class="card-title">' + entityInfo[entity].name + '</h4><p class="card-text"></p><p class="card-text"><small class="text-muted">' + entityInfo[entity].cost + ' Gold Pieces</p><button type="button" class="btn btn-success buy">Buy</button></div>')
+            $('#cards' + id).append('<div class="card text-xs-center" id = ' + entity + '><img class="card-img-top" src="' + entityInfo[entity].image + '" alt="Card image cap"><div class="card-block text-xs-center"><h4 class="card-title">' + entityInfo[entity].name + '</h4><p class="card-text"></p> <p>Attack</p><input type="text" data-provide="slider" data-slider-min="0" data-slider-max="10" data-slider-step="1" data-slider-value="' + (10 * entityInfo[entity].attack / 30) + '" data-slider-tooltip="hide" data-slider-enabled="false" /><p>Defense</p><input type="text" data-provide="slider" data-slider-min="0" data-slider-max="10" data-slider-step="1" data-slider-value="' + entityInfo[entity].defense + '" data-slider-tooltip="hide" data-slider-enabled="false" /><p class="card-text"><small class="text-muted">' + entityInfo[entity].cost + ' Gold Pieces</p><button type="button" class="btn btn-success buy">Buy</button></div>')
             count++;
             top = false;
             bottom = false;
         }
     }
+    $(".card input").slider();
 }
 
 function setBackgroundOffsetToScreenPoint(sx, sy, z1, z2) {
