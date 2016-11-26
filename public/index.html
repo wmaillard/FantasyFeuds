@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/rtsgamemap/css/pace.css">
     <link href="https://s3-us-west-2.amazonaws.com/rtsgamemap/fonts/font-awesome-4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://s3-us-west-2.amazonaws.com/rtsgamemap/fonts/icomoon/style.css" rel="stylesheet" type="text/css">
-        <link href="css/bootstrap-slider.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="https://s3-us-west-2.amazonaws.com/rtsgamemap/fonts/font-awesome-4.6.3/css/bootstrap-slider.min.css" rel="stylesheet">
+    <link href="https://s3-us-west-2.amazonaws.com/rtsgamemap/fonts/font-awesome-4.6.3/css/main.css" rel="stylesheet">
     <link rel='shortcut icon' href='https://s3-us-west-2.amazonaws.com/rtsgamemap/favicon.ico' type='image/x-icon' />
 </head>
 
@@ -44,20 +44,21 @@
             </div>
         </nav>
     </div>
-    <div class = "infoBoxes col-xs-10 offset-xs-1 text-xs-center">
-    <div id="tutorialAdd" class="">
-        <h3><span> Tap the <span class="teamName"></span> area to add your character </h3></span></div>
-    <div id="tutorialMove" class="">
-        <h3><span> Tap the map to move your selected character. <br><br>Your characters will automatically attack when near enemies. </span></h3></div>
-    <div id="introTeamBox" class="">
-        <h3><span> You Have Joined Team <span class="teamName"> </span></span></h3></div>
-    <div id="badSpot" class="">
-        <h3><span> Sorry, you can only add characters in areas that are <span class="teamName"></span> </span></h3></div>
-    <div id="blockedSpot" class="">
-        <h3><span> Sorry, that spot is blocked </span></h3></div>
-    <div id="pathfindingFailed" class="">
-        <h3><span> Sorry, I can't find a path to that location </span></h3></div>
+    <div class="infoBoxes col-xs-10 offset-xs-1 text-xs-center">
+        <div id="tutorialAdd" class="">
+            <h3><span> Tap the <span class="teamName"></span> area to add your character </h3></span>
         </div>
+        <div id="tutorialMove" class="">
+            <h3><span> Tap the map to move your selected character. <br><br>Your characters will automatically attack when near enemies. </span></h3></div>
+        <div id="introTeamBox" class="">
+            <h3><span> You Have Joined Team <span class="teamName"> </span></span></h3></div>
+        <div id="badSpot" class="">
+            <h3><span> Sorry, you can only add characters in areas that are <span class="teamName"></span> </span></h3></div>
+        <div id="blockedSpot" class="">
+            <h3><span> Sorry, that spot is blocked </span></h3></div>
+        <div id="pathfindingFailed" class="">
+            <h3><span> Sorry, I can't find a path to that location </span></h3></div>
+    </div>
     <div id="gameContainer" class="header">
         <canvas id="background"></canvas>
         <canvas id="foreground"></canvas>
@@ -83,21 +84,21 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
-                                <table class="table table-hover table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Score</th>
-                                            <th>Player</th>
-                                            <th>Captures</th>
-                                            <th>Kills</th>
-                                            <th>K/D Ratio</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <table class="table table-hover table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Score</th>
+                                        <th>Player</th>
+                                        <th>Captures</th>
+                                        <th>Kills</th>
+                                        <th>K/D Ratio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -157,7 +158,7 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <button id = 'closeGameOver' type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                            <button id='closeGameOver' type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
                     </div>
                 </div>
@@ -169,13 +170,10 @@
     <script src="https://s3-us-west-2.amazonaws.com/rtsgamemap/js/libraries/bootstrap.min.js"></script>
     <script src="https://s3-us-west-2.amazonaws.com/rtsgamemap/js/libraries/hammer.min.js"></script>
     <script src="https://s3-us-west-2.amazonaws.com/rtsgamemap/js/libraries/pace.min.js"></script>
-        <script src="js/libraries/bootstrap-slider.min.js"></script>
-
-    <script src="js/src/preLoad.js"></script>
-    <!--script src="js/libraries/particle.js"></script-->
+    <script src="https://s3-us-west-2.amazonaws.com/rtsgamemap/js/libraries/bootstrap-slider.min.js"></script>
     <script src="https://s3-us-west-2.amazonaws.com/rtsgamemap/js/libraries/socket.io.js"></script>
-    <!--script src="js/build/libraries/cookie.min.js"></script-->
-    <!--script src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/js/game.min.js'></script-->
+    <script src='https://s3-us-west-2.amazonaws.com/rtsgamemap/js/game.min.js'></script>
+    <!--script src="js/src/preLoad.js"></script>
     <script src="js/src/blockingTerrain.js"></script>
     <script src="js/src/generalUtilities.js"></script>
     <script src="js/src/drawingUtilities.js"></script>
@@ -193,7 +191,7 @@
     <script src="js/src/hammerSetup.js"></script>
     <script src="js/src/setUpSocketListeners.js"></script>
     <script src="js/src/playerControls.js"></script>
-    <script src="js/src/main.js"></script>
+    <script src="js/src/main.js"></script-->
 </body>
 
 </html>

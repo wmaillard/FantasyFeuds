@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
   var path = 'public/js/src/';
-  var files = ['blockingTerrain.js', 'generalUtilities.js', 'drawingUtilities.js', 'entityUtilities.js', 'castles.js',
+  var files = ['preLoad.js', 'blockingTerrain.js', 'generalUtilities.js', 'drawingUtilities.js', 'entityUtilities.js', 'castles.js',
   'entityInfo.js', 'globals.js', 'mapPointUtilities.js',
   'controlFunctions.js', 'drawMap.js', 'drawEntities.js', 'bindButtons.js', 'entities.js',  
   'hammerSetup.js', 'setUpSocketListeners.js', 'playerControls.js', 'main.js'];
