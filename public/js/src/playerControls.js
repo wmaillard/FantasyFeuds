@@ -98,7 +98,7 @@ function selectAllVisiblePlayerEntities(entities, playerId) {
     }
 }
 
-function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
+function zoomPanTo(x, y, localZoom, limits, skipZoom) { //x, y is mapX, mapY
     if (typeof limits === 'undefined') {
         limits = { x: false, y: false }
     }
@@ -154,7 +154,7 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
             zoomPanTimeoutRunning = true;
             setTimeout(function() {
                 zoomPanTimeoutRunning = false;
-                zoomPanTo(x, y, zoom, limits)
+                zoomPanTo(x, y, zoom, limits, skipZoom)
             }, 1000 / 30);
         }
     } else if (zoom < 1) {
@@ -162,6 +162,9 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
             zoomPanTimeoutRunning = true;
             setTimeout(function() {
                 zoomPanTimeoutRunning = false;
+                if(skipZoom){
+                    return;
+                }
                 zoomToOne(x, y);
             })
         }
@@ -171,6 +174,10 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
             zoomPanTimeoutRunning = true;
             setTimeout(function() {
                 zoomPanTimeoutRunning = false;
+                if(skipZoom){
+                    console.log('skipped')
+                    return;
+                }
                 zoomPanTo(x, y, zoom)
             }, 1000 / 30);
         }

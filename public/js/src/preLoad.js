@@ -22,11 +22,13 @@
         $('#closeIntro').removeClass('disabled');
        if(playerTeam === 'blue'){
              //cacheMapTiles()
-             zoomPanTo(castles[1].x, castles[1].y)
+             zoomPanTo(castles[1].x, castles[1].y, zoom, { x: false, y: false }, true)
+             zoomToOne(castles[1].x, castles[1].y, .35);
             
         }else if(playerTeam === 'orange'){
             //cacheMapTiles(true);
-            zoomPanTo(castles[4].x, castles[4].y)
+            zoomPanTo(castles[4].x, castles[4].y, zoom, { x: false, y: false }, true)
+            zoomToOne(castles[4].x, castles[4].y, .35);
         }
     });
     function runTips(i) {
