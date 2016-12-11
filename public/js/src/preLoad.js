@@ -20,12 +20,14 @@
             };
         });
         $('#closeIntro').removeClass('disabled');
-       /* if(playerTeam === 'blue'){
-             cacheMapTiles()
+       if(playerTeam === 'blue'){
+             //cacheMapTiles()
+             zoomPanTo(castles[1].x, castles[1].y)
             
         }else if(playerTeam === 'orange'){
-            cacheMapTiles(true);
-        }*/
+            //cacheMapTiles(true);
+            zoomPanTo(castles[4].x, castles[4].y)
+        }
     });
     function runTips(i) {
     if ($('#startInfo').is(":visible")) {

@@ -32,7 +32,7 @@ var BindButtons = {
         })
         $('#screenName').on('focus', function() {
             //Move above keyboard if not safari
-            if(!(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1)){
+            if(isAndroid){
                 $('#screenNameForm').css({
                     'padding-bottom': $(window).height() * 0.60
                 })
