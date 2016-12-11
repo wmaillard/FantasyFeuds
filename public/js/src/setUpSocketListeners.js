@@ -1,3 +1,27 @@
+function cacheMapTiles(reverse) {
+    if (reverse) {
+        for (var i = 399; i <= 0; i--) {
+            var img = new Image();
+            img.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/100/tile' + i + '_100.png';
+            /*var img2 = new Image();
+            img2.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/25/tile' + i + '_25.png';
+            img2 = null;*/
+            img = null;
+        }
+    } else {
+        for (var i = 0; i < 400; i++) {
+            var img = new Image();
+            img.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/100/tile' + i + '_100.png';
+            /*var img2 = new Image();
+            img2.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/25/tile' + i + '_25.png';
+            img2 = null;*/
+            img = null;
+        }
+    }
+}
+
+
+
 function setUpSocketListeners() {
     socket = io();
     socket.on('playerInfo', function(data) {
@@ -39,11 +63,13 @@ function setUpSocketListeners() {
     socket.on('team', function(team){
         playerTeam = team;
         if(playerTeam === "blue"){ 
-             backgroundOffset = {x: -781, y: -91};
-             zoom = 0.3;
+             backgroundOffset = {x: -3537, y: -458};
+             zoom = 0.39;
+
         }else if(playerTeam === "orange"){
-            backgroundOffset = {x: -17615, y: -30061};
-            zoom = 0.3
+            backgroundOffset = {x: -4090, y: -6868};
+            zoom = 0.39;
+
         }
         $('.teamName').text(playerTeam.charAt(0).toUpperCase() + playerTeam.slice(1)).css({color: playerTeam});
         $('.teamColor').css({color: playerTeam});

@@ -4,7 +4,7 @@ var AI = {
   //10 points for adjacent node 14 for diagonal
 
 
-
+  maxMS: 50,
   AStar: function(startNode, eNode, blockingTerrain){  //This takes about  6 ms right now, pretty good!
     if(blockingTerrain[startNode.x][startNode.y] || blockingTerrain[eNode.x][eNode.y]){
       return [];
@@ -24,7 +24,7 @@ var AI = {
 
 
     do{
-      if(Date.now() > time + 5){  //trying to do 100 requests a second
+      if(Date.now() > time + this.maxMS){  //trying to do 100 requests a second
         //console.log('Error: Pathfinding was too slow');
         return [];
       }

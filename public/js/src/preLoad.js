@@ -20,6 +20,12 @@
             };
         });
         $('#closeIntro').removeClass('disabled');
+       /* if(playerTeam === 'blue'){
+             cacheMapTiles()
+            
+        }else if(playerTeam === 'orange'){
+            cacheMapTiles(true);
+        }*/
     });
     function runTips(i) {
     if ($('#startInfo').is(":visible")) {

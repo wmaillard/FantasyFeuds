@@ -10,7 +10,7 @@ var scene = {
             scene.tiles[layer.name].img = [];
             var size = scene.data.tilewidth;
             for (var i = 0; i < rows * columns; i++) {
-                var url = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/100/' + layer.name + i + '_100' + '.png';
+                var url = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/smallMap/100/' + layer.name + i + '_100' + '.png';
                 scene.tiles[layer.name].url[i] = url;
             }
             drawFromArray(layer.name, rows, columns);
@@ -36,7 +36,7 @@ function zoomURL(url, scale) {
     var parts = url.split("/");
     var newURL = "";
     for (var i in parts) {
-        if (i == 4) {
+        if (i == 5) {
             newURL += scale;
         } else if (i != parts.length - 1) {
             newURL += parts[i];

@@ -11,8 +11,8 @@ var entities = {};
 var firstLoad = true;  //If true then all the images will be loaded up and cached
 var lastAnimation = Date.now();
 var level = 'megaMap';
-var levelWidth = 1000;  //Dimensions of level in squares
-var levelHeight = 1000;
+var levelWidth = 300;  //Dimensions of level in squares
+var levelHeight = 300;
 var newCan = document.createElement('canvas');  //Canvas used for drawing entities
 var playerColor = getRandomColor(); 
 var playerId;
