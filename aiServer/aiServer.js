@@ -182,15 +182,17 @@ function entityFlee(entity, socket) {
         }, {
             x: ~~(end.x / 32),
             y: ~~(end.y / 32)
-        }, blockingTerrain);
+        }, blockingTerrain, 10);
         if (path.length > 0) {
             var heading = { x: end.x, y: end.y }
             socket.emit('path', { id: entity.id, path: path, heading: heading });
             entity.x = end.x;
             entity.y = end.y;
+        }else{
+            //console.log('Pathfinding failed: ', path.length);
         }
     } else {
-        console.log('Error: Failed to find end point for ai flee path')
+        //console.log('Error: Failed to find end point for ai flee path')
     }
 }
 

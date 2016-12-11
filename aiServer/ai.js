@@ -5,7 +5,12 @@ var AI = {
 
 
   maxMS: 50,
-  AStar: function(startNode, eNode, blockingTerrain){  //This takes about  6 ms right now, pretty good!
+  AStar: function(startNode, eNode, blockingTerrain, max){  //This takes about  6 ms right now, pretty good!
+    if(max){
+      this.maxMS = max;
+    }else{
+      this.maxMS = 50;
+    }
     if(blockingTerrain[startNode.x][startNode.y] || blockingTerrain[eNode.x][eNode.y]){
       return [];
     }
@@ -42,6 +47,10 @@ var AI = {
       if(cNode.x === eNode.x && cNode.y === eNode.y){
         //console.log('found end');
         var path = this.drawPath(cNode, startNode);
+        if(path.length < Math.abs(startNode.x - eNode.x) || path.length < Math.abs(startNode.y - eNode.y)){
+          console.log('Error: Incorrect path')
+          return [];
+        }
         path.pop(); //remove current node
         return path;
       }
