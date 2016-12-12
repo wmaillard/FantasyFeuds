@@ -123,9 +123,17 @@ function drawFrame() {
     }, Math.max(now - Date.now() + 1000 / efps, 0))
 }
 
-function redrawBackground() {
-    scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
-    drawEntities(entities, ctxF, true);
+function redrawBackground(safe) {
+    if(safe && lastRedraw + 1000 / 30 > Date.now()){
+        scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
+        drawEntities(entities, ctxF, true);
+        lastRedraw = Date.now();
+    }else if(!safe){
+        scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
+        drawEntities(entities, ctxF, true);
+        lastRedraw = Date.now();
+    }
+
 
 }
 
