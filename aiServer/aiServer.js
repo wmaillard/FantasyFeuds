@@ -9,37 +9,28 @@ const entityInfo = require('./entityInfo.js').entityInfo;
 var passiveEntities = {};
 var activeEntities = {};
 var aggressiveEntities = {};
-var numPassive = 250;
-var numAggressive = 350;
-var numActive = 750;
-
+var numPassive = 75; //250;
+var numAggressive = 100; //350;
+var numActive = 100; //750;
 var possibleAggressive = [];
 var possibleActive = [];
 var possiblePassive = [];
-
-for(var e in entityInfo){
-    if(entityInfo[e].image){
+for (var e in entityInfo) {
+    if (entityInfo[e].image) {
         possibleAggressive.push(e);
-    }else if(e === 'quarry'){
+    } else if (e === 'quarry') {
         possiblePassive.push(e);
-    }else{
+    } else {
         possibleActive.push(e);
     }
 }
-
-
-
 if (cluster.isMaster) {
-
     var numWorkers = 1; //require('os').cpus().length;
-
     for (var i = 0; i < numWorkers; i++) {
         cluster.fork();
     }
     cluster.on('online', function(worker) {
-
         console.log('Worker ' + worker.process.pid + ' is online');
-
     });
     cluster.on('exit', function(worker, code, signal) {
         console.log('Worker ' + worker.process.pid + ' died with code: ' + code + ', and signal: ' + signal);
@@ -56,94 +47,91 @@ if (cluster.isMaster) {
         }
     }
     var pathURL = socketURL + '/path';
-
-        const PORT = process.env.PORT || 3000;
-        var app = require('express')();
-        const server = app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
-        const io = require('socket.io-client');
-        var pathSocket = io(pathURL, {
-            path: '/socket.io-client',
-            transports: ['websocket'],
-        })
-        pathSocket.on('connect', function() {
-            console.log('Pathfinding connected for pid: ', process.pid);
-            console.log('**********', pathURL, '***********')
-            pathSocket.on('pathRequest', function(data) {
-                //console.log('Pathfinding request', process.pid);
-                var path = AI.AStar({
-                    x: ~~(data.startX / 32),
-                    y: ~~(data.startY / 32)
-                }, {
-                    x: ~~(data.endX / 32),
-                    y: ~~(data.endY / 32)
-                }, blockingTerrain);
-                if(path.length > 0){
-	                var heading = { x: data.endX, y: data.endY }
-	                pathSocket.emit('path', { id: data.id, path: path, heading: heading });
-            	}else{
-            		pathSocket.emit('failed', data.id);
-            	}
-            })
-            pathSocket.on('AIAttacked', function(data) {
-                for (var e in data) {
-                    if (data[e].aiType === 'active') {
-                        setTimeout(function() {
-                            entityFlee(data[e], pathSocket);
-                        }, 1000);
-                    } else if (data[e].aiType === 'aggressive') {
-                        if (data[e].health < 25) {
-                            entityFlee(data[e], pathSocket);
-                        }
-                    }
-                }
-            })
-            pathSocket.on('nearbyEntities', function(data) {
-                for (var e in data) {
-                    if (data[e].health > 25) {
-                        var coords = {
-                            startX: data[e].start.x,
-                            startY: data[e].start.y,
-                            endX: (data[e].victim.x - 1) * 32 + 2 * Math.random() * 32, //Randomly placed on 4 nodes
-                            endY: (data[e].victim.y - 1) * 32 + 2 * Math.random() * 32,
-                            id: e
-                        }
-
-                        aiSocket.emit('entityPathRequest', coords);
-                    }
-                }
-            })
-            var divisor = 20;
-            var fraction = 0;
-            setInterval(function() {
-                makeThemWalk(aggressiveEntities, fraction, divisor, pathSocket, numAggressive);
-                makeThemWalk(activeEntities, fraction, divisor, pathSocket, numActive);
-                fraction++;
-                fraction %= divisor;
-            }, 2500);
-            pathSocket.on('disconnect', function() {
-                console.log('Pathfinding disconnected for pid: ', process.pid);
-            })
-        });
-        const io2 = require('socket.io-client');
-        var addedAI = false;
-        aiSocket = io2.connect(socketURL, { 'force new connection': true });
-        aiSocket.on('connect', function() {
-            console.log('AISocket connected');
-            aiSocket.on('gameOver', function(){
-                passiveEntities = {};
-                activeEntities = {};
-                aggressiveEntities = {};
-                controlAI(aiSocket);
-            })
-            playerId = aiSocket.id;
-            if (!addedAI) {
-                setTimeout(function() {
-                    controlAI(aiSocket);
-                    addedAI = true;
-                }, 500)
+    const PORT = process.env.PORT || 3000;
+    var app = require('express')();
+    const server = app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+    const io = require('socket.io-client');
+    var pathSocket = io(pathURL, {
+        path: '/socket.io-client',
+        transports: ['websocket'],
+    })
+    pathSocket.on('connect', function() {
+        console.log('Pathfinding connected for pid: ', process.pid);
+        console.log('**********', pathURL, '***********')
+        pathSocket.on('pathRequest', function(data) {
+            //console.log('Pathfinding request', process.pid);
+            var path = AI.AStar({
+                x: ~~(data.startX / 32),
+                y: ~~(data.startY / 32)
+            }, {
+                x: ~~(data.endX / 32),
+                y: ~~(data.endY / 32)
+            }, blockingTerrain);
+            if (path.length > 0) {
+                var heading = { x: data.endX, y: data.endY }
+                pathSocket.emit('path', { id: data.id, path: path, heading: heading });
+            } else {
+                pathSocket.emit('failed', data.id);
             }
-        });
-   
+        })
+        pathSocket.on('AIAttacked', function(data) {
+            for (var e in data) {
+                if (data[e].aiType === 'active') {
+                    setTimeout(function() {
+                        entityFlee(data[e], pathSocket);
+                    }, 1000);
+                } else if (data[e].aiType === 'aggressive') {
+                    if (data[e].health < 25) {
+                        entityFlee(data[e], pathSocket);
+                    }
+                }
+            }
+        })
+        pathSocket.on('nearbyEntities', function(data) {
+            for (var e in data) {
+                if (data[e].health > 25) {
+                    var coords = {
+                        startX: data[e].start.x,
+                        startY: data[e].start.y,
+                        endX: (data[e].victim.x - 1) * 32 + 2 * Math.random() * 32, //Randomly placed on 4 nodes
+                        endY: (data[e].victim.y - 1) * 32 + 2 * Math.random() * 32,
+                        id: e
+                    }
+                    aiSocket.emit('entityPathRequest', coords);
+                }
+            }
+        })
+        var divisor = 20;
+        var fraction = 0;
+        setInterval(function() {
+            makeThemWalk(aggressiveEntities, fraction, divisor, pathSocket, numAggressive);
+            makeThemWalk(activeEntities, fraction, divisor, pathSocket, numActive);
+            fraction++;
+            fraction %= divisor;
+        }, 2500);
+        pathSocket.on('disconnect', function() {
+            console.log('Pathfinding disconnected for pid: ', process.pid);
+        })
+    });
+    const io2 = require('socket.io-client');
+    var addedAI = false;
+    aiSocket = io2.connect(socketURL, { 'force new connection': true });
+    aiSocket.on('connect', function() {
+        console.log('AISocket connected');
+        aiSocket.on('gameOver', function() {
+            passiveEntities = {};
+            activeEntities = {};
+            aggressiveEntities = {};
+            controlAI(aiSocket);
+        })
+        playerId = aiSocket.id;
+        if (!addedAI) {
+            setTimeout(function() {
+                controlAI(aiSocket);
+                addedAI = true;
+            }, 500)
+        }
+    });
 }
 
 function makeThemWalk(entities, fraction, divisor, pathSocket, numEntities) {
@@ -164,11 +152,11 @@ function makeThemWalk(entities, fraction, divisor, pathSocket, numEntities) {
         break;
     }
 }
+var levelWidth = 300;
+var levelHeight = 300;
 
 function entityFlee(entity, socket) {
     var i = 0;
-    var levelWidth = 1000;
-    var levelHeight = 1000;
     var end = {};
     var midPoint = {};
     var time = Date.now();
@@ -189,21 +177,22 @@ function entityFlee(entity, socket) {
     }
     if (!failed) {
         var path = AI.AStar({
-                    x: ~~(entity.x / 32),
-                    y: ~~(entity.y / 32)
-                }, {
-                    x: ~~(end.x / 32),
-                    y: ~~(end.y / 32)
-                }, blockingTerrain);
-                if(path.length > 0){
-                    var heading = { x: end.x, y: end.y}
-                    socket.emit('path', { id: entity.id, path: path, heading: heading });
-                    entity.x = end.x;
-                    entity.y = end.y;
-                }
-
+            x: ~~(entity.x / 32),
+            y: ~~(entity.y / 32)
+        }, {
+            x: ~~(end.x / 32),
+            y: ~~(end.y / 32)
+        }, blockingTerrain);
+        if (path.length > 0) {
+            var heading = { x: end.x, y: end.y }
+            socket.emit('path', { id: entity.id, path: path, heading: heading });
+            entity.x = end.x;
+            entity.y = end.y;
+        }else{
+            //console.log('Pathfinding failed: ', path.length);
+        }
     } else {
-        console.log('Error: Failed to find end point for ai flee path')
+        //console.log('Error: Failed to find end point for ai flee path')
     }
 }
 
@@ -216,10 +205,8 @@ function controlAI(socket) {
     socket.emit('addEntity', { pw: 'password', entities: passiveEntities });
     socket.emit('addEntity', { pw: 'password', entities: activeEntities });
 }
-var levelWidth = 1000;
-var levelHeight = 1000;
-function addAggressive(Entity, entities, num) {
 
+function addAggressive(Entity, entities, num) {
     for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
@@ -238,7 +225,6 @@ function addAggressive(Entity, entities, num) {
 }
 
 function addPassive(Entity, entities, num) {
-
     for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
@@ -257,12 +243,11 @@ function addPassive(Entity, entities, num) {
 }
 
 function addActive(Entity, entities, num) {
-
     for (var i = 0; i < num; i++) {
         var start = {};
         start.x = ~~(Math.random() * levelWidth * 32);
         start.y = ~~(Math.random() * levelHeight * 32);
-        var newHydra = new Entity(start, 100,  possibleActive[~~(Math.random() * possibleActive.length)], playerId, 'black', 'ai');
+        var newHydra = new Entity(start, 100, possibleActive[~~(Math.random() * possibleActive.length)], playerId, 'black', 'ai');
         while (blockingTerrain[~~(newHydra.x / 32)][~~(newHydra.y / 32)]) {
             newHydra.x = ~~(Math.random() * levelWidth * 32);
             newHydra.y = ~~(Math.random() * levelHeight * 32);

@@ -65,10 +65,11 @@ function setBackgroundOffsetToScreenPoint(sx, sy, z1, z2) {
     backgroundOffset.x = (sx - mapPoint.x * z2) / z2;
     backgroundOffset.y = (sy - mapPoint.y * z2) / z2;
 }
-var zoomOutLimit = 0.1;
+var zoomOutLimit = 0.26;
 //if Safari because Safari has a map drawing bug right now
+//limited zooming for everyone because of chunkyness
 if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1){ 
-    zoomOutLimit = 0.249
+    zoomOutLimit = 0.26;
 }
 function zoomAction(e) {
     var scale = e.scale;

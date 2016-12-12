@@ -10,6 +10,7 @@ function mapMove(e) {
     var changeY = Math.abs(e.pointers[0].clientY - currentCoords.y);
     backgroundOffset.x += (e.pointers[0].clientX - currentCoords.x) / zoom;
     backgroundOffset.y += (e.pointers[0].clientY - currentCoords.y) / zoom;
+    limitBackgroundOffset();
     currentCoords.x = e.pointers[0].clientX;
     currentCoords.y = e.pointers[0].clientY;
 }
@@ -24,7 +25,7 @@ function clickGameContainer(e) {
             $('#allEntities').toggleClass('buttonDown')
         }
     } else if (boughtEntity && playerTeam && !entityIsBlocked(point.x, point.y)) {
-        if(firstTime.placeEntity){
+        if (firstTime.placeEntity) {
             $('#nextEntity').addClass('breathing');
             $('#tutorialAdd').fadeOut('slow');
             firstTime.placeEntity = false;
@@ -40,22 +41,22 @@ function clickGameContainer(e) {
         socket.emit('addEntity', { entity: entity });
         boughtEntity = false;
     } else if (!entityIsBlocked(point.x, point.y)) {
-        if(firstTime.moveEntity){
+        if (firstTime.moveEntity) {
             $('#tutorialMove').fadeOut('slow')
             firstTime.moveEntity = false;
         }
-        setTimeout(function(){$('#blockedSpot').fadeOut('slow')}, 1000);
+        setTimeout(function() { $('#blockedSpot').fadeOut('slow') }, 1000);
         var numMoving = LOO(selectedEntities);
         if (numMoving > 0) {
             for (var i in selectedEntities) {
                 var entity = selectedEntities[i];
-                if(entity.health > 0){
+                if (entity.health > 0) {
                     entity.walking = true;
                     entity.heading = {};
-                    if(numMoving > 1){
-                        entity.heading.x = ~~((point.x - 1) / 32) * 32 + 2 * Math.random() * 32 ;
-                        entity.heading.y = ~~((point.y - 1) / 32 ) * 32 + 2 * Math.random() * 32;
-                    }else{
+                    if (numMoving > 1) {
+                        entity.heading.x = ~~((point.x - 1) / 32) * 32 + 2 * Math.random() * 32;
+                        entity.heading.y = ~~((point.y - 1) / 32) * 32 + 2 * Math.random() * 32;
+                    } else {
                         entity.heading.x = point.x
                         entity.heading.y = point.y;
                     }
@@ -71,9 +72,9 @@ function clickGameContainer(e) {
             }
         }
     } else {
-        if(boughtEntity || LOO(selectedEntities) > 0){
-            $('#blockedSpot').fadeIn('fast', function(){
-                setTimeout(function(){$('#blockedSpot').fadeOut('slow')}, 1000);
+        if (boughtEntity || LOO(selectedEntities) > 0) {
+            $('#blockedSpot').fadeIn('fast', function() {
+                setTimeout(function() { $('#blockedSpot').fadeOut('slow') }, 1000);
             })
         }
         $('#gameContainer').css('cursor', 'not-allowed');
@@ -97,8 +98,8 @@ function selectAllVisiblePlayerEntities(entities, playerId) {
     }
 }
 
-function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
-    if (limits === undefined) {
+function zoomPanTo(x, y, localZoom, limits, skipZoom) { //x, y is mapX, mapY
+    if (typeof limits === 'undefined') {
         limits = { x: false, y: false }
     }
     var point = mapToScreenPoint(x, y, localZoom);
@@ -153,7 +154,7 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
             zoomPanTimeoutRunning = true;
             setTimeout(function() {
                 zoomPanTimeoutRunning = false;
-                zoomPanTo(x, y, zoom, limits)
+                zoomPanTo(x, y, zoom, limits, skipZoom)
             }, 1000 / 30);
         }
     } else if (zoom < 1) {
@@ -161,6 +162,9 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
             zoomPanTimeoutRunning = true;
             setTimeout(function() {
                 zoomPanTimeoutRunning = false;
+                if(skipZoom){
+                    return;
+                }
                 zoomToOne(x, y);
             })
         }
@@ -170,33 +174,40 @@ function zoomPanTo(x, y, localZoom, limits) { //x, y is mapX, mapY
             zoomPanTimeoutRunning = true;
             setTimeout(function() {
                 zoomPanTimeoutRunning = false;
+                if(skipZoom){
+                    console.log('skipped')
+                    return;
+                }
                 zoomPanTo(x, y, zoom)
             }, 1000 / 30);
         }
-    }else{
+    } else {
         zoomPanCompletelyDone = true;
     }
 }
 
-
 function zoomToOne(x, y, finalZoom) {
     var scale = 2;
     if (!finalZoom) {
-        finalZoom = 1;
+        if (zoom < 1) {
+            finalZoom = 1;
+        } else {
+            finalZoom = zoomOutLimit;
+        }
     }
     if (finalZoom < 1) {
         scale = .5;
     }
     var point = mapToScreenPoint(x, y);
     zoomAction({ scale: scale, center: point });
-    if (scale > 1) {
+    if (scale > 1) { //Zooming out
         if (zoom < 1) {
             setTimeout(function() {
                 zoomToOne(x, y, finalZoom);
             }, 1000 / 30)
         }
-    } else {
-        if (zoom > finalZoom) {
+    } else { //Zooming in
+        if (zoom > zoomOutLimit) {
             setTimeout(function() {
                 zoomToOne(x, y, finalZoom);
             }, 1000 / 30)
@@ -205,7 +216,7 @@ function zoomToOne(x, y, finalZoom) {
 }
 
 function goToNextEntity() {
-    if(!zoomPanCompletelyDone){
+    if (!zoomPanCompletelyDone) {
         return;
     }
     var playerEntities = onlyPlayerEntities(entities, playerId);
@@ -227,15 +238,12 @@ function goToNextEntity() {
     }
     var nextEntity = playerEntities[index];
     currentEntity = nextEntity.id;
-
     zoomPanCompletelyDone = false;
     zoomPanTo(nextEntity.x, nextEntity.y, zoom);
-
-    
 }
 
 function goToPreviousEntity() {
-    if(!zoomPanCompletelyDone){
+    if (!zoomPanCompletelyDone) {
         return;
     }
     var playerEntities = onlyPlayerEntities(entities, playerId);
@@ -257,13 +265,9 @@ function goToPreviousEntity() {
     }
     var nextEntity = playerEntities[index];
     currentEntity = nextEntity.id;
-
     zoomPanCompletelyDone = false;
     zoomPanTo(nextEntity.x, nextEntity.y, zoom);
-
 }
-
-
 
 function slideMap(slope) {
     if (slope > 0) {
@@ -276,11 +280,10 @@ function slideMap(slope) {
     redrawBackground();
 }
 
-function createVector(panTime, oldCoords, newCoords){
+function createVector(panTime, oldCoords, newCoords) {
     var swipeRatio = 0.9;
     var length = Math.sqrt(Math.pow(oldCoords.x - newCoords.x, 2) + Math.pow(oldCoords.y - newCoords.y, 2));
-    if(length / panTime > swipeRatio){
-            alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
+    if (length / panTime > swipeRatio) {
+        alert('Swipe! length: ' + length + ' time: ' + panTime + 'ms')
     }
-
 }

@@ -11,8 +11,8 @@ var entities = {};
 var firstLoad = true;  //If true then all the images will be loaded up and cached
 var lastAnimation = Date.now();
 var level = 'megaMap';
-var levelWidth = 1000;  //Dimensions of level in squares
-var levelHeight = 1000;
+var levelWidth = 300;  //Dimensions of level in squares
+var levelHeight = 300;
 var newCan = document.createElement('canvas');  //Canvas used for drawing entities
 var playerColor = getRandomColor(); 
 var playerId;
@@ -32,7 +32,10 @@ var allPlayerInfo;
 var firstTime = {showShop : true, buyEntity : false, placeEntity : false, selectEntity : false, zoomToEntity : false, moveEntity : false}
 var tips = ['You can zoom in and out by pinching the screen or scrolling with the mouse wheel.', 'Capturing castles will earn you 3x as many points as killing enemies.', 'You can double tap the map to quickly zoom in and out.']
 
-
+/*Test if android*/
+var ua = navigator.userAgent.toLowerCase();
+var isAndroid = ua.indexOf("android") > -1;
+/*****************/
 
 var rows = 20;  //Rows and columns map is broken up into
 var columns = 20;
