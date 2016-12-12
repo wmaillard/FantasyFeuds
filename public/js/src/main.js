@@ -124,7 +124,7 @@ function drawFrame() {
 }
 
 function redrawBackground(safe) {
-    if(safe && lastRedraw + 1000 / 30 > Date.now()){
+    if(safe && lastRedraw + 1000 / 30 < Date.now()){
         scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
         drawEntities(entities, ctxF, true);
         lastRedraw = Date.now();
