@@ -65,12 +65,12 @@ function setBackgroundOffsetToScreenPoint(sx, sy, z1, z2) {
     backgroundOffset.x = (sx - mapPoint.x * z2) / z2;
     backgroundOffset.y = (sy - mapPoint.y * z2) / z2;
 }
-var zoomOutLimit = 0.26;
+var zoomOutLimit = Math.floor(window.innerHeight / (.66 * castleRadius) * 100) / 100; //This should limit it to a little more than the castle circle in screen
 //if Safari because Safari has a map drawing bug right now
 //limited zooming for everyone because of chunkyness
-if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1){ 
+/*if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1){ 
     zoomOutLimit = 0.26;
-}
+}*/
 function zoomAction(e) {
     var scale = e.scale;
     var oldZoom = zoom;
