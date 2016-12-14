@@ -35,7 +35,6 @@ function hammerSetup(){
     mc.on('singletap', function(e){
 
         if(e.tapCount === 1){
-            console.log(e);
             var fakeEvent = {};
             fakeEvent.pointers = [];
             fakeEvent.pointers.push({clientX:e.center.x, clientY:e.center.y})
