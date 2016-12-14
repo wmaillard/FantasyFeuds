@@ -56,7 +56,7 @@ function hammerSetup(){
     });
     mc.on('pan', function(e){
         mapMove(e);
-        redrawBackground(true);
+        redrawBackground();
 
     });
     mc.on('panstart', function(e){
