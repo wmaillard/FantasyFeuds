@@ -35,7 +35,10 @@ function hammerSetup(){
     mc.on('singletap', function(e){
 
         if(e.tapCount === 1){
-            clickGameContainer(e);
+            var fakeEvent = {};
+            fakeEvent.pointers = [];
+            fakeEvent.pointers.push({clientX:e.center.x, clientY:e.center.y})
+            clickGameContainer(fakeEvent);
         }
         else if(e.tapCount === 2){
             var point = convertScreenToMapPoint(e.center.x, e.center.y, zoom);

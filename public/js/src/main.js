@@ -32,11 +32,19 @@ function drawScoreBar(scores) {
     var swordHeight = $('#sword span').height();
     var swordWidth = $('#sword span').width();
     var swordCenter = { y: $('#sword span').offset().top + swordHeight / 2, x: $('#sword span').offset().left + swordWidth / 2 };
-    ctxI.fillStyle = 'orange';
+var leftRed = (.5 - sizeOfBar) * canvasWidth
     var leftSide = (.5 - sizeOfBar) * canvasWidth + sizeOfBar * canvasWidth * (1 - orangePoints / maxPoints);
+
+        ctxI.fillStyle = 'red';
+        ctxI.fillRect(leftRed, swordCenter.y, swordCenter.x - leftRed - leftSide, swordHeight / 7);
+            ctxI.fillStyle = 'orange';
     ctxI.fillRect(leftSide, swordCenter.y, swordCenter.x - leftSide, swordHeight / 7);
+    var rightRed = sizeOfBar * canvasWidth;
+    var rightWidth = sizeOfBar * canvasWidth * (bluePoints / maxPoints);
+
+    ctxI.fillStyle = 'red';
+    ctxI.fillRect(swordCenter.x + rightWidth, swordCenter.y, rightRed - rightWidth, swordHeight / 7);
     ctxI.fillStyle = 'blue';
-    rightWidth = sizeOfBar * canvasWidth * (bluePoints / maxPoints)
     ctxI.fillRect(swordCenter.x, swordCenter.y, rightWidth, swordHeight / 7);
 }
 
@@ -123,9 +131,9 @@ function drawFrame() {
     }, Math.max(now - Date.now() + 1000 / efps, 0))
 }
 
-function redrawBackground() {
-    scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
-    drawEntities(entities, ctxF, true);
+function redrawBackground(safe) {
+        scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
+        drawEntities(entities, ctxF, true);
 
 }
 
