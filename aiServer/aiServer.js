@@ -184,10 +184,18 @@ function entityFlee(entity, socket) {
             y: ~~(end.y / 32)
         }, blockingTerrain);
         if (path.length > 0) {
-            var heading = { x: end.x, y: end.y }
-            socket.emit('path', { id: entity.id, path: path, heading: heading });
-            entity.x = end.x;
-            entity.y = end.y;
+           // if(Math.abs(path[0].x - ~~(end.x / 32)) < 1 && Math.abs(path[0].y - (end.y / 32)) < 1){
+                var heading = { x: end.x, y: end.y }
+                socket.emit('path', { id: entity.id, path: path, heading: heading });
+                entity.x = end.x;
+                entity.y = end.y;
+
+
+
+            /*}else{
+                console.log('Stray AI entity!')
+            }*/
+
         }else{
             //console.log('Pathfinding failed: ', path.length);
         }

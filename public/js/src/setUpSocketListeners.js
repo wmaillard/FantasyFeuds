@@ -1,24 +1,4 @@
-function cacheMapTiles(reverse) {
-    if (reverse) {
-        for (var i = 399; i <= 0; i--) {
-            var img = new Image();
-            img.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/100/tile' + i + '_100.png';
-            /*var img2 = new Image();
-            img2.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/25/tile' + i + '_25.png';
-            img2 = null;*/
-            img = null;
-        }
-    } else {
-        for (var i = 0; i < 400; i++) {
-            var img = new Image();
-            img.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/100/tile' + i + '_100.png';
-            /*var img2 = new Image();
-            img2.src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/25/tile' + i + '_25.png';
-            img2 = null;*/
-            img = null;
-        }
-    }
-}
+
 
 
 

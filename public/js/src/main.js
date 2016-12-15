@@ -1,5 +1,5 @@
-if(!CanvasRenderingContext2D.prototype.ellipse){
-    CanvasRenderingContext2D.prototype.ellipse = function(){
+if (!CanvasRenderingContext2D.prototype.ellipse) {
+    CanvasRenderingContext2D.prototype.ellipse = function() {
         alert('Please use a modern browser.')
         throw new Error("Modern Browser Error");
         return;
@@ -32,16 +32,14 @@ function drawScoreBar(scores) {
     var swordHeight = $('#sword span').height();
     var swordWidth = $('#sword span').width();
     var swordCenter = { y: $('#sword span').offset().top + swordHeight / 2, x: $('#sword span').offset().left + swordWidth / 2 };
-var leftRed = (.5 - sizeOfBar) * canvasWidth
+    var leftRed = (.5 - sizeOfBar) * canvasWidth
     var leftSide = (.5 - sizeOfBar) * canvasWidth + sizeOfBar * canvasWidth * (1 - orangePoints / maxPoints);
-
-        ctxI.fillStyle = 'red';
-        ctxI.fillRect(leftRed, swordCenter.y, swordCenter.x - leftRed - leftSide, swordHeight / 7);
-            ctxI.fillStyle = 'orange';
+    ctxI.fillStyle = 'red';
+    ctxI.fillRect(leftRed, swordCenter.y, swordCenter.x - leftRed -(swordCenter.x - leftSide), swordHeight / 7);
+    ctxI.fillStyle = 'orange';
     ctxI.fillRect(leftSide, swordCenter.y, swordCenter.x - leftSide, swordHeight / 7);
     var rightRed = sizeOfBar * canvasWidth;
     var rightWidth = sizeOfBar * canvasWidth * (bluePoints / maxPoints);
-
     ctxI.fillStyle = 'red';
     ctxI.fillRect(swordCenter.x + rightWidth, swordCenter.y, rightRed - rightWidth, swordHeight / 7);
     ctxI.fillStyle = 'blue';
@@ -76,9 +74,11 @@ function setBackgroundOffsetToScreenPoint(sx, sy, z1, z2) {
 var zoomOutLimit = Math.floor(window.innerHeight / (.66 * castleRadius) * 100) / 100; //This should limit it to a little more than the castle circle in screen
 //if Safari because Safari has a map drawing bug right now
 //limited zooming for everyone because of chunkyness
+
 /*if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1){ 
     zoomOutLimit = 0.26;
 }*/
+
 function zoomAction(e) {
     var scale = e.scale;
     var oldZoom = zoom;
@@ -94,7 +94,7 @@ function zoomAction(e) {
     if (zoom > 3) {
         zoom = 3;
     }
-    if(zoom < zoomOutLimit){
+    if (zoom < zoomOutLimit) {
         zoom = zoomOutLimit;
     }
     setBackgroundOffsetToScreenPoint(e.center.x, e.center.y, oldZoom, zoom);
@@ -123,18 +123,15 @@ function drawFrame() {
             }
         }
     }
-
     drawEntities(entities, ctxF, true);
-
     setTimeout(function() {
         window.requestAnimationFrame(drawFrame);
     }, Math.max(now - Date.now() + 1000 / efps, 0))
 }
 
 function redrawBackground(safe) {
-        scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
-        drawEntities(entities, ctxF, true);
-
+    scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
+    drawEntities(entities, ctxF, true);
 }
 
 function loadImages() {

@@ -44,4 +44,23 @@
         }, 3000);
     }
 }
-runTips(0)
+var quality = 'low';
+function cacheMapTiles(reverse) {
+    if (reverse) {
+        for (var i = 399; i <= 0; i--) {
+            var img = new Image();
+            img.src = 'https://s3-us-west-2.amazonaws.com/fantasyfeudssmallmap/100/tile' + i + '_100' + quality + '.png';
+            img = null;
+        }
+    } else {
+        for (var i = 0; i < 400; i++) {
+            var img = new Image();
+            img.src = 'https://s3-us-west-2.amazonaws.com/fantasyfeudssmallmap/100/tile' + i + '_100' + quality + '.png';
+            img = null;
+        }
+    }
+}
+
+cacheMapTiles();
+runTips(0);
+
