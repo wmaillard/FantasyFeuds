@@ -14,9 +14,9 @@ var AI = {
     if(blockingTerrain[startNode.x][startNode.y] || blockingTerrain[eNode.x][eNode.y]){
       return [];
     }
-    if(Math.sqrt(Math.pow(startNode.x - eNode.x, 2) + Math.pow(startNode.y - eNode.y, 2)) > AI.distanceLimit){
+    /*if(Math.sqrt(Math.pow(startNode.x - eNode.x, 2) + Math.pow(startNode.y - eNode.y, 2)) > AI.distanceLimit){
       return [];
-    }
+    }*/
     this.terrainArray = blockingTerrain;
     this.closedSet = [];
     this.openSet = [];
@@ -47,10 +47,10 @@ var AI = {
       if(cNode.x === eNode.x && cNode.y === eNode.y){
         //console.log('found end');
         var path = this.drawPath(cNode, startNode);
-        if(path.length < Math.abs(startNode.x - eNode.x) || path.length < Math.abs(startNode.y - eNode.y)){
+        /*if(path.length < Math.abs(startNode.x - eNode.x) || path.length < Math.abs(startNode.y - eNode.y)){
           console.log('Error: Incorrect path')
           return [];
-        }
+        }*/
         path.pop(); //remove current node
         return path;
       }

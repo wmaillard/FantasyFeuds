@@ -10,7 +10,7 @@ var scene = {
             scene.tiles[layer.name].img = [];
             var size = scene.data.tilewidth;
             for (var i = 0; i < rows * columns; i++) {
-                var url = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/smallMap/100/' + layer.name + i + '_100' + '.png';
+                var url = 'https://s3-us-west-2.amazonaws.com/fantasyfeudssmallmap/100/' + layer.name + i + '_100' + quality + '.png';
                 scene.tiles[layer.name].url[i] = url;
             }
             drawFromArray(layer.name, rows, columns);
@@ -32,11 +32,12 @@ var scene = {
 }
 
 function zoomURL(url, scale) {
+
     //scale is 5, 10, 25, 50, 100
     var parts = url.split("/");
     var newURL = "";
     for (var i in parts) {
-        if (i == 5) {
+        if (i == 4) {
             newURL += scale;
         } else if (i != parts.length - 1) {
             newURL += parts[i];
@@ -63,13 +64,15 @@ function clearURLImages (tiles, currentZoomR) {
 function drawFromArray(layerName, rows, columns) {
     var saveZoom = zoom;
     //Step down or up image resolutions
+    //BUG switched 25 off
+    currentZoomResolution = 1;
     if (zoom > 0.25 && currentZoomResolution !== 1) {
         clearURLImages(scene.tiles['tile'], '100');
         currentZoomResolution = 1;
-    } else if (!safari && zoom <= 0.25 && currentZoomResolution !== 0.25) {
+    }/* else if (!safari && zoom <= 0.25 && currentZoomResolution !== 0.25) {
         clearURLImages(scene.tiles['tile'], '25');
         currentZoomResolution = 0.25;
-    }
+    }*/
     var upperLeft = {}
     upperLeft.x = Math.abs(backgroundOffset.x);
     upperLeft.y = Math.abs(backgroundOffset.y);

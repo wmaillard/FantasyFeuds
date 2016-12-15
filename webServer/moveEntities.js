@@ -55,9 +55,17 @@ var moveEntities = { //Currently mutates entities
                 }
             } //If the entity is not at the heading
             else if (entity.heading.x !== entity.x || entity.heading.y !== entity.y) { //Math.abs(entity.heading.x - entity.x) <= .001 && Math.abs(entity.heading.y - entity.y) <= .001) {
-                if (Math.abs(entity.heading.x - entity.x) > 5 || Math.abs(entity.heading.y - entity.y) > 5) {
+   
+                var diffX = Math.abs(entity.heading.x - entity.x);
+                var diffY = Math.abs(entity.heading.y - entity.y);
+                //2nd half of logic is a workaround because entities are once in a while given a heading with no path, weird far away headings
+                if ((diffX > 5 || diffY > 5) && (diffX < 32 * 2 && diffY < 32 * 2)) { // 32 * 2 is 2 tiles
                     moveEntities.microMoveTowardPoint(entity, entity.heading, 4, 5);
-                } else {
+                } else if(diffX > 32 * 2 || diffY > 32 * 2){
+                    //console.log('Path and heading mismatch: ', diffX, ' ', diffY);
+                    moveEntities.setChange(entity.id, 'heading', {x: entity.x, y: entity.y})
+
+                }else {
                     moveEntities.setChange(entity.id, 'x', entity.heading.x);
                     moveEntities.setChange(entity.id, 'y', entity.heading.y);
                 }
