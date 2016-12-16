@@ -55,13 +55,13 @@ function cacheMapTiles(reverse) {
         img.onload = function(){
             imagesLoaded++;
             $('.pace-progress').css({
-              '-webkit-transform' : 'translate3d(' + ~~((imagesDone/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-moz-transform'    : 'translate3d(' + ~~((imagesDone/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-ms-transform'     : 'translate3d(' + ~~((imagesDone/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-o-transform'      : 'translate3d(' + ~~((imagesDone/ numberOfImages) * 100) + '%, 0px, 0px)',
-              'transform'         : 'translate3d(' + ~~((imagesDone/ numberOfImages) * 100) + '%, 0px, 0px)'
+              '-webkit-transform' : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              '-moz-transform'    : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              '-ms-transform'     : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              '-o-transform'      : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              'transform'         : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)'
             });
-            if(imagesDone === numberOfImages){
+            if(imagesLoaded === numberOfImages){
                 $('.pace').removeClass('.pace-active').addClass('.pace-inactive');
                 imagesDoneLoading();
             }
