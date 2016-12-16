@@ -149,8 +149,10 @@ function loadImages() {
             }
         }
         characterImages[entity] = new Image();
+        characterImages[entity].onload = anotherImageLoaded;
         characterImages[entity].src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/characters/' + entity + '/' + entity + '.png';
         characterImages[entity + 'Pose'] = new Image();
+        characterImages[entity + 'Pose'].onload = anotherImageLoaded;
         characterImages[entity + 'Pose'].src = 'https://s3-us-west-2.amazonaws.com/rtsgamemap/characters/' + entity + '/' + entity + 'Pose' + '.png';
     }
 }

@@ -42,14 +42,15 @@ function setUpSocketListeners() {
     })
     socket.on('team', function(team){
         playerTeam = team;
-        if(playerTeam === "blue"){ 
-             backgroundOffset = {x: -3537, y: -458};
-             zoom = 0.39;
-
-        }else if(playerTeam === "orange"){
-            backgroundOffset = {x: -4090, y: -6868};
-            zoom = 0.39;
-
+        if(playerTeam === 'blue'){
+             //cacheMapTiles()
+             zoomPanTo(castles[1].x, castles[1].y, zoom, { x: false, y: false }, true)
+             zoomToOne(castles[1].x, castles[1].y, .35);
+            
+        }else if(playerTeam === 'orange'){
+            //cacheMapTiles(true);
+            zoomPanTo(castles[4].x, castles[4].y, zoom, { x: false, y: false }, true)
+            zoomToOne(castles[4].x, castles[4].y, .35);
         }
         $('.teamName').text(playerTeam.charAt(0).toUpperCase() + playerTeam.slice(1)).css({color: playerTeam});
         $('.teamColor').css({color: playerTeam});
