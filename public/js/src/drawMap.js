@@ -12,6 +12,10 @@ var scene = {
             for (var i = 0; i < rows * columns; i++) {
                 var url = 'https://s3-us-west-2.amazonaws.com/fantasyfeudssmallmap/100/' + layer.name + i + '_100' + quality + '.png';
                 scene.tiles[layer.name].url[i] = url;
+                if(!limitRAM){
+                    scene.tiles[layer.name].img[i] = new Image();
+                
+                }
             }
             drawFromArray(layer.name, rows, columns);
         } else { //if all the layers have been previously loaded, use the cache
@@ -67,7 +71,9 @@ function drawFromArray(layerName, rows, columns) {
     //BUG switched 25 off
     currentZoomResolution = 1;
     if (zoom > 0.25 && currentZoomResolution !== 1) {
-        clearURLImages(scene.tiles['tile'], '100');
+        if(limitRAM){
+            clearURLImages(scene.tiles['tile'], '100');
+        }
         currentZoomResolution = 1;
     }/* else if (!safari && zoom <= 0.25 && currentZoomResolution !== 0.25) {
         clearURLImages(scene.tiles['tile'], '25');
@@ -107,7 +113,10 @@ function drawFromArray(layerName, rows, columns) {
             if (firstY) {
                 offset.y = (Math.abs(backgroundOffset.y)) % rowHeight; //Start cutting the top row of canvas's at offset.y
             }
-            var eight = loadEightAround(i, rows, columns);
+            var eight;
+            if(limitRAM){
+                eight = loadEightAround(i, rows, columns);
+            }
             for (var j in eight) {
                 if (!tilesUsed[eight[j]]) {
                     tilesUsed[eight[j]] = true;
@@ -168,7 +177,9 @@ function drawFromArray(layerName, rows, columns) {
     }
     
     //console.log(tilesUsed);
-    cleanUp(tilesUsed, scene.tiles[layerName].img, widthInTiles, heightInTiles);
+    if(limitRAM){
+        cleanUp(tilesUsed, scene.tiles[layerName].img, widthInTiles, heightInTiles);
+    }
     zoom = saveZoom;
 }
 
