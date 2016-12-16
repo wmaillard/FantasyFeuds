@@ -14,6 +14,7 @@ var scene = {
                 scene.tiles[layer.name].url[i] = url;
                 if(!limitRAM){
                     scene.tiles[layer.name].img[i] = new Image();
+                    scene.tiles[layer.name].img[i].src = url;
                 
                 }
             }
