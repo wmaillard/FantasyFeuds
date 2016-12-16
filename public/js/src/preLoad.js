@@ -23,16 +23,7 @@ function imagesDoneLoading() {
             };
         });
         $('#closeIntro').removeClass('disabled');
-       if(playerTeam === 'blue'){
-             //cacheMapTiles()
-             zoomPanTo(castles[1].x, castles[1].y, zoom, { x: false, y: false }, true)
-             zoomToOne(castles[1].x, castles[1].y, .35);
-            
-        }else if(playerTeam === 'orange'){
-            //cacheMapTiles(true);
-            zoomPanTo(castles[4].x, castles[4].y, zoom, { x: false, y: false }, true)
-            zoomToOne(castles[4].x, castles[4].y, .35);
-        }
+      
     };
 
 function runTips(i) {
@@ -55,14 +46,14 @@ function cacheMapTiles(reverse) {
         img.onload = function(){
             imagesLoaded++;
             $('.pace-progress').css({
-              '-webkit-transform' : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-moz-transform'    : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-ms-transform'     : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-o-transform'      : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              'transform'         : 'translate3d(' + ~~((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)'
+              '-webkit-transform' : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              '-moz-transform'    : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              '-ms-transform'     : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              '-o-transform'      : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+              'transform'         : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)'
             });
             if(imagesLoaded === numberOfImages){
-                $('.pace').removeClass('.pace-active').addClass('.pace-inactive');
+                $('.pace').removeClass('pace-active').addClass('pace-inactive');
                 imagesDoneLoading();
             }
 
