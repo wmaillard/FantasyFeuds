@@ -11,7 +11,9 @@ var scene = {
             var size = scene.data.tilewidth;
             for (var i = 0; i < rows * columns; i++) {
                 var url = 'https://s3-us-west-2.amazonaws.com/fantasyfeudssmallmap/100/' + layer.name + i + '_100' + quality + '.png';
-                scene.tiles[layer.name].url[i] = url;
+                if(limitRAM){
+                    scene.tiles[layer.name].url[i] = url;
+                }
                 if(!limitRAM){
                     scene.tiles[layer.name].img[i] = new Image();
                     scene.tiles[layer.name].img[i].src = url;
@@ -99,7 +101,7 @@ function drawFromArray(layerName, rows, columns) {
     var widthInTiles = Math.ceil(($('#gameContainer').width() / zoom) / colWidth);
     var heightInTiles = Math.ceil(($('#gameContainer').height() / zoom) / rowHeight);
     var toLoadAfter = []; 
-    for (var i = 0; i < scene.tiles[layerName].url.length; i++) {
+    for (var i = 0; i < rows * columns; i++) {
         //if, based on the offset and the amount being drawn, we should use this canvas.  Draw a piece using that canvas
         if (doneInY && doneInX) {
             break;
@@ -123,7 +125,7 @@ function drawFromArray(layerName, rows, columns) {
                     tilesUsed[eight[j]] = true;
                 }
             }
-            if (!scene.tiles[layerName].img[i]) {
+            if (!scene.tiles[layerName].img[i] && limitRAM) {
                 
                 var img = new Image();
                 img.onload = function(){
@@ -163,6 +165,7 @@ function drawFromArray(layerName, rows, columns) {
         //scene.context.drawSafeImage(scratchCanvas.canvas, -backgroundOffset.x, -backgroundOffset.y, canvasWidth / scene.zoom, canvasHeight / scene.zoom, 0, 0, canvasWidth, canvasHeight); //draw image from scratch canvas for better performance
     }
     var i;
+    if(limitRAM){
     while(i = toLoadAfter.pop()){
         for (var j in toLoadAfter[i]) {
                     if (!scene.tiles[layerName].img[toLoadAfter[i][j]]) {
@@ -175,6 +178,7 @@ function drawFromArray(layerName, rows, columns) {
                     }
                 }
 
+    }
     }
     
     //console.log(tilesUsed);
