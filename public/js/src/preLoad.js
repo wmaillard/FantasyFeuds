@@ -1,6 +1,22 @@
  
 var imagesLoaded = 0;
-var numberOfImages = 40;
+var numberOfImages = 400 + 29 * 2; //29 characters and 2 for each
+
+function anotherImageLoaded(){
+    imagesLoaded++;
+    $('.pace-progress').css({
+      '-webkit-transform' : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+      '-moz-transform'    : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+      '-ms-transform'     : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+      '-o-transform'      : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
+      'transform'         : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)'
+    });
+    if(imagesLoaded === numberOfImages){
+        $('.pace').removeClass('pace-active').addClass('pace-inactive');
+        imagesDoneLoading();
+    }
+}
+ 
 function imagesDoneLoading() {
         $('#closeIntro').click(function(e) {
             if($('#skipTutorial').is(':checked')){
@@ -53,21 +69,7 @@ var quality = 'low';
 function cacheMapTiles(reverse) {
     function loadThem(i){
         var img = new Image();
-        img.onload = function(){
-            imagesLoaded++;
-            $('.pace-progress').css({
-              '-webkit-transform' : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-moz-transform'    : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-ms-transform'     : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              '-o-transform'      : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)',
-              'transform'         : 'translate3d(' + ((imagesLoaded/ numberOfImages) * 100) + '%, 0px, 0px)'
-            });
-            if(imagesLoaded === numberOfImages){
-                $('.pace').removeClass('pace-active').addClass('pace-inactive');
-                imagesDoneLoading();
-            }
-
-        }
+        img.onload = anotherImageLoaded;
         img.src = 'https://s3-us-west-2.amazonaws.com/fantasyfeudssmallmap/100/tile' + i + '_100' + quality + '.png';
         img = null;
     }
