@@ -53,7 +53,7 @@ function cacheMapTiles(reverse) {
     function loadThem(i){
         var img = new Image();
         img.onload = function(){
-            imagesDone++;
+            imagesLoaded++;
             $('.pace-progress').css({
               '-webkit-transform' : 'translate3d(' + ~~((imagesDone/ numberOfImages) * 100) + '%, 0px, 0px)',
               '-moz-transform'    : 'translate3d(' + ~~((imagesDone/ numberOfImages) * 100) + '%, 0px, 0px)',
