@@ -47,6 +47,9 @@ var BindButtons = {
             drawScoreBar(scores);
         });
         $('#showShop').click(function() {
+            if(locks.shop){
+                return;
+            }
             if(firstTime.showShop){
                 $('#showShop').removeClass('breathing');
                 firstTime.showShop = false;
@@ -174,6 +177,7 @@ var BindButtons = {
             if(firstTime.forgot){
                 $('#forgot').removeClass('breathing');
                 firstTime.forgot = false;
+                locks.shop = false;
                 nextMessage(message3);
                 $('#tutorialModalButton').text('Try It!').unbind('click').click(function(e){
 						$('#showShop').addClass('breathing');
