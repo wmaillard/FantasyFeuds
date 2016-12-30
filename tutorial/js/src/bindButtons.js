@@ -48,7 +48,7 @@ var BindButtons = {
         });
         $('#showShop').click(function() {
             if(locks.shop){
-                return;
+                return false;
             }
             if(firstTime.showShop){
                 $('#showShop').removeClass('breathing');
@@ -188,7 +188,7 @@ var BindButtons = {
 						$('#tutorialModal').modal('hide');
 					});
 			}
-			$('#tutorialModal').modal('show');
+			$('#tutorialModal').modal('toggle');
 			return false;
 			})
 	
