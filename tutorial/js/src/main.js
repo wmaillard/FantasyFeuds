@@ -131,8 +131,9 @@ function drawFrame() {
     }, Math.max(now - Date.now() + 1000 / efps, 0))
 }
 
-function redrawBackground(safe) {
-    if(lastPan < Date.now() - 1000 / 30){  //limit redrawing to 30fps
+function redrawBackground(force) {
+
+    if(force || lastPan < Date.now() - 1000 / 30){  //limit redrawing to 30fps
         lastPan = Date.now();
         scene.load(level, ctxB, zoom); 
         drawEntities(entities, ctxF, true);
