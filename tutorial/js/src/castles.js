@@ -1,0 +1,1 @@
+const castles = {"0":{"x":1700,"y":1500,"id":0,"color":[{"color":"orange","percent":0},{"color":"blue","percent":1}]},"1":{"x":4850,"y":1450,"id":1,"color":[{"color":"orange","percent":1},{"color":"blue","percent":0}]}}
