@@ -65,7 +65,7 @@ function hammerSetup(){
     });
     mc.on('panend', function(e){
         mapMove(e);
-        redrawBackground(force);
+        redrawBackground(true);
     });
 
 
