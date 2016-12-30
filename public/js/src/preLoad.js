@@ -19,7 +19,7 @@ function anotherImageLoaded(){
  
 function imagesDoneLoading() {
         $('#closeIntro').click(function(e) {
-            if($('#skipTutorial').is(':checked')){
+            if(true || $('#skipTutorial').is(':checked')){
                 for(var i in firstTime){
                     firstTime[i] = false;
                 }
@@ -48,7 +48,7 @@ function imagesDoneLoading() {
                  zoomToOne(castles[4].x, castles[4].y, .35);
              }
         });
-        $('#closeIntro').removeClass('disabled');
+        $('#closeIntro').text('Play!').removeClass('disabled');
       
     };
 

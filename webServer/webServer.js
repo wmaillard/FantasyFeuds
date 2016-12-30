@@ -41,7 +41,9 @@ var compression = require('compression')
 var http = require('http');
 const app = express();
 app.use(compression());
-app.use(express.static(path.join(__dirname, '../public')));
+app.use('/game', express.static(path.join(__dirname, '../public')));
+app.use('/', express.static(path.join(__dirname, '../welcome')));
+app.use('/tutorial', express.static(path.join(__dirname, '../tutorial')))
 var server = http.createServer(app);
 server.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 const ioWorker = require('socket.io')(server, {

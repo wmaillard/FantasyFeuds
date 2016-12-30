@@ -1,0 +1,36 @@
+{ "height":75,
+ "layers":[
+        {
+"data": [2, 3, 4, 2, 3],
+          "height":75,
+         "name":"Bottom",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":50,
+         "x":0,
+         "y":0
+        }, 
+        ],
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "columns":16,
+         "firstgid":1,
+         "image":"img/tiles/HF1_A2.png",
+         "imageheight":384,
+         "imagewidth":512,
+         "margin":0,
+         "name":"Base Surface",
+         "spacing":0,
+         "tilecount":192,
+         "tileheight":32,
+         "tilewidth":32
+        }],
+  "tilewidth":32,
+ "version":1,
+ "width":50
+}
