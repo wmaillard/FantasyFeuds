@@ -1,6 +1,6 @@
 var firstTime = {showShop : true, buyEntity : false, placeEntity : false, selectEntity : false, zoomToEntity : false, moveEntity : true, selectEntity: true, attackQuarry : true};
 var circles = {quarry: false}
-var locks ={move : false}
+var locks ={move : false, shop : true}
 var quarryCircleColor = 'pink';
 var messageDone = false;
 var messageTimeouts = [];
