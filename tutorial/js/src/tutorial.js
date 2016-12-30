@@ -58,9 +58,9 @@ var message11 = 'You can add characters to castles OR next to any other characte
 var message12 = 'Great! Now make sure that both of your characters are visible, and click the character select button at the bottom to select both of them';
 var message13 = 'Cool! Now you can move both characters at the same time!...';
 var message14 = 'Look down the path to the Next Castle and make your characters walk within its Orange Circle.  Protip: If you lose your characters, you can click either of the Arrows in the bottom corners of the screen to quickly find them!';
-var message15 = "Careful now, you are behind enemy lines!  In order to conquer a castle, your team must have more characters in it than the enemy. Kill the two Blue Orcs in the castle so you can conquer it!";
-var message16 = 'Congratulations!  You have defeated the Orange Team and completed the tutorial.  Click below to test your skills in a round of Fantasy Feuds!'
-
+var message15 = "Careful, you are behind enemy lines!  In order to conquer a castle, your team must have more characters in it than the enemy. Kill the two Blue Orcs in the castle so you can conquer it!";
+var message16 = 'Congratulations!  You have defeated the Orange Team and completed the tutorial!  Click below to test your skills in a round of Fantasy Feuds!'
+var message1501 = 'Sweet! Your team owns more castles than the Orange Team.  Now hold those castles and the Orange teams health bar on the top will drain!';
 messageDone = false;
 nextMessage(message1);
 
