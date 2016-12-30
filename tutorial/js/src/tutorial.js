@@ -110,7 +110,7 @@ function drainHealth(attacker, victim, fightBack, callback){
 				
 				setTimeout(function(){
 					drainHealth(attacker, victim, fightBack, callback);
-			}, 1000);
+			}, 750);
 			}
 		}
 

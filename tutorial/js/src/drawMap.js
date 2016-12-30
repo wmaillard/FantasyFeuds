@@ -15,7 +15,17 @@ var scene = {
                     scene.tiles[layer.name].url[i] = url;
                 }
                 if(!limitRAM){
-                    scene.tiles[layer.name].img[i] = new Image();
+                    scene.tiles[layer.name].img[0] = new Image();
+                    scene.tiles[layer.name].img[0].onload = function(){
+                        var can = document.createElement('canvas');
+                        can.height = scene.tiles[layer.name].img[0].height;
+                        can.width = scene.tiles[layer.name].img[0].width;
+                        var ctx = can.getContext("2d");
+                        ctx.drawImage(scene.tiles[layer.name].img[0], 0, 0);
+                        scene.tiles[layer.name].canvas = can;
+                        canvasDone = true;
+
+                    }
                     scene.tiles[layer.name].img[i].src = url;
                 
                 }
@@ -137,8 +147,8 @@ function drawFromArray(layerName, rows, columns) {
                 
             } else {
                 var img = scene.tiles[layerName].img[i];
-                if(img.complete){
-                    scene.context.drawImage(img, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
+                if(img.complete && canvasDone){
+                    scene.context.drawImage(scene.tiles.tile.canvas, offset.x * currentZoomResolution, offset.y * currentZoomResolution, colWidth - offset.x, rowHeight - offset.y, xDrawn, yDrawn, ((colWidth - offset.x) * zoom) / currentZoomResolution, (rowHeight - offset.y) * zoom / currentZoomResolution); //draw image from scratch canvas for better performance
                 }
             }
             xDrawn += (colWidth - offset.x) * zoom;

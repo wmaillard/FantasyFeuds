@@ -1,6 +1,6 @@
  
 var imagesLoaded = 0;
-var numberOfImages = 1 + 29 * 2; //29 characters and 2 for each
+var numberOfImages = 1 + 7 * 2; //7 characters and 2 for each
 function anotherImageLoaded(){
     imagesLoaded++;
     $('.pace-progress').css({

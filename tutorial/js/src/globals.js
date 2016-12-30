@@ -33,8 +33,11 @@ var tips = ['You can zoom in and out by pinching the screen or scrolling with th
 /*Test if android*/
 var ua = navigator.userAgent.toLowerCase();
 var isAndroid = ua.indexOf("android") > -1;
-var limitRAM = false;
 /*****************/
+var limitRAM = false;
+var lastPan = Date.now();
+var canvasDone = false;
+
 
 var rows = 1;  //Rows and columns map is broken up into
 var columns = 1;

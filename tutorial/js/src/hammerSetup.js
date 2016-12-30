@@ -53,6 +53,7 @@ function hammerSetup(){
 
 
     });
+
     mc.on('pan', function(e){
         mapMove(e);
         redrawBackground();
@@ -72,7 +73,6 @@ function hammerSetup(){
 	mc.get('pinch').set({ enable: true });
 
 	mc.on('pinch', function(e){
-        console.log('pinching')
         zoomAction(e);
     });
 
