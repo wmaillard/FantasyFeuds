@@ -147,6 +147,13 @@ var moveEntities = { //Currently mutates entities
 							firstTime.attackCastel = false;
 							drainHealth(entities[2], entities[-3], true, function(){
 								drainCastle(castles[1], function(){
+										$('#tutorialModal').modal({
+												backdrop: 'static',
+												keyboard: false
+											});
+											nextMessage(message1501);
+											$('#tutorialModalButton').text('Try It!').unbind( "click" ).click(function(){
+												
 										drainTeam(function(){
 											$('#tutorialModal').modal({
 												backdrop: 'static',
@@ -159,6 +166,7 @@ var moveEntities = { //Currently mutates entities
 												 window.location = 'http://fantasyfeuds.com/game';
 											})
 									});
+								})
 									
 								
 							});
