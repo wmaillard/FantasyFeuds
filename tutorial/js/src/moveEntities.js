@@ -153,7 +153,7 @@ var moveEntities = { //Currently mutates entities
 											});
 											nextMessage(message1501);
 											$('#tutorialModalButton').text('Try It!').unbind( "click" ).click(function(){
-												
+												$('#tutorialModal').modal('hide');
 										drainTeam(function(){
 											$('#tutorialModal').modal({
 												backdrop: 'static',
