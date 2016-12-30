@@ -132,11 +132,11 @@ function drawFrame() {
 }
 
 function redrawBackground(safe) {
-    if(lastPan < Date.now() - 1000 / 30){
-        lastPan = Date.now();
-        scene.load(level, ctxB, zoom); //drawing all layers, could flatten, bug
+    //if(lastPan < Date.now() - 1000 / 60){
+       // lastPan = Date.now();
+        scene.load(level, ctxB, zoom); 
         drawEntities(entities, ctxF, true);
-    }
+   // }
     
 }
 
