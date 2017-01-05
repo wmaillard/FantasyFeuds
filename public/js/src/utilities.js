@@ -4,14 +4,16 @@ function getEntitiesMap(x, y){
     }else return false;
 }
 
-
-
-
-
-
-
-
-
+function drawBlockingDots(){
+    for(var i = 0; i < blockingTerrain.length; i++){
+        for(var j = 0; j < blockingTerrain[i].length; j++){
+            if(blockingTerrain[i][j]){
+                var point = mapToScreenPoint(i * 32, j * 32);
+                ctxI.fillRect(point.x,point.y,5,5);
+            }
+        }
+	}
+}
 
 function isBlocked(x, y) {
     if(!blockingTerrain[~~(x / 32)] || !blockingTerrain[~~(x / 32)][~~(y / 32)]){
