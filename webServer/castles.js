@@ -1,9 +1,12 @@
 var castles = {
-    castles: require('./castlesData.js').castles,
+    castles: JSON.parse(require('./castlesData.js').castles),
     playerCastles: {},
     castleRadius: 2500,
     teams: ['orange', 'blue', 'ai'],
     percentPerEntity: 0.05,
+    resetCastles: function(){
+        this.castles = JSON.parse(require('./castlesData.js').castles);
+    },
     attackCastle: function(castle) {
         var teams = this.teams;
         var LOO = require('./generalUtilities').LOO;

@@ -194,9 +194,9 @@ function runServer() {
     moveEntitiesFile = require('./moveEntities.js').moveEntities;
     moveEntities = moveEntitiesFile.moveEntities;
     lastScores = Date.now() - 10000;
-    scores = { 'orange': 1000, 'blue': 1000 }
-    Castles = require('./castles.js').castles;
-    castles = Castles.castles;
+    scores = { 'orange': 1000, 'blue': 1000 };
+	Castles.resetCastles();
+	castles = Castles.castles;
     Attacks = require('./attacks.js').Attacks;
     entitiesMovedSinceLastAttack = {};
     /*******************Main Server Loop ************************************/
@@ -238,11 +238,14 @@ function runServer() {
             }
             if (Date.now() > lastScores + 1000) {
                 lastScores = Date.now();
-                setScores(castles, scores);
+                var allCastles = setScores(castles, scores);
                 io.emit('scores', scores);
-                if (scores.blue <= 0 || scores.orange <= 0) {
+                if (allCastles || scores.blue <= 0 || scores.orange <= 0) {
                     var winner;
-                    if (scores.blue <= 0) {
+                    if(allCastles){
+                    	winner = allCastles;
+                    }
+                    else if (scores.blue <= 0) {
                         winner = 'orange';
                     } else {
                         winner = 'blue';
@@ -328,13 +331,13 @@ function applyChanges(changes, socket) {
         socket.emit('changes', changes);
     }
 }
-
 function gameOver(winner) {
     io.emit('gameOver', { winner: winner });
     console.log('gameOver');
     runServer();
 }
 
+var maxCastles = 6;
 function setScores(castles, scores) {
     var numOrangeCastles = 0;
     var numBlueCastles = 0;
@@ -351,6 +354,11 @@ function setScores(castles, scores) {
     }
     scores.blue -= (numOrangeCastles * pointsPerCastle);
     scores.orange -= (numBlueCastles * pointsPerCastle);
+    if(numOrangeCastles === maxCastles){
+    	return 'orange';
+    }else if(numBlueCastles === maxCastles){
+    	return 'blue';
+    }else return false;
 }
 /************* Functions to send/modify info sent to client *******************/
 function setChange(entityId, key, value) {
